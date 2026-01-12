@@ -1,0 +1,123 @@
+import { Hono } from "hono"
+import { prisma } from "../prisma"
+import { ReservationStatus } from "../../generated/prisma/enums"
+
+
+export const resv = new Hono()
+
+const apiResponse = (
+  c: any,
+  status: number,
+  message: string,
+  data: any = null,
+  error: any = null
+) => {
+  return c.json(
+    {
+      status,
+      message,
+      data,
+      error,
+    },
+    200
+  )
+}
+
+resv.get("/", async (c) =>{
+    try {const reser = await prisma.reservation.findMany()
+    return apiResponse(c, 200, "Get Reservation success", reser)
+} catch (err){
+    return apiResponse(c, 500, "Failed to fetch Reservation", null, err)
+}
+})
+
+
+resv.get("/:id", async (c) => {
+  const id = Number(c.req.param("id"))
+
+  try {
+    const reser = await prisma.reservation.findUnique({
+      where: { id },
+    })
+
+    if (!reser) {
+      return apiResponse(c, 404, "Reservation not found")
+    }
+
+    return apiResponse(c, 200, "Get Reservation success", reser)
+  } catch (err) {
+    return apiResponse(c, 500, "Failed to fetch Reservation", null, err)
+  }
+})
+
+resv.post("/Addreser", async (c) =>{
+    const body = await c.req.json()
+    const { reservationDate,status, memberId,bookId } = body
+
+        if (status && !Object.values(ReservationStatus).includes(status)) {
+          return apiResponse(c, 400, "Invalid Reservation Status")
+        }
+    try{
+        const reser = await prisma.reservation.create({
+            data:{
+                reservationDate,status, memberId,bookId
+            }
+        })
+        return apiResponse(c, 201, "ReservationStatus" , reser )
+    }   catch (err) {
+        return apiResponse(c, 500, "reservation failed", null, err)
+  }
+})
+
+resv.put("/:id", async (c) =>{
+    const id = Number(c.req.param("id"))
+    const body = await c.req.json()
+    const { status, memberId,bookId } = body
+
+        if (status && !Object.values(ReservationStatus).includes(status)) {
+          return apiResponse(c, 400, "Invalid Reservation Status")
+        }
+    try{
+        const exists = await prisma.reservation.findUnique({ where: { id } })
+            if (!exists) {
+              return apiResponse(c, 404, "Reservation not found")
+            }
+
+        const reser = await prisma.reservation.update({
+            where: { id },
+            data:{
+                status, memberId,bookId
+            }
+        })
+        return apiResponse(c, 201, "reservation success", reser )
+    }   catch (err) {
+        return apiResponse(c, 500, "reservation failed", null, err)
+  }
+})
+
+resv.delete("/:id", async (c) => {
+  const id = Number(c.req.param("id"))
+
+  try {
+    const exists = await prisma.reservation.findUnique({ where: { id } })
+    if (!exists) {
+      return apiResponse(c, 404, "Reservation not found")
+    }
+
+    await prisma.reservation.delete({
+      where: { id },
+    })
+
+    return apiResponse(c, 200, "Reservation deleted")
+  } catch (err) {
+    return apiResponse(c, 500, "Delete Reservation failed", null, err)
+  }
+})
+
+
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}

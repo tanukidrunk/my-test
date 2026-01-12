@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model Member {
+  id       Int    @id @default(autoincrement())
+  email    String @unique  
+  username String
+  password String
+  gender Gender @default(OTHER)
+  role Role @default(USER)
+  Borrows      Borrowed[]
+
+
+}
+
+model Book {
+  id               Int    @id @default(autoincrement())
+  title            String
+  author           String
+  publication_year String
+  status           BookStatus @default(AVAILABLE)
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  Borrows      Borrowed[]
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  books Book[] 
+  
+}
+model Borrowed {
+  id         Int      @id @default(autoincrement())
+  memberId   Int
+  bookId     Int
+  loanDate   DateTime @default(now())
+  returnDate DateTime?
+  status     BorrowStatus @default(BORROWED)
+  member     Member @relation(fields: [memberId], references: [id])
+  book       Book   @relation(fields: [bookId], references: [id])
+
+  @@index([memberId,bookId])
+}
+
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+enum Role {
+  ADMIN
+  USER
+}
+enum BorrowStatus {
+  BORROWED
+  RETURNED
+  OVERDUE
+  PENDING
+}
+enum BookStatus {
+  BORROWED
+  AVAILABLE
+}
+
+
