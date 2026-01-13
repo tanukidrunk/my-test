@@ -7,16 +7,14 @@ export default function ProtectedLayout({children}:{children:React.ReactNode}){
     const router = useRouter();
     useEffect(() => {
             const token = localStorage.getItem("token");
-            if (!token) {
-            router.push("/login");
-            return;
-            }
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
 
         fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`,{
             // credentials:"include",
-            headers: {
-        Authorization: `Bearer ${token}`,
-      },
         }).then(res=>{
             if(!res.ok){
                 router.push("/login");

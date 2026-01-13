@@ -20,14 +20,13 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-const menuItems = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Books", href: "/admin/book", icon: Book },
-  { name: "Category", href: "/admin/category", icon: List },
-  { name: "Member", href: "/admin/memberlist", icon: User },
-  { name: "Logout", href: "/login", icon: LogOut, logout: true },
-];
-
+  const menuItems = [
+    { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+    { name: "Books", href: "/admin/book", icon: Book },
+    { name: "Category", href: "/admin/category", icon: List },
+    { name: "Member", href: "/admin/memberlist", icon: User },
+    { name: "Logout", href: "/login", icon: LogOut },
+  ];
 
   return (
     <div className="min-h-screen flex bg-neutral-100 dark:bg-neutral-950">
@@ -77,7 +76,6 @@ const menuItems = [
     );
   })}
 </nav>
-
       </aside>
 
       {/* Content */}

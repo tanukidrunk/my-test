@@ -12,7 +12,9 @@ const apiResponse = (
 
 export const auth = new Hono();
 
+
+
 auth.get("/me", authMiddleware, async (c) => {
     const member = c.get("member");
-    return apiResponse(c, 200, "ok", { member });
+    return c.json({member});
 });

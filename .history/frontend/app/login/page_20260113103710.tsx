@@ -51,10 +51,9 @@ const meRes = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
     Authorization: `Bearer ${json.data.token}`,
   },
 });
-      const meJson = await meRes.json();
-const member = meJson.data?.member;
+      setLoading(false);
 
-      if (member?.role === "ADMIN") {
+      if (json.data.role === "ADMIN") {
       router.replace("/admin/dashboard");
       } else {
       router.replace("/member/dashboard");

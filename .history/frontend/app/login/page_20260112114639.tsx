@@ -46,15 +46,10 @@ export default function LoginPage() {
       }
       
       localStorage.setItem("token", json.data.token);
-const meRes = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
-  headers: {
-    Authorization: `Bearer ${json.data.token}`,
-  },
-});
-      const meJson = await meRes.json();
-const member = meJson.data?.member;
 
-      if (member?.role === "ADMIN") {
+      setLoading(false);
+
+      if (json.data.role === "ADMIN") {
       router.replace("/admin/dashboard");
       } else {
       router.replace("/member/dashboard");

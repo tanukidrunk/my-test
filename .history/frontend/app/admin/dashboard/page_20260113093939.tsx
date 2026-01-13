@@ -22,6 +22,7 @@ export default function AdminDashboard() {
 const loadBorrowed = async () => {
   try {
     const token = localStorage.getItem("token");
+
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API}/borrow`,
       {
@@ -63,9 +64,7 @@ useEffect(() => {
 
       const json = await res.json();
 
-      const member = json.member ?? json.data?.member;
-
-      if (!member || member.role !== "ADMIN") {
+      if (!json.member || json.member.role !== "ADMIN") {
         router.replace("/login");
         return;
       }
@@ -73,7 +72,7 @@ useEffect(() => {
       loadBorrowed();
     })
     .catch((err) => {
-      console.error(err)
+      console.
       router.replace("/login")});
 }, []);
 

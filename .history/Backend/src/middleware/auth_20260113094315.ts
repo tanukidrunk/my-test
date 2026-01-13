@@ -33,7 +33,7 @@ export const authMiddleware = async (c: AppContext, next: Next) => {
 
   try {
     const payload = jwt.verify(token, JWT_SECRET, { algorithms: ["HS256"] }) as JwtPayload;
-    c.set("member", payload);
+    c.set("member", decoded);
     await next();
   } catch {
     return c.json({ message: "Invalid or expired token" }, 401);

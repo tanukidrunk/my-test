@@ -54,7 +54,7 @@ const meRes = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
       const meJson = await meRes.json();
 const member = meJson.data?.member;
 
-      if (member?.role === "ADMIN") {
+      if (json.data.role === "ADMIN") {
       router.replace("/admin/dashboard");
       } else {
       router.replace("/member/dashboard");

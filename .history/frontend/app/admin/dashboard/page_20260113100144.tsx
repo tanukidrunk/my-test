@@ -65,7 +65,7 @@ useEffect(() => {
 
       const member = json.member ?? json.data?.member;
 
-      if (!member || member.role !== "ADMIN") {
+      if (!json.member || json.member.role !== "ADMIN") {
         router.replace("/login");
         return;
       }

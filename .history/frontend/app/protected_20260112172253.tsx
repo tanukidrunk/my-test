@@ -9,14 +9,11 @@ export default function ProtectedLayout({children}:{children:React.ReactNode}){
             const token = localStorage.getItem("token");
             if (!token) {
             router.push("/login");
-            return;
-            }
+      return;
+    }
 
         fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`,{
             // credentials:"include",
-            headers: {
-        Authorization: `Bearer ${token}`,
-      },
         }).then(res=>{
             if(!res.ok){
                 router.push("/login");

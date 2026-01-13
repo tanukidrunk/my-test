@@ -38,46 +38,28 @@ const menuItems = [
         </h2>
 
         <nav className="space-y-2">
-  {menuItems.map((item) => {
-    const Icon = item.icon;
-    const active = pathname === item.href;
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const active = pathname === item.href;
 
-    if (item.logout) {
-      return (
-        <button
-          key={item.name}
-          onClick={() => {
-            localStorage.removeItem("token");
-            router.replace("/login");
-          }}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition
-            text-neutral-700 dark:text-neutral-300 hover:bg-red-100 dark:hover:bg-red-900"
-        >
-          <Icon size={18} />
-          {item.name}
-        </button>
-      );
-    }
-
-    return (
-      <Link
-        key={item.href}
-        href={item.href}
-        className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition
-          ${
-            active
-              ? "bg-blue-600 text-white"
-              : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800"
-          }
-        `}
-      >
-        <Icon size={18} />
-        {item.name}
-      </Link>
-    );
-  })}
-</nav>
-
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition
+                  ${
+                    active
+                      ? "bg-blue-600 text-white"
+                      : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800"
+                  }
+                `}
+              >
+                <Icon size={18} />
+                {item.name}
+              </Link>
+            );
+          })}
+        </nav>
       </aside>
 
       {/* Content */}

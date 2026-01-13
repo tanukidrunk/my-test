@@ -1,5 +1,8 @@
 import {Hono} from "hono";
 import { authMiddleware } from "../middleware/auth";   
+
+export const auth = new Hono();
+
 const apiResponse = (
   c: any,
   status: number,
@@ -10,9 +13,7 @@ const apiResponse = (
   return c.json({ status, message, data, error }, 200);
 };
 
-export const auth = new Hono();
-
 auth.get("/me", authMiddleware, async (c) => {
     const member = c.get("member");
-    return apiResponse(c, 200, "ok", { member });
+    return c.json({member});
 });
