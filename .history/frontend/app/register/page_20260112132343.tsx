@@ -1,80 +1,61 @@
 "use client";
- 
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; 
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({
+    email: "",
+    username: "",
+    password: "",
+    gender: "OTHER",
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
- 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-   
+
     try {
-      
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/member/login`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/member/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
-      const text = await res.text();
-      console.log("Response:", text);
+      const data = await res.json();
 
-      let json;
-      try {
-        json = JSON.parse(text);
-      } catch {
-        setError("Server error: response not JSON");
-        setLoading(false);
-        return;
-      } 
-
-      if (!res.ok || !json.data) {
-        setError(json.message || "Login failed");
+      if (!res.ok) {
+        setError(data.message || "Sign-up failed");
         setLoading(false);
         return;
       }
+
       
-      localStorage.setItem("token", json.data.token);
-const meRes = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
-  headers: {
-    Authorization: `Bearer ${json.data.token}`,
-  },
-});
-      const meJson = await meRes.json();
-const member = meJson.data?.member;
+      setLoading(false);
 
-      if (member?.role === "ADMIN") {
-      router.replace("/admin/dashboard");
-      } else {
-      router.replace("/member/dashboard");
-      }
+      router.push("/login");
     } catch (err) {
       console.error(err);
       setError("Something went wrong");
       setLoading(false);
     }
-
-
   };
-  //   const handleGoogleLogin = () => {
-  //   window.location.href = `${process.env.NEXT_PUBLIC_API}/auth/google`;
-  // };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Log In</CardTitle>
+          <CardTitle className="text-2xl text-center">Register</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -82,10 +63,22 @@ const member = meJson.data?.member;
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
-                type="text"
+                type="email"
                 placeholder="Enter your email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="Enter your username"
+                value={form.username}
+                onChange={(e) => setForm({ ...form, username: e.target.value })}
                 required
               />
             </div>
@@ -101,32 +94,33 @@ const member = meJson.data?.member;
                 required
               />
             </div>
+ 
+            <div>
+              <Label htmlFor="gender">Gender</Label>
+              <Select
+                value={form.gender}
+                onValueChange={(value) => setForm({ ...form, gender: value })}
+              >
+                <SelectTrigger id="gender">
+                  <SelectValue placeholder="Select Gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="MALE">Male</SelectItem>
+                  <SelectItem value="FEMALE">Female</SelectItem>
+                  <SelectItem value="OTHER">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
             {error && <p className="text-red-600">{error}</p>}
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Logging in..." : "Log In"}
+              {loading ? "Registering..." : "Register"}
             </Button>
-
-             
-             {/* <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={handleGoogleLogin}
-              disabled={loading}
-            >
-              Login with Google
-            </Button> */}
-
           </form>
-          
-
           <p className="text-sm text-center mt-4 text-gray-500">
-            Dont have an account?{" "}
-            <Link href="/register" className="text-blue-600">
-              Register
-            </Link>
+            Already have an account?{" "}
+            <Link href="/login" className="text-blue-600">Log in</Link>
           </p>
         </CardContent>
       </Card>

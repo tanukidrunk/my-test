@@ -91,14 +91,7 @@ mem.post('/login', async (c) => {
 mem.post('/register', async (c) => {
   const body = await c.req.json();
   const { email, username, password, gender } = body;
-    const passwordRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{10,}$/;
-  if (!passwordRule.test(password)) {
-    return apiResponse(
-      c,
-      400,
-      'Password must be at least 10 characters and contain uppercase, lowercase, and number'
-    );
-  }
+  
 
   if (gender && !Object.values(Gender).includes(gender)) {
     return apiResponse(c, 400, 'Invalid gender');

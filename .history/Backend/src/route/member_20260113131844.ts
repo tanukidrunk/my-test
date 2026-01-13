@@ -8,6 +8,7 @@ import argon2 from "argon2";
 import { adminOnly } from '../middleware/adminOnly';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
+
 const apiResponse = (
   c: any,
   status: number,

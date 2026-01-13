@@ -8,6 +8,7 @@ import argon2 from "argon2";
 import { adminOnly } from '../middleware/adminOnly';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
+const passwordRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{10,}$/;
 const apiResponse = (
   c: any,
   status: number,
@@ -19,6 +20,8 @@ const apiResponse = (
 };
 
 export const mem = new Hono();
+
+
 
 mem.get('/', authMiddleware,adminOnly, async (c) => {
   try {
