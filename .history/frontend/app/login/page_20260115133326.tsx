@@ -46,10 +46,9 @@ export default function LoginPage() {
       }
       
       localStorage.setItem("token", json.data.token);
-      
       const meRes = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
         headers: {
-              Authorization: `Bearer ${json.data.token}`,
+                Authorization: `Bearer ${json.data.token}`,
               },
 });
       const meJson = await meRes.json();
