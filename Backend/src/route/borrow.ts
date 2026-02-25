@@ -24,74 +24,137 @@ borr.get('/', authMiddleware, async (c) => {
 });
 
 borr.get('/member', authMiddleware, async (c) => {
-   const member = c.get("member");
-    const data = await prisma.borrowed.findMany({
-     where: { memberId: member.memberId },
+  const member = c.get("member");
+
+  const data = await prisma.borrowed.findMany({
+    where: { memberId: member.memberId },
     include: { book: true },
+    orderBy: { loanDate: "desc" },
   });
+
   return apiResponse(c, 200, "ok", data);
 });
 
 // POST borrow book
+
+
 borr.post('/borrowed', authMiddleware, async (c) => {
-  const member = c.get("member");
-    const body = await c.req.json();
+  try {
+    const user = c.get('member');
+    const { bookId } = await c.req.json();
 
-    const book = await prisma.book.findUnique({
-    where: { id: body.bookId },
-  });
+    if (!bookId) {
+      return apiResponse(c, 400, 'Missing bookId');
+    }
 
-  if (!book || book.status !== "AVAILABLE") {
-    return apiResponse(c, 400, "Book not available");
+    // ??? transaction ????????????
+    const result = await prisma.$transaction(async (tx) => {
+      const existing = await tx.borrowed.findFirst({
+        where: {
+          memberId: user.memberId,
+          bookId,
+          status: 'BORROWED',
+        },
+      });
+      
+      if (existing) {
+        throw new Error('You already borrowed this book');
+      }
+      const book = await tx.book.findUnique({
+        where: { id: bookId },
+      });
+
+      if (!book) {
+        throw new Error('Book not found');
+      }
+
+      if (book.status === 'BORROWED') {
+        throw new Error('Book already borrowed');
+      }
+
+      // ????? Borrowed record
+      await tx.borrowed.create({
+        data: {
+          memberId: user.memberId,
+          bookId,
+          status: 'BORROWED',
+        },
+      });
+
+      // Update book status
+      await tx.book.update({
+        where: { id: bookId },
+        data: { status: 'BORROWED' },
+      });
+
+      // ??????????????????????????
+      return tx.book.findMany({
+        include: {
+          category: true,
+          Borrows: true,
+        },
+      });
+    });
+
+    return apiResponse(c, 200, 'Borrow success', result);
+
+  } catch (err: any) {
+    return apiResponse(c, 400, err.message);
   }
-  const borrow = await prisma.borrowed.create({
-    data: {
-      memberId: body.memberId,
-      bookId: body.bookId,
-      status: BorrowStatus.BORROWED,
-    },
-  });
-
-  // อัปเดตสถานะหนังสือ
-  await prisma.book.update({
-    where: { id: body.bookId },
-    data: { status: 'BORROWED' },
-  });
-
-  return c.json(borrow, 201);
 });
 
 // PUT return / update status
 borr.put('/return/:id', authMiddleware, async (c) => {
-  const id = Number(c.req.param('id'));
+  try {
+    const member = c.get("member");
+    const borrowId = Number(c.req.param("id"));
 
-  const record = await prisma.borrowed.findUnique({
-    where: { id },
-  });
+    const result = await prisma.$transaction(async (tx) => {
 
-  if (!record) {
-    return apiResponse(c, 404, "Borrow record not found");
+      const borrow = await tx.borrowed.findUnique({
+        where: { id: borrowId },
+      });
+
+      if (!borrow) {
+        throw new Error("Borrow record not found");
+      }
+
+      if (borrow.memberId !== member.memberId) {
+        throw new Error("Unauthorized");
+      }
+
+      if (borrow.status === "RETURNED") {
+        throw new Error("Already returned");
+      }
+
+      // 1?? update borrow
+      await tx.borrowed.update({
+        where: { id: borrowId },
+        data: {
+          status: "RETURNED",
+          returnDate: new Date(),
+        },
+      });
+
+      // 2?? update book
+      await tx.book.update({
+        where: { id: borrow.bookId },
+        data: { status: "AVAILABLE" },
+      });
+
+      // 3?? return updated list
+      return tx.borrowed.findMany({
+        where: { memberId: member.memberId },
+        include: { book: true },
+        orderBy: { loanDate: "desc" },
+      });
+    });
+
+    return apiResponse(c, 200, "Returned successfully", result);
+
+  } catch (err: any) {
+    return apiResponse(c, 400, err.message);
   }
-
-  if (record.status === "RETURNED") {
-    return apiResponse(c, 400, "This book has already been returned");
-  }
-
-  const updated = await prisma.borrowed.update({
-    where: { id },
-    data: {
-      status: BorrowStatus.RETURNED,
-      returnDate: new Date(), // บันทึกวันคืน
-    },
-  });
-
-  await prisma.book.update({
-    where: { id: updated.bookId },
-    data: { status: 'AVAILABLE' },
-  });
-
-  return apiResponse(c, 200, "Returned", updated);
 });
-
 
 

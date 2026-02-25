@@ -49,8 +49,6 @@ export default function MemberLayout({ children }: { children: ReactNode }) {
 
     <nav className="flex gap-6 text-sm font-medium items-center">
       <Link href="/member/dashboard">Dashboard</Link>
-      <Link href="/member/book">Books</Link>
-      <Link href="/member/history">History Borrowed</Link>
       <Link href="/member/profile">Profile</Link>
 
       <button

@@ -91,6 +91,7 @@ export const BookScalarFieldEnum = {
   author: 'author',
   publication_year: 'publication_year',
   status: 'status',
+  imageUrl: 'imageUrl',
   categoryId: 'categoryId'
 } as const
 

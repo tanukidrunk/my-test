@@ -1,9 +1,8 @@
-import { Context, Next } from "hono";
-import jwt from "jsonwebtoken";
- 
- 
+import { Context, Next } from 'hono';
+import jwt from 'jsonwebtoken';
+
 const JWT_SECRET = process.env.JWT_SECRET!;
- 
+
 type JwtPayload = {
   memberId: number;
   email: string;
@@ -19,23 +18,25 @@ type AppVariables = {
 type AppContext = Context<{ Variables: AppVariables }>;
 
 export const authMiddleware = async (c: AppContext, next: Next) => {
-  const authHeader = c.req.header("authorization");
+  const authHeader = c.req.header('authorization');
 
   if (!authHeader) {
-    return c.json({ message: "Missing Authorization header" }, 401);
+    return c.json({ message: 'Missing Authorization header' }, 401);
   }
 
-  if (!authHeader.startsWith("Bearer ")) {
-    return c.json({ message: "Invalid Authorization format" }, 401);
+  if (!authHeader.startsWith('Bearer ')) {
+    return c.json({ message: 'Invalid Authorization format' }, 401);
   }
- 
+
   const token = authHeader.slice(7);
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET, { algorithms: ["HS256"] }) as JwtPayload;
-    c.set("member", payload);
+    const payload = jwt.verify(token, JWT_SECRET, {
+      algorithms: ['HS256'],
+    }) as JwtPayload;
+    c.set('member', payload);
     await next();
   } catch {
-    return c.json({ message: "Invalid or expired token" }, 401);
+    return c.json({ message: 'Invalid or expired token' }, 401);
   }
 };

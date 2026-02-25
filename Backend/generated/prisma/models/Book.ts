@@ -42,6 +42,7 @@ export type BookMinAggregateOutputType = {
   author: string | null
   publication_year: string | null
   status: $Enums.BookStatus | null
+  imageUrl: string | null
   categoryId: number | null
 }
 
@@ -51,6 +52,7 @@ export type BookMaxAggregateOutputType = {
   author: string | null
   publication_year: string | null
   status: $Enums.BookStatus | null
+  imageUrl: string | null
   categoryId: number | null
 }
 
@@ -60,6 +62,7 @@ export type BookCountAggregateOutputType = {
   author: number
   publication_year: number
   status: number
+  imageUrl: number
   categoryId: number
   _all: number
 }
@@ -81,6 +84,7 @@ export type BookMinAggregateInputType = {
   author?: true
   publication_year?: true
   status?: true
+  imageUrl?: true
   categoryId?: true
 }
 
@@ -90,6 +94,7 @@ export type BookMaxAggregateInputType = {
   author?: true
   publication_year?: true
   status?: true
+  imageUrl?: true
   categoryId?: true
 }
 
@@ -99,6 +104,7 @@ export type BookCountAggregateInputType = {
   author?: true
   publication_year?: true
   status?: true
+  imageUrl?: true
   categoryId?: true
   _all?: true
 }
@@ -195,6 +201,7 @@ export type BookGroupByOutputType = {
   author: string
   publication_year: string
   status: $Enums.BookStatus
+  imageUrl: string | null
   categoryId: number
   _count: BookCountAggregateOutputType | null
   _avg: BookAvgAggregateOutputType | null
@@ -227,6 +234,7 @@ export type BookWhereInput = {
   author?: Prisma.StringFilter<"Book"> | string
   publication_year?: Prisma.StringFilter<"Book"> | string
   status?: Prisma.EnumBookStatusFilter<"Book"> | $Enums.BookStatus
+  imageUrl?: Prisma.StringNullableFilter<"Book"> | string | null
   categoryId?: Prisma.IntFilter<"Book"> | number
   category?: Prisma.XOR<Prisma.CategoryScalarRelationFilter, Prisma.CategoryWhereInput>
   Borrows?: Prisma.BorrowedListRelationFilter
@@ -238,6 +246,7 @@ export type BookOrderByWithRelationInput = {
   author?: Prisma.SortOrder
   publication_year?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   category?: Prisma.CategoryOrderByWithRelationInput
   Borrows?: Prisma.BorrowedOrderByRelationAggregateInput
@@ -252,6 +261,7 @@ export type BookWhereUniqueInput = Prisma.AtLeast<{
   author?: Prisma.StringFilter<"Book"> | string
   publication_year?: Prisma.StringFilter<"Book"> | string
   status?: Prisma.EnumBookStatusFilter<"Book"> | $Enums.BookStatus
+  imageUrl?: Prisma.StringNullableFilter<"Book"> | string | null
   categoryId?: Prisma.IntFilter<"Book"> | number
   category?: Prisma.XOR<Prisma.CategoryScalarRelationFilter, Prisma.CategoryWhereInput>
   Borrows?: Prisma.BorrowedListRelationFilter
@@ -263,6 +273,7 @@ export type BookOrderByWithAggregationInput = {
   author?: Prisma.SortOrder
   publication_year?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   _count?: Prisma.BookCountOrderByAggregateInput
   _avg?: Prisma.BookAvgOrderByAggregateInput
@@ -280,6 +291,7 @@ export type BookScalarWhereWithAggregatesInput = {
   author?: Prisma.StringWithAggregatesFilter<"Book"> | string
   publication_year?: Prisma.StringWithAggregatesFilter<"Book"> | string
   status?: Prisma.EnumBookStatusWithAggregatesFilter<"Book"> | $Enums.BookStatus
+  imageUrl?: Prisma.StringNullableWithAggregatesFilter<"Book"> | string | null
   categoryId?: Prisma.IntWithAggregatesFilter<"Book"> | number
 }
 
@@ -288,6 +300,7 @@ export type BookCreateInput = {
   author: string
   publication_year: string
   status?: $Enums.BookStatus
+  imageUrl?: string | null
   category: Prisma.CategoryCreateNestedOneWithoutBooksInput
   Borrows?: Prisma.BorrowedCreateNestedManyWithoutBookInput
 }
@@ -298,6 +311,7 @@ export type BookUncheckedCreateInput = {
   author: string
   publication_year: string
   status?: $Enums.BookStatus
+  imageUrl?: string | null
   categoryId: number
   Borrows?: Prisma.BorrowedUncheckedCreateNestedManyWithoutBookInput
 }
@@ -307,6 +321,7 @@ export type BookUpdateInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   publication_year?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.CategoryUpdateOneRequiredWithoutBooksNestedInput
   Borrows?: Prisma.BorrowedUpdateManyWithoutBookNestedInput
 }
@@ -317,6 +332,7 @@ export type BookUncheckedUpdateInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   publication_year?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.IntFieldUpdateOperationsInput | number
   Borrows?: Prisma.BorrowedUncheckedUpdateManyWithoutBookNestedInput
 }
@@ -327,6 +343,7 @@ export type BookCreateManyInput = {
   author: string
   publication_year: string
   status?: $Enums.BookStatus
+  imageUrl?: string | null
   categoryId: number
 }
 
@@ -335,6 +352,7 @@ export type BookUpdateManyMutationInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   publication_year?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BookUncheckedUpdateManyInput = {
@@ -343,6 +361,7 @@ export type BookUncheckedUpdateManyInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   publication_year?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -352,6 +371,7 @@ export type BookCountOrderByAggregateInput = {
   author?: Prisma.SortOrder
   publication_year?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
 }
 
@@ -366,6 +386,7 @@ export type BookMaxOrderByAggregateInput = {
   author?: Prisma.SortOrder
   publication_year?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
 }
 
@@ -375,6 +396,7 @@ export type BookMinOrderByAggregateInput = {
   author?: Prisma.SortOrder
   publication_year?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
 }
 
@@ -400,6 +422,10 @@ export type BookScalarRelationFilter = {
 
 export type EnumBookStatusFieldUpdateOperationsInput = {
   set?: $Enums.BookStatus
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
 }
 
 export type BookCreateNestedManyWithoutCategoryInput = {
@@ -463,6 +489,7 @@ export type BookCreateWithoutCategoryInput = {
   author: string
   publication_year: string
   status?: $Enums.BookStatus
+  imageUrl?: string | null
   Borrows?: Prisma.BorrowedCreateNestedManyWithoutBookInput
 }
 
@@ -472,6 +499,7 @@ export type BookUncheckedCreateWithoutCategoryInput = {
   author: string
   publication_year: string
   status?: $Enums.BookStatus
+  imageUrl?: string | null
   Borrows?: Prisma.BorrowedUncheckedCreateNestedManyWithoutBookInput
 }
 
@@ -510,6 +538,7 @@ export type BookScalarWhereInput = {
   author?: Prisma.StringFilter<"Book"> | string
   publication_year?: Prisma.StringFilter<"Book"> | string
   status?: Prisma.EnumBookStatusFilter<"Book"> | $Enums.BookStatus
+  imageUrl?: Prisma.StringNullableFilter<"Book"> | string | null
   categoryId?: Prisma.IntFilter<"Book"> | number
 }
 
@@ -518,6 +547,7 @@ export type BookCreateWithoutBorrowsInput = {
   author: string
   publication_year: string
   status?: $Enums.BookStatus
+  imageUrl?: string | null
   category: Prisma.CategoryCreateNestedOneWithoutBooksInput
 }
 
@@ -527,6 +557,7 @@ export type BookUncheckedCreateWithoutBorrowsInput = {
   author: string
   publication_year: string
   status?: $Enums.BookStatus
+  imageUrl?: string | null
   categoryId: number
 }
 
@@ -551,6 +582,7 @@ export type BookUpdateWithoutBorrowsInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   publication_year?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.CategoryUpdateOneRequiredWithoutBooksNestedInput
 }
 
@@ -560,6 +592,7 @@ export type BookUncheckedUpdateWithoutBorrowsInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   publication_year?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -569,6 +602,7 @@ export type BookCreateManyCategoryInput = {
   author: string
   publication_year: string
   status?: $Enums.BookStatus
+  imageUrl?: string | null
 }
 
 export type BookUpdateWithoutCategoryInput = {
@@ -576,6 +610,7 @@ export type BookUpdateWithoutCategoryInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   publication_year?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Borrows?: Prisma.BorrowedUpdateManyWithoutBookNestedInput
 }
 
@@ -585,6 +620,7 @@ export type BookUncheckedUpdateWithoutCategoryInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   publication_year?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Borrows?: Prisma.BorrowedUncheckedUpdateManyWithoutBookNestedInput
 }
 
@@ -594,6 +630,7 @@ export type BookUncheckedUpdateManyWithoutCategoryInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   publication_year?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -633,6 +670,7 @@ export type BookSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   author?: boolean
   publication_year?: boolean
   status?: boolean
+  imageUrl?: boolean
   categoryId?: boolean
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
   Borrows?: boolean | Prisma.Book$BorrowsArgs<ExtArgs>
@@ -645,6 +683,7 @@ export type BookSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   author?: boolean
   publication_year?: boolean
   status?: boolean
+  imageUrl?: boolean
   categoryId?: boolean
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["book"]>
@@ -655,6 +694,7 @@ export type BookSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   author?: boolean
   publication_year?: boolean
   status?: boolean
+  imageUrl?: boolean
   categoryId?: boolean
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["book"]>
@@ -665,10 +705,11 @@ export type BookSelectScalar = {
   author?: boolean
   publication_year?: boolean
   status?: boolean
+  imageUrl?: boolean
   categoryId?: boolean
 }
 
-export type BookOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "author" | "publication_year" | "status" | "categoryId", ExtArgs["result"]["book"]>
+export type BookOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "author" | "publication_year" | "status" | "imageUrl" | "categoryId", ExtArgs["result"]["book"]>
 export type BookInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
   Borrows?: boolean | Prisma.Book$BorrowsArgs<ExtArgs>
@@ -693,6 +734,7 @@ export type $BookPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     author: string
     publication_year: string
     status: $Enums.BookStatus
+    imageUrl: string | null
     categoryId: number
   }, ExtArgs["result"]["book"]>
   composites: {}
@@ -1124,6 +1166,7 @@ export interface BookFieldRefs {
   readonly author: Prisma.FieldRef<"Book", 'String'>
   readonly publication_year: Prisma.FieldRef<"Book", 'String'>
   readonly status: Prisma.FieldRef<"Book", 'BookStatus'>
+  readonly imageUrl: Prisma.FieldRef<"Book", 'String'>
   readonly categoryId: Prisma.FieldRef<"Book", 'Int'>
 }
     

@@ -26,10 +26,13 @@ model Book {
   author           String
   publication_year String
   status           BookStatus @default(AVAILABLE)
+  imageUrl         String?
   categoryId Int
   category   Category @relation(fields: [categoryId], references: [id])
   Borrows      Borrowed[]
 }
+
+
 
 model Category {
   id    Int    @id @default(autoincrement())

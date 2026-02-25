@@ -3,7 +3,7 @@ import { prisma } from '../prisma';
 import { authMiddleware } from '../middleware/auth';
 import jwt from 'jsonwebtoken';
 import { Gender } from '../../generated/prisma/client';
-import argon2 from "argon2";
+import argon2 from 'argon2';
 // import bcrypt from "bcrypt";
 import { adminOnly } from '../middleware/adminOnly';
 
@@ -13,14 +13,14 @@ const apiResponse = (
   status: number,
   message: string,
   data: any = null,
-  error: any = null
+  error: any = null,
 ) => {
   return c.json({ status, message, data, error }, 200);
 };
 
 export const mem = new Hono();
 
-mem.get('/', authMiddleware,adminOnly, async (c) => {
+mem.get('/', authMiddleware, adminOnly, async (c) => {
   try {
     const members = await prisma.member.findMany({
       select: {
@@ -36,8 +36,19 @@ mem.get('/', authMiddleware,adminOnly, async (c) => {
   }
 });
 
-mem.get("/profile", authMiddleware, async (c) => {
-  const payload = c.get("member"); 
+mem.get('/book', async (c) => {
+  const books = await prisma.book.findMany({
+    include: {
+      category: true,
+      Borrows: true, // สำคัญ
+    },
+  });
+
+  return apiResponse(c, 200, 'success', books);
+});
+
+mem.get('/profile', authMiddleware, async (c) => {
+  const payload = c.get('member');
 
   const user = await prisma.member.findUnique({
     where: { id: payload.memberId },
@@ -51,7 +62,7 @@ mem.get("/profile", authMiddleware, async (c) => {
 
   return c.json({
     status: 200,
-    message: "ok",
+    message: 'ok',
     data: user,
   });
 });
@@ -74,13 +85,13 @@ mem.post('/login', async (c) => {
 
     const isMatch = await argon2.verify(member.password, password);
     if (!isMatch) {
-      return apiResponse(c, 401, "Invalid email or password");
+      return apiResponse(c, 401, 'Invalid email or password');
     }
 
     const token = jwt.sign(
-      { memberId: member.id, email: member.email , role: member.role, },
+      { memberId: member.id, email: member.email, role: member.role },
       JWT_SECRET,
-      { expiresIn: '1d' }
+      { expiresIn: '1d' },
     );
     return apiResponse(c, 200, 'login success', { token });
   } catch (err) {
@@ -91,12 +102,12 @@ mem.post('/login', async (c) => {
 mem.post('/register', async (c) => {
   const body = await c.req.json();
   const { email, username, password, gender } = body;
-    const passwordRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{10,}$/;
+  const passwordRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{10,}$/;
   if (!passwordRule.test(password)) {
     return apiResponse(
       c,
       400,
-      'Password must be at least 10 characters and contain uppercase, lowercase, and number'
+      'Password must be at least 10 characters and contain uppercase, lowercase, and number',
     );
   }
 
@@ -106,7 +117,7 @@ mem.post('/register', async (c) => {
   try {
     const hashedPassword = await argon2.hash(password, {
       type: argon2.argon2id,
-    });;
+    });
     const member = await prisma.member.create({
       data: {
         email,
@@ -122,7 +133,7 @@ mem.post('/register', async (c) => {
 });
 
 mem.put('/profile', authMiddleware, async (c) => {
-  const member = c.get("member") as { memberId: number };
+  const member = c.get('member') as { memberId: number };
   const body = await c.req.json();
   const { username, gender, password } = body;
 
@@ -137,7 +148,7 @@ mem.put('/profile', authMiddleware, async (c) => {
     };
 
     if (password) {
-      data.password = await argon2.hash(password, {type: argon2.argon2id });;
+      data.password = await argon2.hash(password, { type: argon2.argon2id });
     }
 
     const updated = await prisma.member.update({
@@ -158,7 +169,7 @@ mem.put('/profile', authMiddleware, async (c) => {
 });
 
 mem.patch('/editprofile', authMiddleware, async (c) => {
-  const member = c.get("member") as { memberId: number };
+  const member = c.get('member') as { memberId: number };
   const body = await c.req.json();
   const { username, gender, password } = body;
 
@@ -172,7 +183,7 @@ mem.patch('/editprofile', authMiddleware, async (c) => {
     if (username !== undefined) data.username = username;
     if (gender !== undefined) data.gender = gender;
     if (password !== undefined) {
-      data.password = await argon2.hash(password, {type: argon2.argon2id});;
+      data.password = await argon2.hash(password, { type: argon2.argon2id });
     }
 
     const updated = await prisma.member.update({
@@ -191,4 +202,3 @@ mem.patch('/editprofile', authMiddleware, async (c) => {
     return apiResponse(c, 500, 'Update profile failed', null, err);
   }
 });
-

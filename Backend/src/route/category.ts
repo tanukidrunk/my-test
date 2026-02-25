@@ -10,7 +10,7 @@ const apiResponse = (
   status: number,
   message: string,
   data: any = null,
-  error: any = null
+  error: any = null,
 ) => {
   return c.json({ status, message, data, error }, 200);
 };
@@ -21,9 +21,9 @@ cate.get('/', authMiddleware, adminOnly, async (c) => {
     const categories = await prisma.category.findMany({
       include: { books: true },
     });
-    return apiResponse(c, 200, "ok", categories);
+    return apiResponse(c, 200, 'ok', categories);
   } catch (err) {
-    return apiResponse(c, 500, "Failed to fetch categories", null, err);
+    return apiResponse(c, 500, 'Failed to fetch categories', null, err);
   }
 });
 
@@ -34,9 +34,39 @@ cate.post('/', authMiddleware, adminOnly, async (c) => {
     const category = await prisma.category.create({
       data: { name: body.name },
     });
-    return apiResponse(c, 201, "Created", category);
+    return apiResponse(c, 201, 'Created', category);
   } catch (err) {
-    return apiResponse(c, 500, "Create category failed", null, err);
+    return apiResponse(c, 500, 'Create category failed', null, err);
+  }
+});
+
+cate.post('/add-categoies', authMiddleware, adminOnly, async (c) => {
+  try {
+    const body = await c.req.json();
+    const category = await prisma.category.createMany({
+      data: { name: body.name },
+    });
+    return apiResponse(c, 201, 'Created', category);
+  } catch (err) {
+    return apiResponse(c, 500, 'Create category failed', null, err);
+  }
+});
+
+cate.post('/add-cate', authMiddleware, adminOnly, async (c) => {
+  try {
+    const body = await c.req.json(); // สมมติว่า body ส่งมาเป็น Array
+
+    // ตรวจสอบว่าถ้า body ไม่ใช่ Array ให้ทำเป็น Array ก่อน
+    const dataToInsert = Array.isArray(body) ? body : [body];
+
+    const categories = await prisma.category.createMany({
+      data: dataToInsert,
+      skipDuplicates: true, // เลือกใส่เพิ่มเพื่อป้องกัน error กรณีชื่อซ้ำ
+    });
+
+    return apiResponse(c, 201, 'Created successfully', categories);
+  } catch (err) {
+    return apiResponse(c, 500, 'Create category failed', null, err);
   }
 });
 
@@ -51,9 +81,9 @@ cate.put('/:id', authMiddleware, adminOnly, async (c) => {
       data: { name: body.name },
     });
 
-    return apiResponse(c, 200, "Updated", category);
+    return apiResponse(c, 200, 'Updated', category);
   } catch (err) {
-    return apiResponse(c, 500, "Update category failed", null, err);
+    return apiResponse(c, 500, 'Update category failed', null, err);
   }
 });
 
@@ -62,8 +92,8 @@ cate.delete('/:id', authMiddleware, adminOnly, async (c) => {
   try {
     const id = Number(c.req.param('id'));
     await prisma.category.delete({ where: { id } });
-    return apiResponse(c, 200, "Deleted");
+    return apiResponse(c, 200, 'Deleted');
   } catch (err) {
-    return apiResponse(c, 500, "Delete category failed", null, err);
+    return apiResponse(c, 500, 'Delete category failed', null, err);
   }
 });
