@@ -22,7 +22,7 @@ app.use('/uploads/*', serveStatic({ root: './' }));
 app.get('/', (c) => c.text('API is running'));
 
 app.get('/hello/:name', (c) => {
-  const name = c.req.param('name');
+  const name = c.req.param('name'); 
   return c.json({ message: `Hello ${name}` });
 });
 

@@ -91,7 +91,7 @@ mem.post('/login', async (c) => {
     const token = jwt.sign(
       { memberId: member.id, email: member.email, role: member.role },
       JWT_SECRET,
-      { expiresIn: '1d' },
+      { expiresIn: '1h' },
     );
     return apiResponse(c, 200, 'login success', { token });
   } catch (err) {
@@ -109,7 +109,7 @@ mem.post('/register', async (c) => {
       400,
       'Password must be at least 10 characters and contain uppercase, lowercase, and number',
     );
-  }
+  } 
 
   if (gender && !Object.values(Gender).includes(gender)) {
     return apiResponse(c, 400, 'Invalid gender');

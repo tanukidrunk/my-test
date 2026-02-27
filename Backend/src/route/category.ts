@@ -28,7 +28,7 @@ cate.get('/', authMiddleware, adminOnly, async (c) => {
 });
 
 // POST create
-cate.post('/', authMiddleware, adminOnly, async (c) => {
+cate.post('/', authMiddleware, adminOnly, async (c) => { 
   try {
     const body = await c.req.json();
     const category = await prisma.category.create({
@@ -41,13 +41,18 @@ cate.post('/', authMiddleware, adminOnly, async (c) => {
 });
 
 cate.post('/add-categoies', authMiddleware, adminOnly, async (c) => {
-  try {
-    const body = await c.req.json();
+  try { 
+    const body = await c.req.json(); // body ตรงนี้คือ [ {name: '...'}, {name: '...'} ]
+    
     const category = await prisma.category.createMany({
-      data: { name: body.name },
+      data: body, // ส่ง Array เข้าไปตรงๆ เลย
+      skipDuplicates: true, // แนะนำให้ใส่ไว้ เผื่อในลิสต์มีชื่อซ้ำ หรือมีใน DB แล้ว จะได้ไม่พัง
     });
+
     return apiResponse(c, 201, 'Created', category);
   } catch (err) {
+    // พิมพ์ error ออกมาดูใน Console ด้วยจะช่วยให้แก้บัคง่ายขึ้นครับ
+    console.error(err); 
     return apiResponse(c, 500, 'Create category failed', null, err);
   }
 });

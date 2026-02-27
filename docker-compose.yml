@@ -1,0 +1,45 @@
+services:
+  # Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: borrowed-book-db
+    environment:
+      POSTGRES_DB: borrowed-book
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432" # Host uses 5433, Container stays 5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  # Backend Service
+  backend:
+    build: 
+      context: ./backend 
+      dockerfile: Dockerfile
+    container_name: backend-api
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/borrowed-book
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend 
+      dockerfile: Dockerfile
+    container_name: frontend-app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    depends_on:
+      - backend
+
+volumes:
+  db-data: 

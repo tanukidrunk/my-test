@@ -52,7 +52,7 @@ model Borrowed {
 
   @@index([memberId,bookId])
 }
-
+ 
 
 enum Gender {
   MALE
