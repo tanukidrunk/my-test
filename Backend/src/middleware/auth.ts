@@ -12,7 +12,7 @@ type JwtPayload = {
   exp: number;
 }; 
 
-type AppVariables = {
+type AppVariables = { 
   member: JwtPayload;
 };
 

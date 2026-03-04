@@ -29,8 +29,8 @@ export default function MemberLayout({ children }: { children: ReactNode }) {
       } catch {
         router.replace("/login");
       }
-    };
-
+    }; 
+ 
     loadProfile();
   }, [router]);
 

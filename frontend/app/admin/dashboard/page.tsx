@@ -1,323 +1,116 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import styles from './admindashboard.module.css';
+import { RefreshCw } from 'lucide-react';
 
-type Borrowed = {
-  id: number;
-  memberId: number;
-  bookId: number;
-  loanDate: string;
-  returnDate?: string | null;
-  status: 'BORROWED' | 'RETURNED';
-};
-
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
-}
+import DashboardStats from '@/components/Admin/dashboard/DashboardStats';
+import BorrowTable    from '@/components/Admin/dashboard/BorrowTable';
+import { Borrowed }   from '@/components/Admin/dashboard/borrowedTypes';
 
 export default function AdminDashboard() {
-  const [borrowed, setBorrowed] = useState<Borrowed[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [borrowed,   setBorrowed]   = useState<Borrowed[]>([]); 
+  const [loading,    setLoading]    = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [spinning,   setSpinning]   = useState(false);
+  const [search,     setSearch]     = useState('');
   const router = useRouter();
 
+  /* ── Load ── */
   const loadBorrowed = async (silent = false) => {
     if (!silent) setLoading(true);
-    else setRefreshing(true);
+    else { setRefreshing(true); setSpinning(true); }
     try {
-
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow`, {
-        credentials: 'include',
-      });
+      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow`, { credentials: 'include' });
       const json = await res.json();
       setBorrowed(Array.isArray(json.data) ? json.data : []);
     } catch (err) {
-      console.error('Error loading borrowed:', err);
+      console.error(err);
       setBorrowed([]);
     } finally {
       setLoading(false);
       setRefreshing(false);
+      setTimeout(() => setSpinning(false), 600);
     }
   };
 
-useEffect(() => {
-  fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
-    credentials: 'include', 
-  })
-    .then(async (res) => {
-      if (!res.ok) {
-        router.replace('/login');
-        return;
-      }
+  /* ── Auth check ── */
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, { credentials: 'include' })
+      .then(async (res) => {
+        if (!res.ok) { router.replace('/login'); return; }
+        const json = await res.json();
+        const member = json.data?.member;
+        if (!member || member.role !== 'ADMIN') { router.replace('/login'); return; }
+        loadBorrowed();
+      })
+      .catch(() => router.replace('/login'));
+  }, []);
 
-      const json = await res.json();
-      const member = json.data?.member;
-
-      if (!member || member.role !== 'ADMIN') {
-        router.replace('/login');
-        return;
-      }
-
-      loadBorrowed();
-    })
-    .catch(() => router.replace('/login'));
-}, []);
-
-  if (loading) {
-    return (
-      <div className={styles.loadingWrap}>
-        <div className={styles.loadingSpinner} />
-        <p className={styles.loadingText}>Loading dashboard...</p>
-      </div>
-    );
-  }
-
-  const total = borrowed.length;
-  const active = borrowed.filter((b) => b.status === 'BORROWED').length;
+  /* ── Derived ── */
+  const total    = borrowed.length;
+  const active   = borrowed.filter((b) => b.status === 'BORROWED').length;
   const returned = borrowed.filter((b) => b.status === 'RETURNED').length;
-  const activeRate = total > 0 ? Math.round((active / total) * 100) : 0;
-  const returnRate = total > 0 ? Math.round((returned / total) * 100) : 0;
 
   const filtered = borrowed.filter((b) => {
     const q = search.toLowerCase();
     return (
-      String(b.id).includes(q) ||
+      String(b.id).includes(q)       ||
       String(b.memberId).includes(q) ||
-      String(b.bookId).includes(q) ||
+      String(b.bookId).includes(q)   ||
       b.status.toLowerCase().includes(q)
     );
   });
 
-  return (
-    <>
-      <link
-        href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap'
-        rel='stylesheet'
-      />
-
-      <div className={styles.pageRoot}>
-        {/* ── TOP BAR ── */}
-        <div className={styles.topBar}>
-          <div className={styles.topBarLeft}>
-            <div className={styles.pageEyebrow}>Admin Panel</div>
-            <h1 className={styles.pageTitle}>Borrowed Dashboard</h1>
-            <p className={styles.pageSub}>
-              Monitor all borrow records in real-time
-            </p>
-          </div>
-          <div className={styles.topBarRight}>
-            <button
-              className={styles.refreshBtn}
-              onClick={() => loadBorrowed(true)}
-              disabled={refreshing}
-            >
-              {refreshing ? '⟳ Refreshing...' : '↻ Refresh'}
-            </button>
-          </div>
-        </div>
-
-        {/* ── STAT CARDS ── */}
-        <div className={styles.statRow}>
-          {/* Total */}
-          <div className={`${styles.statCard} ${styles.statCardBlue}`}>
-            <div className={styles.statTop}>
-              <div className={`${styles.statIcon} ${styles.statIconBlue}`}>
-                📋
-              </div>
-              <span className={styles.statTrend}>All</span>
-            </div>
-            <div className={styles.statValue}>{total}</div>
-            <div className={styles.statLabel}>Total Records</div>
-            <div className={styles.statBar}>
-              <div
-                className={`${styles.statBarFill} ${styles.statBarBlue}`}
-                style={{ width: '100%' }}
-              />
-            </div>
-          </div>
-
-          {/* Active */}
-          <div className={`${styles.statCard} ${styles.statCardAmber}`}>
-            <div className={styles.statTop}>
-              <div className={`${styles.statIcon} ${styles.statIconAmber}`}>
-                📖
-              </div>
-              <span className={styles.statTrend}>{activeRate}%</span>
-            </div>
-            <div className={styles.statValue}>{active}</div>
-            <div className={styles.statLabel}>Currently Borrowed</div>
-            <div className={styles.statBar}>
-              <div
-                className={`${styles.statBarFill} ${styles.statBarAmber}`}
-                style={{ width: `${activeRate}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Returned */}
-          <div className={`${styles.statCard} ${styles.statCardGreen}`}>
-            <div className={styles.statTop}>
-              <div className={`${styles.statIcon} ${styles.statIconGreen}`}>
-                ✅
-              </div>
-              <span className={styles.statTrend}>{returnRate}%</span>
-            </div>
-            <div className={styles.statValue}>{returned}</div>
-            <div className={styles.statLabel}>Returned</div>
-            <div className={styles.statBar}>
-              <div
-                className={`${styles.statBarFill} ${styles.statBarGreen}`}
-                style={{ width: `${returnRate}%` }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* ── TABLE CARD ── */}
-        <div className={styles.mainCard}>
-          <div className={styles.mainCardTop}>
-            <div>
-              <div className={styles.mainCardTitle}>Borrow Records</div>
-              <div className={styles.mainCardSub}>
-                Showing {filtered.length} of {total} records
-              </div>
-            </div>
-            <div className={styles.searchWrap}>
-              <span className={styles.searchIcon}>🔍</span>
-              <input
-                className={styles.searchInput}
-                type='text'
-                placeholder='Search ID, member, book...'
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className={styles.tableWrap}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th className={styles.th}>Borrow ID</th>
-                  <th className={styles.th}>Member</th>
-                  <th className={styles.th}>Book</th>
-                  <th className={styles.th}>Loan Date</th>
-                  <th className={styles.th}>Return Date</th>
-                  <th className={styles.th}>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Empty */}
-                {filtered.length === 0 && (
-                  <tr>
-                    <td className={styles.td} colSpan={6}>
-                      <div className={styles.emptyState}>
-                        <span className={styles.emptyIcon}>📭</span>
-                        <div className={styles.emptyTitle}>
-                          No records found
-                        </div>
-                        <div className={styles.emptySub}>
-                          {search
-                            ? 'Try a different search term'
-                            : 'No borrow records yet'}
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-
-                {/* Rows */}
-                {filtered.map((b) => (
-                  <tr key={b.id} className={styles.tbodyTr}>
-                    {/* ID */}
-                    <td className={styles.td}>
-                      <span className={styles.idCell}>
-                        #{String(b.id).padStart(4, '0')}
-                      </span>
-                    </td>
-
-                    {/* Member */}
-                    <td className={styles.td}>
-                      <div className={styles.entityCell}>
-                        <div className={styles.entityAvatar}>
-                          {String(b.memberId).slice(-2)}
-                        </div>
-                        <span className={styles.entityId}>
-                          Member {b.memberId}
-                        </span>
-                      </div>
-                    </td>
-
-                    {/* Book */}
-                    <td className={styles.td}>
-                      <div className={styles.entityCell}>
-                        <div
-                          className={`${styles.entityAvatar} ${styles.entityAvatarBook}`}
-                        >
-                          📕
-                        </div>
-                        <span className={styles.entityId}>Book {b.bookId}</span>
-                      </div>
-                    </td>
-
-                    {/* Loan Date */}
-                    <td className={styles.td}>
-                      <span className={styles.dateCell}>
-                        {formatDate(b.loanDate)}
-                      </span>
-                    </td>
-
-                    {/* Return Date */}
-                    <td className={styles.td}>
-                      {b.returnDate ? (
-                        <span className={styles.dateCell}>
-                          {formatDate(b.returnDate)}
-                        </span>
-                      ) : (
-                        <span className={styles.dateDash}>—</span>
-                      )}
-                    </td>
-
-                    {/* Status */}
-                    <td className={styles.td}>
-                      {b.status === 'BORROWED' ? (
-                        <span
-                          className={`${styles.badge} ${styles.badgeBorrowed}`}
-                        >
-                          <span className={styles.badgeDot} />
-                          Borrowed
-                        </span>
-                      ) : (
-                        <span
-                          className={`${styles.badge} ${styles.badgeReturned}`}
-                        >
-                          <span className={styles.badgeDot} />
-                          Returned
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className={styles.tableFooter}>
-            <span>
-              {filtered.length} record{filtered.length !== 1 ? 's' : ''}
-            </span>
-            <span>
-              Active: {active} · Returned: {returned}
-            </span>
-          </div>
-        </div>
+  /* ── Loading ── */
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-3">
+        <div className="w-8 h-8 border-[3px] border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+        <p className="text-sm text-slate-400">Loading dashboard…</p>
       </div>
-    </>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+
+        {/* ── TOP BAR ── */}
+        <div className="flex items-start justify-between mb-8 gap-4">
+          <div>
+            <div className="text-xs font-semibold text-blue-500 uppercase tracking-widest mb-1">Admin Panel</div>
+            <h1 className="text-3xl font-bold text-slate-800 mb-1">Borrowed Dashboard</h1>
+            <p className="text-slate-400 text-sm">Monitor all borrow records in real-time</p>
+          </div>
+          <button
+            onClick={() => loadBorrowed(true)}
+            disabled={refreshing}
+            className="
+              flex-shrink-0 mt-1 flex items-center gap-2 px-4 py-2 rounded-xl
+              border border-slate-200 bg-white text-sm font-medium text-slate-600
+              hover:bg-slate-50 hover:border-slate-300
+              transition-all duration-150 active:scale-95 shadow-sm
+              disabled:opacity-60 disabled:cursor-not-allowed
+            "
+          >
+            <RefreshCw size={14} className={spinning ? 'animate-spin' : ''} />
+            {refreshing ? 'Refreshing…' : 'Refresh'}
+          </button>
+        </div>
+
+        {/* ── STATS ── */}
+        <DashboardStats borrowed={borrowed} />
+
+        {/* ── TABLE ── */}
+        <BorrowTable
+          records={filtered}
+          total={total}
+          active={active}
+          returned={returned}
+          search={search}
+          onSearchChange={setSearch}
+        />
+      </div>
+    </div>
   );
 }

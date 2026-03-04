@@ -120,15 +120,15 @@ mem.post('/login', async (c) => {
     // ✅ Set HttpOnly Cookies
     setCookie(c, 'accessToken', accessToken, {
       httpOnly: true,
-      secure: false, // 🔥 localhost ต้อง false
-      sameSite: 'Lax', // 🔥 เปลี่ยนจาก Strict
+      secure: false, 
+      sameSite: 'Lax', 
       maxAge: 60 * 60,
       path: '/',
     });
 
     setCookie(c, 'refreshToken', refreshToken, {
       httpOnly: true,
-      secure: false, // 🔥 localhost ต้อง false
+      secure: false, 
       sameSite: 'Lax',
       maxAge: 60 * 60 * 24 * 7,
       path: '/',
@@ -157,7 +157,7 @@ mem.post('/register', async (c) => {
       400,
       'Password must be at least 10 characters and contain uppercase, lowercase, and number',
     );
-  }
+  } 
 
   if (gender && !Object.values(Gender).includes(gender)) {
     return apiResponse(c, 400, 'Invalid gender');
@@ -179,15 +179,13 @@ mem.post('/register', async (c) => {
     return apiResponse(c, 500, 'Register failed', null, err);
   }
 });
-
+ 
 mem.post('/logout', (c) => {
-  c.header(
-    "Set-Cookie",
-    "token=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax"
-  );
-  return apiResponse(c, 200, "Logout success");
+  deleteCookie(c, 'accessToken', {
+    path: '/',
+  });
+  return apiResponse(c, 200, 'Logout success');
 });
-
 
 mem.patch('/profile', authMiddleware, async (c) => {
   const member = c.get('member') as { memberId: number };

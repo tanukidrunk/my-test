@@ -35,11 +35,14 @@ export default function LoginPage() {
         return;
       }
 
-      const meRes = await fetch(`${process.env.NEXT_PUBLIC_API}/member/profile`, {
-      credentials: 'include',
-      });
+      const meRes = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/member/profile`,
+        {
+          credentials: 'include',
+        },
+      );
       const meJson = await meRes.json();
-      const member = meJson.data?.member;
+      const member = meJson.data; // ✅ เอาตรง ๆ
 
       if (member?.role === 'ADMIN') {
         router.replace('/admin/dashboard');
