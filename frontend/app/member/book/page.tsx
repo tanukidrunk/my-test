@@ -39,9 +39,9 @@ export default function BooksListPage() {
 
   useEffect(() => {
     const loadUser = async () => {
-      const token = localStorage.getItem('token');
+
       await fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` },
+         credentials: 'include',
       });
     };
     loadUser();
@@ -63,13 +63,13 @@ export default function BooksListPage() {
     if (!selectedBook) return;
     setConfirming(true);
     try {
-      const token = localStorage.getItem('token');
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow/borrowed`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
         body: JSON.stringify({ bookId: selectedBook.id }),
       });
       if (res.ok) {
@@ -101,7 +101,7 @@ export default function BooksListPage() {
       book.category?.name?.toLowerCase().includes(search.toLowerCase());
     const matchFilter = activeFilter === 'ALL' || book.status === activeFilter;
     return matchSearch && matchFilter;
-  });
+  }); 
 
   return (
     <ProtectedLayout>

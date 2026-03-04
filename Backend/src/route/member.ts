@@ -6,12 +6,13 @@ import { Gender } from '../../generated/prisma/client';
 import argon2 from 'argon2';
 // import bcrypt from "bcrypt";
 import { adminOnly } from '../middleware/adminOnly';
+import { setCookie, deleteCookie } from 'hono/cookie';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const apiResponse = (
   c: any,
   status: number,
-  message: string,
+  message: string, 
   data: any = null,
   error: any = null,
 ) => {
@@ -50,22 +51,37 @@ mem.get('/book', async (c) => {
 mem.get('/profile', authMiddleware, async (c) => {
   const payload = c.get('member');
 
-  const user = await prisma.member.findUnique({
-    where: { id: payload.memberId },
-    select: {
-      id: true,
-      username: true,
-      email: true,
-      role: true,
-    },
-  });
+  if (!payload) {
+    return c.json({ message: 'Unauthorized' }, 401);
+  }
 
-  return c.json({
-    status: 200,
-    message: 'ok',
-    data: user,
-  });
+  try {
+    const user = await prisma.member.findUnique({
+      where: { id: payload.memberId },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        role: true,
+        gender: true,
+      },
+    });
+
+    if (!user) {
+      return c.json({ message: 'User not found' }, 404);
+    }
+
+    return c.json({
+      status: 200,
+      message: 'ok',
+      data: user,
+    });
+  } catch (err) {
+    console.error(err);
+    return c.json({ message: 'Server error' }, 500);
+  }
 });
+
 
 mem.post('/login', async (c) => {
   const body = await c.req.json();
@@ -74,6 +90,7 @@ mem.post('/login', async (c) => {
   if (!email || !password) {
     return apiResponse(c, 400, 'Missing email or password');
   }
+
   try {
     const member = await prisma.member.findUnique({
       where: { email },
@@ -88,14 +105,45 @@ mem.post('/login', async (c) => {
       return apiResponse(c, 401, 'Invalid email or password');
     }
 
-    const token = jwt.sign(
-      { memberId: member.id, email: member.email, role: member.role },
+    // 🔐 Access Token
+    const accessToken = jwt.sign(
+      { memberId: member.id, role: member.role },
       JWT_SECRET,
       { expiresIn: '1h' },
     );
-    return apiResponse(c, 200, 'login success', { token });
+
+    // 🔄 Refresh Token
+    const refreshToken = jwt.sign({ memberId: member.id }, JWT_SECRET, {
+      expiresIn: '7d',
+    });
+
+    // ✅ Set HttpOnly Cookies
+    setCookie(c, 'accessToken', accessToken, {
+      httpOnly: true,
+      secure: false, // 🔥 localhost ต้อง false
+      sameSite: 'Lax', // 🔥 เปลี่ยนจาก Strict
+      maxAge: 60 * 60,
+      path: '/',
+    });
+
+    setCookie(c, 'refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false, // 🔥 localhost ต้อง false
+      sameSite: 'Lax',
+      maxAge: 60 * 60 * 24 * 7,
+      path: '/',
+    });
+
+    return apiResponse(c, 200, 'Login successful', {
+      user: {
+        id: member.id,
+        email: member.email,
+        role: member.role,
+      },
+    });
   } catch (err) {
-    return apiResponse(c, 500, 'Login failed', null, err);
+    console.error(err);
+    return apiResponse(c, 500, 'Login failed');
   }
 });
 
@@ -109,7 +157,7 @@ mem.post('/register', async (c) => {
       400,
       'Password must be at least 10 characters and contain uppercase, lowercase, and number',
     );
-  } 
+  }
 
   if (gender && !Object.values(Gender).includes(gender)) {
     return apiResponse(c, 400, 'Invalid gender');
@@ -122,7 +170,7 @@ mem.post('/register', async (c) => {
       data: {
         email,
         username,
-        password: hashedPassword,
+        password: hashedPassword, 
         gender,
       },
     });
@@ -132,43 +180,16 @@ mem.post('/register', async (c) => {
   }
 });
 
-mem.put('/profile', authMiddleware, async (c) => {
-  const member = c.get('member') as { memberId: number };
-  const body = await c.req.json();
-  const { username, gender, password } = body;
-
-  if (gender && !Object.values(Gender).includes(gender)) {
-    return apiResponse(c, 400, 'Invalid gender');
-  }
-
-  try {
-    const data: any = {
-      username,
-      gender,
-    };
-
-    if (password) {
-      data.password = await argon2.hash(password, { type: argon2.argon2id });
-    }
-
-    const updated = await prisma.member.update({
-      where: { id: member.memberId },
-      data,
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        gender: true,
-      },
-    });
-
-    return apiResponse(c, 200, 'Profile updated (PUT)', updated);
-  } catch (err) {
-    return apiResponse(c, 500, 'Update profile failed', null, err);
-  }
+mem.post('/logout', (c) => {
+  c.header(
+    "Set-Cookie",
+    "token=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax"
+  );
+  return apiResponse(c, 200, "Logout success");
 });
 
-mem.patch('/editprofile', authMiddleware, async (c) => {
+
+mem.patch('/profile', authMiddleware, async (c) => {
   const member = c.get('member') as { memberId: number };
   const body = await c.req.json();
   const { username, gender, password } = body;

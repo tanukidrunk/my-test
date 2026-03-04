@@ -24,11 +24,9 @@ export default function HistoryBorrowedPage() {
 
   const loadBorrowByMember = async () => {
     try {
-      const token = localStorage.getItem('token');
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow/member`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      credentials: 'include',
       });
 
       const json = await res.json();

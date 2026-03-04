@@ -31,9 +31,9 @@ export default function AdminDashboard() {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     try {
-      const token = localStorage.getItem('token');
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow`, {
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
       });
       const json = await res.json();
       setBorrowed(Array.isArray(json.data) ? json.data : []);
@@ -46,31 +46,28 @@ export default function AdminDashboard() {
     }
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.replace('/login');
-      return;
-    }
+useEffect(() => {
+  fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
+    credentials: 'include', 
+  })
+    .then(async (res) => {
+      if (!res.ok) {
+        router.replace('/login');
+        return;
+      }
 
-    fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
+      const json = await res.json();
+      const member = json.data?.member;
+
+      if (!member || member.role !== 'ADMIN') {
+        router.replace('/login');
+        return;
+      }
+
+      loadBorrowed();
     })
-      .then(async (res) => {
-        if (!res.ok) {
-          router.replace('/login');
-          return;
-        }
-        const json = await res.json();
-        const member = json.member ?? json.data?.member;
-        if (!member || member.role !== 'ADMIN') {
-          router.replace('/login');
-          return;
-        }
-        loadBorrowed();
-      })
-      .catch(() => router.replace('/login'));
-  }, []);
+    .catch(() => router.replace('/login'));
+}, []);
 
   if (loading) {
     return (

@@ -12,12 +12,10 @@ export default function MemberLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const token = localStorage.getItem("token");
+
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API}/member/profile`,{
-             headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            credentials: "include",
           }
         );
 
@@ -36,10 +34,14 @@ export default function MemberLayout({ children }: { children: ReactNode }) {
     loadProfile();
   }, [router]);
 
-    const handleLogout = async () => {
-    localStorage.removeItem("token");
-    router.replace("/login");
-  };
+const handleLogout = async () => {
+  await fetch(`${process.env.NEXT_PUBLIC_API}/member/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  router.replace("/login");
+};
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">

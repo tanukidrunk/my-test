@@ -35,9 +35,9 @@ export default function MemberBorrowedPage() {
 
   const loadBorrowByMember = async () => {
     try {
-      const token = localStorage.getItem('token');
+      
       const res = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow/member`, {
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
       });
       if (!res.ok) { setBorrows([]); return; }
       const json = await res.json();
@@ -48,14 +48,18 @@ export default function MemberBorrowedPage() {
       setLoading(false);
     }
   };
+  
 
   const handleReturned = async (borrowId: number, bookId: number) => {
     setReturningId(borrowId);
     try {
-      const token = localStorage.getItem('token');
+      
       const res = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow/return/${borrowId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+              headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
         body: JSON.stringify({ bookId }),
       });
       if (!res.ok) return;

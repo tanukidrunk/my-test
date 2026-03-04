@@ -3,25 +3,22 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function ProtectedLayout({children}:{children:React.ReactNode}){
-    const router = useRouter();
-    useEffect(() => {
-            const token = localStorage.getItem("token");
-            if (!token) {
-            router.push("/login");
-            return;
-            }
+export default function ProtectedLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
 
-        fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`,{
-            // credentials:"include",
-            headers: {
-        Authorization: `Bearer ${token}`,
-      },
-        }).then(res=>{
-            if(!res.ok){
-                router.push("/login");
-            }
-        });
-    }, []);
-return <>{children}</>;
-} 
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
+      credentials: "include",   // 👈 สำคัญมาก
+    }).then((res) => {
+      if (!res.ok) {
+        router.push("/login");
+      }
+    });
+  }, []);
+
+  return <>{children}</>;
+}

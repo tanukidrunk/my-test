@@ -1,7 +1,14 @@
-export default function DashboardPage() {
-  return (
-    <div>
-      <h1 className="text-3xl font-bold">Dashboard</h1>
-    </div>
-  );
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function HomePage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/login');
+  }, []);
+
+  return null;
 }

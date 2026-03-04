@@ -1,5 +1,6 @@
 import { Context, Next } from 'hono';
 import jwt from 'jsonwebtoken';
+import { getCookie } from 'hono/cookie'
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -9,7 +10,7 @@ type JwtPayload = {
   role: string;
   iat: number;
   exp: number;
-};
+}; 
 
 type AppVariables = {
   member: JwtPayload;
@@ -18,17 +19,11 @@ type AppVariables = {
 type AppContext = Context<{ Variables: AppVariables }>;
 
 export const authMiddleware = async (c: AppContext, next: Next) => {
-  const authHeader = c.req.header('authorization');
+  const token = getCookie(c, 'accessToken');
 
-  if (!authHeader) {
-    return c.json({ message: 'Missing Authorization header' }, 401);
+  if (!token) {
+    return c.json({ message: 'Unauthorized' }, 401);
   }
-
-  if (!authHeader.startsWith('Bearer ')) {
-    return c.json({ message: 'Invalid Authorization format' }, 401);
-  }
-
-  const token = authHeader.slice(7);
 
   try {
     const payload = jwt.verify(token, JWT_SECRET, {

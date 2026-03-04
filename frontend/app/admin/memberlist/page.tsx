@@ -20,9 +20,9 @@ export default function MemberPage() {
   const loadMembers = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API}/member`, {
-        headers: { Authorization: `Bearer ${token}` },
+         credentials: 'include',
       });
       const json = await res.json();
       setMembers(Array.isArray(json.data) ? json.data : []);

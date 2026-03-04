@@ -2,11 +2,20 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('token');
+  const token = request.cookies.get('token')?.value;
 
-  if (!token && request.nextUrl.pathname.startsWith('/admin')) {
-    return NextResponse.redirect(new URL('/login', request.url));
+  const { pathname } = request.nextUrl;
+
+  // ถ้าเข้า dashboard แต่ไม่มี token → ไป login
+  if (pathname.startsWith('/admin') || pathname.startsWith('/member')) {
+    if (!token) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
   }
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: ['/admin/:path*', '/member/:path*'],
+};

@@ -19,9 +19,9 @@ export default function CategoryPage() {
   const loadCategory = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      
       const res = await fetch(`${process.env.NEXT_PUBLIC_API}/cate`, {
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
       });
       const json = await res.json();
       setCategories(Array.isArray(json.data) ? json.data : []);
@@ -47,7 +47,7 @@ export default function CategoryPage() {
   };
 
   const submitCategory = async () => {
-    const token = localStorage.getItem('token');
+
     const method = isEditing ? 'PUT' : 'POST';
     const url = isEditing
       ? `${process.env.NEXT_PUBLIC_API}/cate/${form.id}`
@@ -57,8 +57,8 @@ export default function CategoryPage() {
       method,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
       },
+      credentials: 'include',
       body: JSON.stringify({ name: form.name }),
     });
     setOpen(false);
@@ -67,10 +67,10 @@ export default function CategoryPage() {
 
   const deleteCategory = async (id: number) => {
     if (!confirm('Delete this category?')) return;
-    const token = localStorage.getItem('token');
+
     await fetch(`${process.env.NEXT_PUBLIC_API}/cate/${id}`, {
       method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: 'include',
     });
     loadCategory();
   };

@@ -5,4 +5,4 @@ Bun.serve({
   fetch: app.fetch
 })
  
-console.log("?? Hono API running on http://localhost:3001")
+console.log("Hono API running on http://localhost:3001")

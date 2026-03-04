@@ -23,33 +23,20 @@ export default function LoginPage() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API}/member/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(form),
       });
 
-      const text = await res.text();
-      console.log('Response:', text);
+      const json = await res.json();
 
-      let json;
-      try {
-        json = JSON.parse(text);
-      } catch {
-        setError('Server error: response not JSON');
-        setLoading(false);
-        return;
-      }
-
-      if (!res.ok || !json.data) {
+      if (!res.ok) {
         setError(json.message || 'Login failed');
         setLoading(false);
         return;
       }
 
-      localStorage.setItem('token', json.data.token);
-
-      const meRes = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${json.data.token}`,
-        },
+      const meRes = await fetch(`${process.env.NEXT_PUBLIC_API}/member/profile`, {
+      credentials: 'include',
       });
       const meJson = await meRes.json();
       const member = meJson.data?.member;

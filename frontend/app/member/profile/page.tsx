@@ -13,7 +13,7 @@ type UpdateProfilePayload = {
 };
 
 type ProfileForm = {
-  username: string;
+  username: string;  
   password: string;
   gender: Gender;
 };
@@ -73,71 +73,86 @@ export default function ProfilePage() {
   };
 
   /* ?? Load profile ?? */
-  useEffect(() => {
-    const loadProfile = async () => {
-      const token = localStorage.getItem('token');
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API}/member/profile`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-        const json = await res.json();
-        if (json.data) {
-          setMember(json.data);
-          setForm({
-            username: json.data.username ?? '',
-            password: '',
-            gender: json.data.gender ?? 'OTHER',
-          });
-          if (json.data.avatarUrl)
-            setAvatarPreview(
-              `${process.env.NEXT_PUBLIC_API}${json.data.avatarUrl}`,
-            );
-        }
-      } catch (err) {
-        console.error(err);
-        addToast('error', 'Failed to load profile');
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadProfile();
-  }, []);
-
-  /* ?? Avatar change ?? */
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Local preview immediately
-    const reader = new FileReader();
-    reader.onload = () => setAvatarPreview(reader.result as string);
-    reader.readAsDataURL(file);
-
-    // Upload to server
-    setAvatarUploading(true);
+useEffect(() => {
+  const loadProfile = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const fd = new FormData();
-      fd.append('avatar', file);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/member/avatar`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd,
-      });
-      if (res.ok) {
-        addToast('success', 'Profile picture updated!');
-      } else {
-        addToast('error', 'Failed to upload avatar');
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/member/profile`,
+        {
+          credentials: 'include',
+        }
+      );
+
+      if (!res.ok) {
+        addToast('error', 'Unauthorized');
+        return;
       }
-    } catch {
-      addToast('error', 'Failed to upload avatar');
+
+      const json = await res.json();
+
+      if (json.data) {
+        setMember(json.data);
+        setForm({
+          username: json.data.username ?? '',
+          password: '',
+          gender: json.data.gender ?? 'OTHER',
+        });
+
+        if (json.data.avatarUrl) {
+          setAvatarPreview(
+            `${process.env.NEXT_PUBLIC_API}${json.data.avatarUrl}`
+          );
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      addToast('error', 'Failed to load profile');
     } finally {
-      setAvatarUploading(false);
+      setLoading(false);
     }
   };
+
+  loadProfile();
+}, []);
+
+  /* ?? Avatar change ?? */
+const handleAvatarChange = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => setAvatarPreview(reader.result as string);
+  reader.readAsDataURL(file);
+
+  setAvatarUploading(true);
+
+  try {
+    const fd = new FormData();
+    fd.append('avatar', file);
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/member/avatar`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: fd,
+      }
+    );
+
+    if (!res.ok) {
+      addToast('error', 'Failed to upload avatar');
+      return;
+    }
+
+    addToast('success', 'Profile picture updated!');
+  } catch {
+    addToast('error', 'Failed to upload avatar');
+  } finally {
+    setAvatarUploading(false);
+  }
+}; 
 
   /* ?? Open confirm modal ?? */
   const handleSaveClick = () => {
@@ -152,7 +167,7 @@ export default function ProfilePage() {
   const handleConfirm = async () => {
     setSaving(true);
     try {
-      const token = localStorage.getItem('token');
+ 
       const payload: UpdateProfilePayload = {
         username: form.username,
         gender: form.gender,
@@ -161,10 +176,10 @@ export default function ProfilePage() {
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API}/member/profile`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
         body: JSON.stringify(payload),
       });
       const json: { message: string } = await res.json();

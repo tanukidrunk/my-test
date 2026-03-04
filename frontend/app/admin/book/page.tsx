@@ -7,7 +7,7 @@ type Book = {
   id: number;
   title: string;
   author: string;
-  publication_year: string;
+  publication_year: string; 
   categoryId: number;
   imageUrl?: string | null;
 };
@@ -30,9 +30,9 @@ export default function BooksPage() {
 
   const loadBooks = async () => {
     try {
-      const token = localStorage.getItem('token');
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API}/book`, {
-        headers: { Authorization: `Bearer ${token}` },
+         credentials: 'include',
       });
       const json = await res.json();
       setBooks(Array.isArray(json.data) ? json.data : []);
@@ -45,9 +45,9 @@ export default function BooksPage() {
 
   const loadCategories = async () => {
     try {
-      const token = localStorage.getItem('token');
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API}/cate`, {
-        headers: { Authorization: `Bearer ${token}` },
+         credentials: 'include',
       });
       const json = await res.json();
       setCategories(Array.isArray(json.data) ? json.data : []);
@@ -66,7 +66,7 @@ export default function BooksPage() {
 
   const submitBook = async () => {
     try {
-      const token  = localStorage.getItem('token');
+
       const method = isEditing ? 'PUT' : 'POST';
       const url    = isEditing
         ? `${process.env.NEXT_PUBLIC_API}/book/${form.id}`
@@ -74,7 +74,10 @@ export default function BooksPage() {
 
       const res  = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
         body: JSON.stringify(form),
       });
       const text = await res.text();
@@ -93,10 +96,10 @@ export default function BooksPage() {
   const deleteBook = async (id: number) => {
     if (!confirm('Delete this book?')) return;
     try {
-      const token = localStorage.getItem('token');
+
       const res   = await fetch(`${process.env.NEXT_PUBLIC_API}/book/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
+         credentials: 'include',
       });
       if (!res.ok) { alert('Delete failed'); return; }
       loadBooks();
@@ -107,12 +110,12 @@ export default function BooksPage() {
 
   const uploadImage = async (bookId: number) => {
     if (!imageFile) return;
-    const token    = localStorage.getItem('token');
+    
     const formData = new FormData();
     formData.append('image', imageFile);
     await fetch(`${process.env.NEXT_PUBLIC_API}/book/${bookId}/image`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: 'include',
       body: formData,
     });
     setImageFile(null);
