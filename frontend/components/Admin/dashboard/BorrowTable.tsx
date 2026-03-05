@@ -56,7 +56,7 @@ export default function BorrowTable({ records, total, active, returned, search, 
             className="
               pl-8 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50
               text-sm text-slate-700 placeholder:text-slate-400 w-56
-              focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400
+              focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 
               transition-all duration-200
             "
           />

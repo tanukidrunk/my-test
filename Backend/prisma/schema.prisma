@@ -5,9 +5,10 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  
 }
 
-
+ 
 model Member {
   id       Int    @id @default(autoincrement())
   email    String @unique  
@@ -15,21 +16,34 @@ model Member {
   password String
   gender Gender @default(OTHER)
   role Role @default(USER)
+  phone     String?
+  address   String?
+  isActive  Boolean @default(true)
+  avatar  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
   Borrows      Borrowed[]
-
-
+  reservation Reservation[] 
+  fine Fine[] 
+  refreshTokens RefreshToken[]
 }
-
+ 
 model Book {
   id               Int    @id @default(autoincrement())
   title            String
   author           String
+  isbn      String?   @unique
+  description String?
   publication_year String
   status           BookStatus @default(AVAILABLE)
   imageUrl         String?
   categoryId Int
   category   Category @relation(fields: [categoryId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
   Borrows      Borrowed[]
+  reservation Reservation[]
+   
 }
 
 
@@ -45,12 +59,64 @@ model Borrowed {
   memberId   Int
   bookId     Int
   loanDate   DateTime @default(now())
+  dueDate    DateTime?
   returnDate DateTime?
   status     BorrowStatus @default(BORROWED)
+  fineAmount Float @default(0)
   member     Member @relation(fields: [memberId], references: [id])
   book       Book   @relation(fields: [bookId], references: [id])
-
+  createdAt DateTime @default(now())
   @@index([memberId,bookId])
+  fine Fine[] 
+}
+
+model Reservation {
+  id        Int @id @default(autoincrement())
+
+  memberId  Int
+  bookId    Int
+
+  status ReservationStatus @default(PENDING)
+
+  reservedAt DateTime @default(now())
+  expiresAt  DateTime
+
+  member Member @relation(fields: [memberId], references: [id])
+  book   Book   @relation(fields: [bookId], references: [id])
+}
+
+model Fine {
+  id        Int @id @default(autoincrement())
+
+  memberId  Int
+  borrowId  Int
+
+  amount    Float
+  paid      Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  member Member @relation(fields: [memberId], references: [id])
+  borrow Borrowed @relation(fields: [borrowId], references: [id])
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String
+  memberId  Int
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([memberId])
+}
+
+enum ReservationStatus {
+  PENDING
+  READY
+  CANCELLED
+  COMPLETED
 }
  
 

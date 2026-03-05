@@ -35,3 +35,4 @@ export const authMiddleware = async (c: AppContext, next: Next) => {
     return c.json({ message: 'Invalid or expired token' }, 401);
   }
 };
+ 

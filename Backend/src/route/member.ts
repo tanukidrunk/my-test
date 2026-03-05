@@ -80,7 +80,7 @@ mem.get('/profile', authMiddleware, async (c) => {
     console.error(err);
     return c.json({ message: 'Server error' }, 500);
   }
-});
+}); 
 
 
 mem.post('/login', async (c) => {
@@ -109,12 +109,21 @@ mem.post('/login', async (c) => {
     const accessToken = jwt.sign(
       { memberId: member.id, role: member.role },
       JWT_SECRET,
-      { expiresIn: '1h' },
+      { expiresIn: '15m' },
     );
 
     // 🔄 Refresh Token
     const refreshToken = jwt.sign({ memberId: member.id }, JWT_SECRET, {
       expiresIn: '7d',
+    });
+    
+    // เก็บลง DB
+    await prisma.refreshToken.create({
+      data: {
+        token: await argon2.hash(refreshToken), // hash ก่อนเก็บ
+        memberId: member.id,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      },
     });
 
     // ✅ Set HttpOnly Cookies

@@ -47,7 +47,6 @@ borr.post('/borrowed', authMiddleware, async (c) => {
       return apiResponse(c, 400, 'Missing bookId');
     }
 
-    // ??? transaction ????????????
     const result = await prisma.$transaction(async (tx) => {
       const existing = await tx.borrowed.findFirst({
         where: {
@@ -56,10 +55,11 @@ borr.post('/borrowed', authMiddleware, async (c) => {
           status: 'BORROWED',
         },
       });
-      
+
       if (existing) {
         throw new Error('You already borrowed this book');
       }
+
       const book = await tx.book.findUnique({
         where: { id: bookId },
       });
@@ -72,28 +72,29 @@ borr.post('/borrowed', authMiddleware, async (c) => {
         throw new Error('Book already borrowed');
       }
 
-      // ????? Borrowed record
-      await tx.borrowed.create({
+      // ✅ Create borrow and return it
+      const borrow = await tx.borrowed.create({
         data: {
           memberId: user.memberId,
           bookId,
           status: 'BORROWED',
         },
+        include: {
+          book: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
+        },
       });
 
-      // Update book status
       await tx.book.update({
         where: { id: bookId },
         data: { status: 'BORROWED' },
       });
 
-      // ??????????????????????????
-      return tx.book.findMany({
-        include: {
-          category: true,
-          Borrows: true,
-        },
-      });
+      return borrow;
     });
 
     return apiResponse(c, 200, 'Borrow success', result);
