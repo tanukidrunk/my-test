@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import ProtectedLayout from '../../Protected';
+import ProtectedLayout from '../../protected';
 
 import BookStats          from '@/components/Member/book/BookStats';
 import BookToolbar        from '@/components/Member/book/BookToolbar';

@@ -41,6 +41,12 @@ export type MemberMinAggregateOutputType = {
   password: string | null
   gender: $Enums.Gender | null
   role: $Enums.Role | null
+  phone: string | null
+  address: string | null
+  isActive: boolean | null
+  avatar: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type MemberMaxAggregateOutputType = {
@@ -50,6 +56,12 @@ export type MemberMaxAggregateOutputType = {
   password: string | null
   gender: $Enums.Gender | null
   role: $Enums.Role | null
+  phone: string | null
+  address: string | null
+  isActive: boolean | null
+  avatar: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type MemberCountAggregateOutputType = {
@@ -59,6 +71,12 @@ export type MemberCountAggregateOutputType = {
   password: number
   gender: number
   role: number
+  phone: number
+  address: number
+  isActive: number
+  avatar: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -78,6 +96,12 @@ export type MemberMinAggregateInputType = {
   password?: true
   gender?: true
   role?: true
+  phone?: true
+  address?: true
+  isActive?: true
+  avatar?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type MemberMaxAggregateInputType = {
@@ -87,6 +111,12 @@ export type MemberMaxAggregateInputType = {
   password?: true
   gender?: true
   role?: true
+  phone?: true
+  address?: true
+  isActive?: true
+  avatar?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type MemberCountAggregateInputType = {
@@ -96,6 +126,12 @@ export type MemberCountAggregateInputType = {
   password?: true
   gender?: true
   role?: true
+  phone?: true
+  address?: true
+  isActive?: true
+  avatar?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -192,6 +228,12 @@ export type MemberGroupByOutputType = {
   password: string
   gender: $Enums.Gender
   role: $Enums.Role
+  phone: string | null
+  address: string | null
+  isActive: boolean
+  avatar: string | null
+  createdAt: Date
+  updatedAt: Date | null
   _count: MemberCountAggregateOutputType | null
   _avg: MemberAvgAggregateOutputType | null
   _sum: MemberSumAggregateOutputType | null
@@ -224,7 +266,16 @@ export type MemberWhereInput = {
   password?: Prisma.StringFilter<"Member"> | string
   gender?: Prisma.EnumGenderFilter<"Member"> | $Enums.Gender
   role?: Prisma.EnumRoleFilter<"Member"> | $Enums.Role
+  phone?: Prisma.StringNullableFilter<"Member"> | string | null
+  address?: Prisma.StringNullableFilter<"Member"> | string | null
+  isActive?: Prisma.BoolFilter<"Member"> | boolean
+  avatar?: Prisma.StringNullableFilter<"Member"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Member"> | Date | string
+  updatedAt?: Prisma.DateTimeNullableFilter<"Member"> | Date | string | null
   Borrows?: Prisma.BorrowedListRelationFilter
+  reservation?: Prisma.ReservationListRelationFilter
+  fine?: Prisma.FineListRelationFilter
+  refreshTokens?: Prisma.RefreshTokenListRelationFilter
 }
 
 export type MemberOrderByWithRelationInput = {
@@ -234,7 +285,16 @@ export type MemberOrderByWithRelationInput = {
   password?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  avatar?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   Borrows?: Prisma.BorrowedOrderByRelationAggregateInput
+  reservation?: Prisma.ReservationOrderByRelationAggregateInput
+  fine?: Prisma.FineOrderByRelationAggregateInput
+  refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
 }
 
 export type MemberWhereUniqueInput = Prisma.AtLeast<{
@@ -247,7 +307,16 @@ export type MemberWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringFilter<"Member"> | string
   gender?: Prisma.EnumGenderFilter<"Member"> | $Enums.Gender
   role?: Prisma.EnumRoleFilter<"Member"> | $Enums.Role
+  phone?: Prisma.StringNullableFilter<"Member"> | string | null
+  address?: Prisma.StringNullableFilter<"Member"> | string | null
+  isActive?: Prisma.BoolFilter<"Member"> | boolean
+  avatar?: Prisma.StringNullableFilter<"Member"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Member"> | Date | string
+  updatedAt?: Prisma.DateTimeNullableFilter<"Member"> | Date | string | null
   Borrows?: Prisma.BorrowedListRelationFilter
+  reservation?: Prisma.ReservationListRelationFilter
+  fine?: Prisma.FineListRelationFilter
+  refreshTokens?: Prisma.RefreshTokenListRelationFilter
 }, "id" | "email">
 
 export type MemberOrderByWithAggregationInput = {
@@ -257,6 +326,12 @@ export type MemberOrderByWithAggregationInput = {
   password?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  avatar?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MemberCountOrderByAggregateInput
   _avg?: Prisma.MemberAvgOrderByAggregateInput
   _max?: Prisma.MemberMaxOrderByAggregateInput
@@ -274,6 +349,12 @@ export type MemberScalarWhereWithAggregatesInput = {
   password?: Prisma.StringWithAggregatesFilter<"Member"> | string
   gender?: Prisma.EnumGenderWithAggregatesFilter<"Member"> | $Enums.Gender
   role?: Prisma.EnumRoleWithAggregatesFilter<"Member"> | $Enums.Role
+  phone?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
+  address?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
+  isActive?: Prisma.BoolWithAggregatesFilter<"Member"> | boolean
+  avatar?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Member"> | Date | string
+  updatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Member"> | Date | string | null
 }
 
 export type MemberCreateInput = {
@@ -282,7 +363,16 @@ export type MemberCreateInput = {
   password: string
   gender?: $Enums.Gender
   role?: $Enums.Role
+  phone?: string | null
+  address?: string | null
+  isActive?: boolean
+  avatar?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
   Borrows?: Prisma.BorrowedCreateNestedManyWithoutMemberInput
+  reservation?: Prisma.ReservationCreateNestedManyWithoutMemberInput
+  fine?: Prisma.FineCreateNestedManyWithoutMemberInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutMemberInput
 }
 
 export type MemberUncheckedCreateInput = {
@@ -292,7 +382,16 @@ export type MemberUncheckedCreateInput = {
   password: string
   gender?: $Enums.Gender
   role?: $Enums.Role
+  phone?: string | null
+  address?: string | null
+  isActive?: boolean
+  avatar?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
   Borrows?: Prisma.BorrowedUncheckedCreateNestedManyWithoutMemberInput
+  reservation?: Prisma.ReservationUncheckedCreateNestedManyWithoutMemberInput
+  fine?: Prisma.FineUncheckedCreateNestedManyWithoutMemberInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type MemberUpdateInput = {
@@ -301,7 +400,16 @@ export type MemberUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Borrows?: Prisma.BorrowedUpdateManyWithoutMemberNestedInput
+  reservation?: Prisma.ReservationUpdateManyWithoutMemberNestedInput
+  fine?: Prisma.FineUpdateManyWithoutMemberNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberUncheckedUpdateInput = {
@@ -311,7 +419,16 @@ export type MemberUncheckedUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Borrows?: Prisma.BorrowedUncheckedUpdateManyWithoutMemberNestedInput
+  reservation?: Prisma.ReservationUncheckedUpdateManyWithoutMemberNestedInput
+  fine?: Prisma.FineUncheckedUpdateManyWithoutMemberNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberCreateManyInput = {
@@ -321,6 +438,12 @@ export type MemberCreateManyInput = {
   password: string
   gender?: $Enums.Gender
   role?: $Enums.Role
+  phone?: string | null
+  address?: string | null
+  isActive?: boolean
+  avatar?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
 }
 
 export type MemberUpdateManyMutationInput = {
@@ -329,6 +452,12 @@ export type MemberUpdateManyMutationInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type MemberUncheckedUpdateManyInput = {
@@ -338,6 +467,12 @@ export type MemberUncheckedUpdateManyInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type MemberCountOrderByAggregateInput = {
@@ -347,6 +482,12 @@ export type MemberCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type MemberAvgOrderByAggregateInput = {
@@ -360,6 +501,12 @@ export type MemberMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type MemberMinOrderByAggregateInput = {
@@ -369,6 +516,12 @@ export type MemberMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type MemberSumOrderByAggregateInput = {
@@ -390,6 +543,22 @@ export type EnumGenderFieldUpdateOperationsInput = {
 
 export type EnumRoleFieldUpdateOperationsInput = {
   set?: $Enums.Role
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -414,12 +583,63 @@ export type MemberUpdateOneRequiredWithoutBorrowsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutBorrowsInput, Prisma.MemberUpdateWithoutBorrowsInput>, Prisma.MemberUncheckedUpdateWithoutBorrowsInput>
 }
 
+export type MemberCreateNestedOneWithoutReservationInput = {
+  create?: Prisma.XOR<Prisma.MemberCreateWithoutReservationInput, Prisma.MemberUncheckedCreateWithoutReservationInput>
+  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutReservationInput
+  connect?: Prisma.MemberWhereUniqueInput
+}
+
+export type MemberUpdateOneRequiredWithoutReservationNestedInput = {
+  create?: Prisma.XOR<Prisma.MemberCreateWithoutReservationInput, Prisma.MemberUncheckedCreateWithoutReservationInput>
+  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutReservationInput
+  upsert?: Prisma.MemberUpsertWithoutReservationInput
+  connect?: Prisma.MemberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutReservationInput, Prisma.MemberUpdateWithoutReservationInput>, Prisma.MemberUncheckedUpdateWithoutReservationInput>
+}
+
+export type MemberCreateNestedOneWithoutFineInput = {
+  create?: Prisma.XOR<Prisma.MemberCreateWithoutFineInput, Prisma.MemberUncheckedCreateWithoutFineInput>
+  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutFineInput
+  connect?: Prisma.MemberWhereUniqueInput
+}
+
+export type MemberUpdateOneRequiredWithoutFineNestedInput = {
+  create?: Prisma.XOR<Prisma.MemberCreateWithoutFineInput, Prisma.MemberUncheckedCreateWithoutFineInput>
+  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutFineInput
+  upsert?: Prisma.MemberUpsertWithoutFineInput
+  connect?: Prisma.MemberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutFineInput, Prisma.MemberUpdateWithoutFineInput>, Prisma.MemberUncheckedUpdateWithoutFineInput>
+}
+
+export type MemberCreateNestedOneWithoutRefreshTokensInput = {
+  create?: Prisma.XOR<Prisma.MemberCreateWithoutRefreshTokensInput, Prisma.MemberUncheckedCreateWithoutRefreshTokensInput>
+  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutRefreshTokensInput
+  connect?: Prisma.MemberWhereUniqueInput
+}
+
+export type MemberUpdateOneRequiredWithoutRefreshTokensNestedInput = {
+  create?: Prisma.XOR<Prisma.MemberCreateWithoutRefreshTokensInput, Prisma.MemberUncheckedCreateWithoutRefreshTokensInput>
+  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutRefreshTokensInput
+  upsert?: Prisma.MemberUpsertWithoutRefreshTokensInput
+  connect?: Prisma.MemberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutRefreshTokensInput, Prisma.MemberUpdateWithoutRefreshTokensInput>, Prisma.MemberUncheckedUpdateWithoutRefreshTokensInput>
+}
+
 export type MemberCreateWithoutBorrowsInput = {
   email: string
   username: string
   password: string
   gender?: $Enums.Gender
   role?: $Enums.Role
+  phone?: string | null
+  address?: string | null
+  isActive?: boolean
+  avatar?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  reservation?: Prisma.ReservationCreateNestedManyWithoutMemberInput
+  fine?: Prisma.FineCreateNestedManyWithoutMemberInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutMemberInput
 }
 
 export type MemberUncheckedCreateWithoutBorrowsInput = {
@@ -429,6 +649,15 @@ export type MemberUncheckedCreateWithoutBorrowsInput = {
   password: string
   gender?: $Enums.Gender
   role?: $Enums.Role
+  phone?: string | null
+  address?: string | null
+  isActive?: boolean
+  avatar?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  reservation?: Prisma.ReservationUncheckedCreateNestedManyWithoutMemberInput
+  fine?: Prisma.FineUncheckedCreateNestedManyWithoutMemberInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type MemberCreateOrConnectWithoutBorrowsInput = {
@@ -453,6 +682,15 @@ export type MemberUpdateWithoutBorrowsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reservation?: Prisma.ReservationUpdateManyWithoutMemberNestedInput
+  fine?: Prisma.FineUpdateManyWithoutMemberNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberUncheckedUpdateWithoutBorrowsInput = {
@@ -462,6 +700,273 @@ export type MemberUncheckedUpdateWithoutBorrowsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reservation?: Prisma.ReservationUncheckedUpdateManyWithoutMemberNestedInput
+  fine?: Prisma.FineUncheckedUpdateManyWithoutMemberNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutMemberNestedInput
+}
+
+export type MemberCreateWithoutReservationInput = {
+  email: string
+  username: string
+  password: string
+  gender?: $Enums.Gender
+  role?: $Enums.Role
+  phone?: string | null
+  address?: string | null
+  isActive?: boolean
+  avatar?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  Borrows?: Prisma.BorrowedCreateNestedManyWithoutMemberInput
+  fine?: Prisma.FineCreateNestedManyWithoutMemberInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutMemberInput
+}
+
+export type MemberUncheckedCreateWithoutReservationInput = {
+  id?: number
+  email: string
+  username: string
+  password: string
+  gender?: $Enums.Gender
+  role?: $Enums.Role
+  phone?: string | null
+  address?: string | null
+  isActive?: boolean
+  avatar?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  Borrows?: Prisma.BorrowedUncheckedCreateNestedManyWithoutMemberInput
+  fine?: Prisma.FineUncheckedCreateNestedManyWithoutMemberInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutMemberInput
+}
+
+export type MemberCreateOrConnectWithoutReservationInput = {
+  where: Prisma.MemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.MemberCreateWithoutReservationInput, Prisma.MemberUncheckedCreateWithoutReservationInput>
+}
+
+export type MemberUpsertWithoutReservationInput = {
+  update: Prisma.XOR<Prisma.MemberUpdateWithoutReservationInput, Prisma.MemberUncheckedUpdateWithoutReservationInput>
+  create: Prisma.XOR<Prisma.MemberCreateWithoutReservationInput, Prisma.MemberUncheckedCreateWithoutReservationInput>
+  where?: Prisma.MemberWhereInput
+}
+
+export type MemberUpdateToOneWithWhereWithoutReservationInput = {
+  where?: Prisma.MemberWhereInput
+  data: Prisma.XOR<Prisma.MemberUpdateWithoutReservationInput, Prisma.MemberUncheckedUpdateWithoutReservationInput>
+}
+
+export type MemberUpdateWithoutReservationInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Borrows?: Prisma.BorrowedUpdateManyWithoutMemberNestedInput
+  fine?: Prisma.FineUpdateManyWithoutMemberNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutMemberNestedInput
+}
+
+export type MemberUncheckedUpdateWithoutReservationInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Borrows?: Prisma.BorrowedUncheckedUpdateManyWithoutMemberNestedInput
+  fine?: Prisma.FineUncheckedUpdateManyWithoutMemberNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutMemberNestedInput
+}
+
+export type MemberCreateWithoutFineInput = {
+  email: string
+  username: string
+  password: string
+  gender?: $Enums.Gender
+  role?: $Enums.Role
+  phone?: string | null
+  address?: string | null
+  isActive?: boolean
+  avatar?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  Borrows?: Prisma.BorrowedCreateNestedManyWithoutMemberInput
+  reservation?: Prisma.ReservationCreateNestedManyWithoutMemberInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutMemberInput
+}
+
+export type MemberUncheckedCreateWithoutFineInput = {
+  id?: number
+  email: string
+  username: string
+  password: string
+  gender?: $Enums.Gender
+  role?: $Enums.Role
+  phone?: string | null
+  address?: string | null
+  isActive?: boolean
+  avatar?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  Borrows?: Prisma.BorrowedUncheckedCreateNestedManyWithoutMemberInput
+  reservation?: Prisma.ReservationUncheckedCreateNestedManyWithoutMemberInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutMemberInput
+}
+
+export type MemberCreateOrConnectWithoutFineInput = {
+  where: Prisma.MemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.MemberCreateWithoutFineInput, Prisma.MemberUncheckedCreateWithoutFineInput>
+}
+
+export type MemberUpsertWithoutFineInput = {
+  update: Prisma.XOR<Prisma.MemberUpdateWithoutFineInput, Prisma.MemberUncheckedUpdateWithoutFineInput>
+  create: Prisma.XOR<Prisma.MemberCreateWithoutFineInput, Prisma.MemberUncheckedCreateWithoutFineInput>
+  where?: Prisma.MemberWhereInput
+}
+
+export type MemberUpdateToOneWithWhereWithoutFineInput = {
+  where?: Prisma.MemberWhereInput
+  data: Prisma.XOR<Prisma.MemberUpdateWithoutFineInput, Prisma.MemberUncheckedUpdateWithoutFineInput>
+}
+
+export type MemberUpdateWithoutFineInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Borrows?: Prisma.BorrowedUpdateManyWithoutMemberNestedInput
+  reservation?: Prisma.ReservationUpdateManyWithoutMemberNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutMemberNestedInput
+}
+
+export type MemberUncheckedUpdateWithoutFineInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Borrows?: Prisma.BorrowedUncheckedUpdateManyWithoutMemberNestedInput
+  reservation?: Prisma.ReservationUncheckedUpdateManyWithoutMemberNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutMemberNestedInput
+}
+
+export type MemberCreateWithoutRefreshTokensInput = {
+  email: string
+  username: string
+  password: string
+  gender?: $Enums.Gender
+  role?: $Enums.Role
+  phone?: string | null
+  address?: string | null
+  isActive?: boolean
+  avatar?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  Borrows?: Prisma.BorrowedCreateNestedManyWithoutMemberInput
+  reservation?: Prisma.ReservationCreateNestedManyWithoutMemberInput
+  fine?: Prisma.FineCreateNestedManyWithoutMemberInput
+}
+
+export type MemberUncheckedCreateWithoutRefreshTokensInput = {
+  id?: number
+  email: string
+  username: string
+  password: string
+  gender?: $Enums.Gender
+  role?: $Enums.Role
+  phone?: string | null
+  address?: string | null
+  isActive?: boolean
+  avatar?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  Borrows?: Prisma.BorrowedUncheckedCreateNestedManyWithoutMemberInput
+  reservation?: Prisma.ReservationUncheckedCreateNestedManyWithoutMemberInput
+  fine?: Prisma.FineUncheckedCreateNestedManyWithoutMemberInput
+}
+
+export type MemberCreateOrConnectWithoutRefreshTokensInput = {
+  where: Prisma.MemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.MemberCreateWithoutRefreshTokensInput, Prisma.MemberUncheckedCreateWithoutRefreshTokensInput>
+}
+
+export type MemberUpsertWithoutRefreshTokensInput = {
+  update: Prisma.XOR<Prisma.MemberUpdateWithoutRefreshTokensInput, Prisma.MemberUncheckedUpdateWithoutRefreshTokensInput>
+  create: Prisma.XOR<Prisma.MemberCreateWithoutRefreshTokensInput, Prisma.MemberUncheckedCreateWithoutRefreshTokensInput>
+  where?: Prisma.MemberWhereInput
+}
+
+export type MemberUpdateToOneWithWhereWithoutRefreshTokensInput = {
+  where?: Prisma.MemberWhereInput
+  data: Prisma.XOR<Prisma.MemberUpdateWithoutRefreshTokensInput, Prisma.MemberUncheckedUpdateWithoutRefreshTokensInput>
+}
+
+export type MemberUpdateWithoutRefreshTokensInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Borrows?: Prisma.BorrowedUpdateManyWithoutMemberNestedInput
+  reservation?: Prisma.ReservationUpdateManyWithoutMemberNestedInput
+  fine?: Prisma.FineUpdateManyWithoutMemberNestedInput
+}
+
+export type MemberUncheckedUpdateWithoutRefreshTokensInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Borrows?: Prisma.BorrowedUncheckedUpdateManyWithoutMemberNestedInput
+  reservation?: Prisma.ReservationUncheckedUpdateManyWithoutMemberNestedInput
+  fine?: Prisma.FineUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 
@@ -471,10 +976,16 @@ export type MemberUncheckedUpdateWithoutBorrowsInput = {
 
 export type MemberCountOutputType = {
   Borrows: number
+  reservation: number
+  fine: number
+  refreshTokens: number
 }
 
 export type MemberCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   Borrows?: boolean | MemberCountOutputTypeCountBorrowsArgs
+  reservation?: boolean | MemberCountOutputTypeCountReservationArgs
+  fine?: boolean | MemberCountOutputTypeCountFineArgs
+  refreshTokens?: boolean | MemberCountOutputTypeCountRefreshTokensArgs
 }
 
 /**
@@ -494,6 +1005,27 @@ export type MemberCountOutputTypeCountBorrowsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.BorrowedWhereInput
 }
 
+/**
+ * MemberCountOutputType without action
+ */
+export type MemberCountOutputTypeCountReservationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReservationWhereInput
+}
+
+/**
+ * MemberCountOutputType without action
+ */
+export type MemberCountOutputTypeCountFineArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FineWhereInput
+}
+
+/**
+ * MemberCountOutputType without action
+ */
+export type MemberCountOutputTypeCountRefreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RefreshTokenWhereInput
+}
+
 
 export type MemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -502,7 +1034,16 @@ export type MemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   password?: boolean
   gender?: boolean
   role?: boolean
+  phone?: boolean
+  address?: boolean
+  isActive?: boolean
+  avatar?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   Borrows?: boolean | Prisma.Member$BorrowsArgs<ExtArgs>
+  reservation?: boolean | Prisma.Member$reservationArgs<ExtArgs>
+  fine?: boolean | Prisma.Member$fineArgs<ExtArgs>
+  refreshTokens?: boolean | Prisma.Member$refreshTokensArgs<ExtArgs>
   _count?: boolean | Prisma.MemberCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["member"]>
 
@@ -513,6 +1054,12 @@ export type MemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   password?: boolean
   gender?: boolean
   role?: boolean
+  phone?: boolean
+  address?: boolean
+  isActive?: boolean
+  avatar?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["member"]>
 
 export type MemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -522,6 +1069,12 @@ export type MemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   password?: boolean
   gender?: boolean
   role?: boolean
+  phone?: boolean
+  address?: boolean
+  isActive?: boolean
+  avatar?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["member"]>
 
 export type MemberSelectScalar = {
@@ -531,11 +1084,20 @@ export type MemberSelectScalar = {
   password?: boolean
   gender?: boolean
   role?: boolean
+  phone?: boolean
+  address?: boolean
+  isActive?: boolean
+  avatar?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type MemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "password" | "gender" | "role", ExtArgs["result"]["member"]>
+export type MemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "password" | "gender" | "role" | "phone" | "address" | "isActive" | "avatar" | "createdAt" | "updatedAt", ExtArgs["result"]["member"]>
 export type MemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   Borrows?: boolean | Prisma.Member$BorrowsArgs<ExtArgs>
+  reservation?: boolean | Prisma.Member$reservationArgs<ExtArgs>
+  fine?: boolean | Prisma.Member$fineArgs<ExtArgs>
+  refreshTokens?: boolean | Prisma.Member$refreshTokensArgs<ExtArgs>
   _count?: boolean | Prisma.MemberCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MemberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -545,6 +1107,9 @@ export type $MemberPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Member"
   objects: {
     Borrows: Prisma.$BorrowedPayload<ExtArgs>[]
+    reservation: Prisma.$ReservationPayload<ExtArgs>[]
+    fine: Prisma.$FinePayload<ExtArgs>[]
+    refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -553,6 +1118,12 @@ export type $MemberPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     password: string
     gender: $Enums.Gender
     role: $Enums.Role
+    phone: string | null
+    address: string | null
+    isActive: boolean
+    avatar: string | null
+    createdAt: Date
+    updatedAt: Date | null
   }, ExtArgs["result"]["member"]>
   composites: {}
 }
@@ -948,6 +1519,9 @@ readonly fields: MemberFieldRefs;
 export interface Prisma__MemberClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   Borrows<T extends Prisma.Member$BorrowsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$BorrowsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BorrowedPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reservation<T extends Prisma.Member$reservationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$reservationArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  fine<T extends Prisma.Member$fineArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$fineArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  refreshTokens<T extends Prisma.Member$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -983,6 +1557,12 @@ export interface MemberFieldRefs {
   readonly password: Prisma.FieldRef<"Member", 'String'>
   readonly gender: Prisma.FieldRef<"Member", 'Gender'>
   readonly role: Prisma.FieldRef<"Member", 'Role'>
+  readonly phone: Prisma.FieldRef<"Member", 'String'>
+  readonly address: Prisma.FieldRef<"Member", 'String'>
+  readonly isActive: Prisma.FieldRef<"Member", 'Boolean'>
+  readonly avatar: Prisma.FieldRef<"Member", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Member", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Member", 'DateTime'>
 }
     
 
@@ -1392,6 +1972,78 @@ export type Member$BorrowsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.BorrowedScalarFieldEnum | Prisma.BorrowedScalarFieldEnum[]
+}
+
+/**
+ * Member.reservation
+ */
+export type Member$reservationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Reservation
+   */
+  select?: Prisma.ReservationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Reservation
+   */
+  omit?: Prisma.ReservationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReservationInclude<ExtArgs> | null
+  where?: Prisma.ReservationWhereInput
+  orderBy?: Prisma.ReservationOrderByWithRelationInput | Prisma.ReservationOrderByWithRelationInput[]
+  cursor?: Prisma.ReservationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReservationScalarFieldEnum | Prisma.ReservationScalarFieldEnum[]
+}
+
+/**
+ * Member.fine
+ */
+export type Member$fineArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Fine
+   */
+  select?: Prisma.FineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Fine
+   */
+  omit?: Prisma.FineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FineInclude<ExtArgs> | null
+  where?: Prisma.FineWhereInput
+  orderBy?: Prisma.FineOrderByWithRelationInput | Prisma.FineOrderByWithRelationInput[]
+  cursor?: Prisma.FineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FineScalarFieldEnum | Prisma.FineScalarFieldEnum[]
+}
+
+/**
+ * Member.refreshTokens
+ */
+export type Member$refreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RefreshToken
+   */
+  select?: Prisma.RefreshTokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RefreshToken
+   */
+  omit?: Prisma.RefreshTokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RefreshTokenInclude<ExtArgs> | null
+  where?: Prisma.RefreshTokenWhereInput
+  orderBy?: Prisma.RefreshTokenOrderByWithRelationInput | Prisma.RefreshTokenOrderByWithRelationInput[]
+  cursor?: Prisma.RefreshTokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RefreshTokenScalarFieldEnum | Prisma.RefreshTokenScalarFieldEnum[]
 }
 
 /**

@@ -34,4 +34,4 @@ RUN rm -rf node_modules/.cache/prisma
 EXPOSE 3001
 
 # ใช้ "bun run" ตรงๆ แทนการใช้ bunx ใน CMD เพื่อความเร็ว
-CMD ["sh", "-c", "bun prisma migrate deploy && bun src/index.ts"]
+CMD ["sh", "-c", "bun prisma migrate deploy && bun src/server.ts"]

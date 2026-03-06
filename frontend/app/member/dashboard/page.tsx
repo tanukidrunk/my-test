@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import ProtectedLayout from '../../Protected';
+import ProtectedLayout from '../../protected';
 
 import BorrowStats   from '@/components/Member/dashboard/BorrowStats';
 import OverdueAlert  from '@/components/Member/dashboard/OverdueAlert';
@@ -16,7 +16,7 @@ export default function MemberBorrowedPage() {
   const [loading,     setLoading]     = useState(true);
   const [returningId, setReturningId] = useState<number | null>(null);
   const [tab,         setTab]         = useState<Tab>('active');
-
+ 
   /* ── load ── */
   const loadBorrows = async () => {
     try {

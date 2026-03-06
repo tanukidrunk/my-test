@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import ProtectedLayout from '../../Protected';
+import ProtectedLayout from '../../protected';
 
 import ProfileAvatar      from '@/components/Member/profile/ProfileAvatar';
 import ProfileAccountInfo from '@/components/Member/profile/ProfileAccountInfo';

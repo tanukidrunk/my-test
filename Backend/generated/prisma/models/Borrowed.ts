@@ -30,12 +30,14 @@ export type BorrowedAvgAggregateOutputType = {
   id: number | null
   memberId: number | null
   bookId: number | null
+  fineAmount: number | null
 }
 
 export type BorrowedSumAggregateOutputType = {
   id: number | null
   memberId: number | null
   bookId: number | null
+  fineAmount: number | null
 }
 
 export type BorrowedMinAggregateOutputType = {
@@ -43,8 +45,11 @@ export type BorrowedMinAggregateOutputType = {
   memberId: number | null
   bookId: number | null
   loanDate: Date | null
+  dueDate: Date | null
   returnDate: Date | null
   status: $Enums.BorrowStatus | null
+  fineAmount: number | null
+  createdAt: Date | null
 }
 
 export type BorrowedMaxAggregateOutputType = {
@@ -52,8 +57,11 @@ export type BorrowedMaxAggregateOutputType = {
   memberId: number | null
   bookId: number | null
   loanDate: Date | null
+  dueDate: Date | null
   returnDate: Date | null
   status: $Enums.BorrowStatus | null
+  fineAmount: number | null
+  createdAt: Date | null
 }
 
 export type BorrowedCountAggregateOutputType = {
@@ -61,8 +69,11 @@ export type BorrowedCountAggregateOutputType = {
   memberId: number
   bookId: number
   loanDate: number
+  dueDate: number
   returnDate: number
   status: number
+  fineAmount: number
+  createdAt: number
   _all: number
 }
 
@@ -71,12 +82,14 @@ export type BorrowedAvgAggregateInputType = {
   id?: true
   memberId?: true
   bookId?: true
+  fineAmount?: true
 }
 
 export type BorrowedSumAggregateInputType = {
   id?: true
   memberId?: true
   bookId?: true
+  fineAmount?: true
 }
 
 export type BorrowedMinAggregateInputType = {
@@ -84,8 +97,11 @@ export type BorrowedMinAggregateInputType = {
   memberId?: true
   bookId?: true
   loanDate?: true
+  dueDate?: true
   returnDate?: true
   status?: true
+  fineAmount?: true
+  createdAt?: true
 }
 
 export type BorrowedMaxAggregateInputType = {
@@ -93,8 +109,11 @@ export type BorrowedMaxAggregateInputType = {
   memberId?: true
   bookId?: true
   loanDate?: true
+  dueDate?: true
   returnDate?: true
   status?: true
+  fineAmount?: true
+  createdAt?: true
 }
 
 export type BorrowedCountAggregateInputType = {
@@ -102,8 +121,11 @@ export type BorrowedCountAggregateInputType = {
   memberId?: true
   bookId?: true
   loanDate?: true
+  dueDate?: true
   returnDate?: true
   status?: true
+  fineAmount?: true
+  createdAt?: true
   _all?: true
 }
 
@@ -198,8 +220,11 @@ export type BorrowedGroupByOutputType = {
   memberId: number
   bookId: number
   loanDate: Date
+  dueDate: Date | null
   returnDate: Date | null
   status: $Enums.BorrowStatus
+  fineAmount: number
+  createdAt: Date
   _count: BorrowedCountAggregateOutputType | null
   _avg: BorrowedAvgAggregateOutputType | null
   _sum: BorrowedSumAggregateOutputType | null
@@ -230,10 +255,14 @@ export type BorrowedWhereInput = {
   memberId?: Prisma.IntFilter<"Borrowed"> | number
   bookId?: Prisma.IntFilter<"Borrowed"> | number
   loanDate?: Prisma.DateTimeFilter<"Borrowed"> | Date | string
+  dueDate?: Prisma.DateTimeNullableFilter<"Borrowed"> | Date | string | null
   returnDate?: Prisma.DateTimeNullableFilter<"Borrowed"> | Date | string | null
   status?: Prisma.EnumBorrowStatusFilter<"Borrowed"> | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFilter<"Borrowed"> | number
+  createdAt?: Prisma.DateTimeFilter<"Borrowed"> | Date | string
   member?: Prisma.XOR<Prisma.MemberScalarRelationFilter, Prisma.MemberWhereInput>
   book?: Prisma.XOR<Prisma.BookScalarRelationFilter, Prisma.BookWhereInput>
+  fine?: Prisma.FineListRelationFilter
 }
 
 export type BorrowedOrderByWithRelationInput = {
@@ -241,10 +270,14 @@ export type BorrowedOrderByWithRelationInput = {
   memberId?: Prisma.SortOrder
   bookId?: Prisma.SortOrder
   loanDate?: Prisma.SortOrder
+  dueDate?: Prisma.SortOrderInput | Prisma.SortOrder
   returnDate?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  fineAmount?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   member?: Prisma.MemberOrderByWithRelationInput
   book?: Prisma.BookOrderByWithRelationInput
+  fine?: Prisma.FineOrderByRelationAggregateInput
 }
 
 export type BorrowedWhereUniqueInput = Prisma.AtLeast<{
@@ -255,10 +288,14 @@ export type BorrowedWhereUniqueInput = Prisma.AtLeast<{
   memberId?: Prisma.IntFilter<"Borrowed"> | number
   bookId?: Prisma.IntFilter<"Borrowed"> | number
   loanDate?: Prisma.DateTimeFilter<"Borrowed"> | Date | string
+  dueDate?: Prisma.DateTimeNullableFilter<"Borrowed"> | Date | string | null
   returnDate?: Prisma.DateTimeNullableFilter<"Borrowed"> | Date | string | null
   status?: Prisma.EnumBorrowStatusFilter<"Borrowed"> | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFilter<"Borrowed"> | number
+  createdAt?: Prisma.DateTimeFilter<"Borrowed"> | Date | string
   member?: Prisma.XOR<Prisma.MemberScalarRelationFilter, Prisma.MemberWhereInput>
   book?: Prisma.XOR<Prisma.BookScalarRelationFilter, Prisma.BookWhereInput>
+  fine?: Prisma.FineListRelationFilter
 }, "id">
 
 export type BorrowedOrderByWithAggregationInput = {
@@ -266,8 +303,11 @@ export type BorrowedOrderByWithAggregationInput = {
   memberId?: Prisma.SortOrder
   bookId?: Prisma.SortOrder
   loanDate?: Prisma.SortOrder
+  dueDate?: Prisma.SortOrderInput | Prisma.SortOrder
   returnDate?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  fineAmount?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   _count?: Prisma.BorrowedCountOrderByAggregateInput
   _avg?: Prisma.BorrowedAvgOrderByAggregateInput
   _max?: Prisma.BorrowedMaxOrderByAggregateInput
@@ -283,16 +323,23 @@ export type BorrowedScalarWhereWithAggregatesInput = {
   memberId?: Prisma.IntWithAggregatesFilter<"Borrowed"> | number
   bookId?: Prisma.IntWithAggregatesFilter<"Borrowed"> | number
   loanDate?: Prisma.DateTimeWithAggregatesFilter<"Borrowed"> | Date | string
+  dueDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Borrowed"> | Date | string | null
   returnDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Borrowed"> | Date | string | null
   status?: Prisma.EnumBorrowStatusWithAggregatesFilter<"Borrowed"> | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatWithAggregatesFilter<"Borrowed"> | number
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Borrowed"> | Date | string
 }
 
 export type BorrowedCreateInput = {
   loanDate?: Date | string
+  dueDate?: Date | string | null
   returnDate?: Date | string | null
   status?: $Enums.BorrowStatus
+  fineAmount?: number
+  createdAt?: Date | string
   member: Prisma.MemberCreateNestedOneWithoutBorrowsInput
   book: Prisma.BookCreateNestedOneWithoutBorrowsInput
+  fine?: Prisma.FineCreateNestedManyWithoutBorrowInput
 }
 
 export type BorrowedUncheckedCreateInput = {
@@ -300,16 +347,24 @@ export type BorrowedUncheckedCreateInput = {
   memberId: number
   bookId: number
   loanDate?: Date | string
+  dueDate?: Date | string | null
   returnDate?: Date | string | null
   status?: $Enums.BorrowStatus
+  fineAmount?: number
+  createdAt?: Date | string
+  fine?: Prisma.FineUncheckedCreateNestedManyWithoutBorrowInput
 }
 
 export type BorrowedUpdateInput = {
   loanDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   returnDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumBorrowStatusFieldUpdateOperationsInput | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   member?: Prisma.MemberUpdateOneRequiredWithoutBorrowsNestedInput
   book?: Prisma.BookUpdateOneRequiredWithoutBorrowsNestedInput
+  fine?: Prisma.FineUpdateManyWithoutBorrowNestedInput
 }
 
 export type BorrowedUncheckedUpdateInput = {
@@ -317,8 +372,12 @@ export type BorrowedUncheckedUpdateInput = {
   memberId?: Prisma.IntFieldUpdateOperationsInput | number
   bookId?: Prisma.IntFieldUpdateOperationsInput | number
   loanDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   returnDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumBorrowStatusFieldUpdateOperationsInput | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fine?: Prisma.FineUncheckedUpdateManyWithoutBorrowNestedInput
 }
 
 export type BorrowedCreateManyInput = {
@@ -326,14 +385,20 @@ export type BorrowedCreateManyInput = {
   memberId: number
   bookId: number
   loanDate?: Date | string
+  dueDate?: Date | string | null
   returnDate?: Date | string | null
   status?: $Enums.BorrowStatus
+  fineAmount?: number
+  createdAt?: Date | string
 }
 
 export type BorrowedUpdateManyMutationInput = {
   loanDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   returnDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumBorrowStatusFieldUpdateOperationsInput | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BorrowedUncheckedUpdateManyInput = {
@@ -341,8 +406,11 @@ export type BorrowedUncheckedUpdateManyInput = {
   memberId?: Prisma.IntFieldUpdateOperationsInput | number
   bookId?: Prisma.IntFieldUpdateOperationsInput | number
   loanDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   returnDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumBorrowStatusFieldUpdateOperationsInput | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BorrowedListRelationFilter = {
@@ -360,14 +428,18 @@ export type BorrowedCountOrderByAggregateInput = {
   memberId?: Prisma.SortOrder
   bookId?: Prisma.SortOrder
   loanDate?: Prisma.SortOrder
+  dueDate?: Prisma.SortOrder
   returnDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  fineAmount?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type BorrowedAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   memberId?: Prisma.SortOrder
   bookId?: Prisma.SortOrder
+  fineAmount?: Prisma.SortOrder
 }
 
 export type BorrowedMaxOrderByAggregateInput = {
@@ -375,8 +447,11 @@ export type BorrowedMaxOrderByAggregateInput = {
   memberId?: Prisma.SortOrder
   bookId?: Prisma.SortOrder
   loanDate?: Prisma.SortOrder
+  dueDate?: Prisma.SortOrder
   returnDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  fineAmount?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type BorrowedMinOrderByAggregateInput = {
@@ -384,14 +459,23 @@ export type BorrowedMinOrderByAggregateInput = {
   memberId?: Prisma.SortOrder
   bookId?: Prisma.SortOrder
   loanDate?: Prisma.SortOrder
+  dueDate?: Prisma.SortOrder
   returnDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  fineAmount?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type BorrowedSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   memberId?: Prisma.SortOrder
   bookId?: Prisma.SortOrder
+  fineAmount?: Prisma.SortOrder
+}
+
+export type BorrowedScalarRelationFilter = {
+  is?: Prisma.BorrowedWhereInput
+  isNot?: Prisma.BorrowedWhereInput
 }
 
 export type BorrowedCreateNestedManyWithoutMemberInput = {
@@ -478,31 +562,53 @@ export type BorrowedUncheckedUpdateManyWithoutBookNestedInput = {
   deleteMany?: Prisma.BorrowedScalarWhereInput | Prisma.BorrowedScalarWhereInput[]
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type EnumBorrowStatusFieldUpdateOperationsInput = {
   set?: $Enums.BorrowStatus
 }
 
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type BorrowedCreateNestedOneWithoutFineInput = {
+  create?: Prisma.XOR<Prisma.BorrowedCreateWithoutFineInput, Prisma.BorrowedUncheckedCreateWithoutFineInput>
+  connectOrCreate?: Prisma.BorrowedCreateOrConnectWithoutFineInput
+  connect?: Prisma.BorrowedWhereUniqueInput
+}
+
+export type BorrowedUpdateOneRequiredWithoutFineNestedInput = {
+  create?: Prisma.XOR<Prisma.BorrowedCreateWithoutFineInput, Prisma.BorrowedUncheckedCreateWithoutFineInput>
+  connectOrCreate?: Prisma.BorrowedCreateOrConnectWithoutFineInput
+  upsert?: Prisma.BorrowedUpsertWithoutFineInput
+  connect?: Prisma.BorrowedWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BorrowedUpdateToOneWithWhereWithoutFineInput, Prisma.BorrowedUpdateWithoutFineInput>, Prisma.BorrowedUncheckedUpdateWithoutFineInput>
+}
+
 export type BorrowedCreateWithoutMemberInput = {
   loanDate?: Date | string
+  dueDate?: Date | string | null
   returnDate?: Date | string | null
   status?: $Enums.BorrowStatus
+  fineAmount?: number
+  createdAt?: Date | string
   book: Prisma.BookCreateNestedOneWithoutBorrowsInput
+  fine?: Prisma.FineCreateNestedManyWithoutBorrowInput
 }
 
 export type BorrowedUncheckedCreateWithoutMemberInput = {
   id?: number
   bookId: number
   loanDate?: Date | string
+  dueDate?: Date | string | null
   returnDate?: Date | string | null
   status?: $Enums.BorrowStatus
+  fineAmount?: number
+  createdAt?: Date | string
+  fine?: Prisma.FineUncheckedCreateNestedManyWithoutBorrowInput
 }
 
 export type BorrowedCreateOrConnectWithoutMemberInput = {
@@ -539,23 +645,34 @@ export type BorrowedScalarWhereInput = {
   memberId?: Prisma.IntFilter<"Borrowed"> | number
   bookId?: Prisma.IntFilter<"Borrowed"> | number
   loanDate?: Prisma.DateTimeFilter<"Borrowed"> | Date | string
+  dueDate?: Prisma.DateTimeNullableFilter<"Borrowed"> | Date | string | null
   returnDate?: Prisma.DateTimeNullableFilter<"Borrowed"> | Date | string | null
   status?: Prisma.EnumBorrowStatusFilter<"Borrowed"> | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFilter<"Borrowed"> | number
+  createdAt?: Prisma.DateTimeFilter<"Borrowed"> | Date | string
 }
 
 export type BorrowedCreateWithoutBookInput = {
   loanDate?: Date | string
+  dueDate?: Date | string | null
   returnDate?: Date | string | null
   status?: $Enums.BorrowStatus
+  fineAmount?: number
+  createdAt?: Date | string
   member: Prisma.MemberCreateNestedOneWithoutBorrowsInput
+  fine?: Prisma.FineCreateNestedManyWithoutBorrowInput
 }
 
 export type BorrowedUncheckedCreateWithoutBookInput = {
   id?: number
   memberId: number
   loanDate?: Date | string
+  dueDate?: Date | string | null
   returnDate?: Date | string | null
   status?: $Enums.BorrowStatus
+  fineAmount?: number
+  createdAt?: Date | string
+  fine?: Prisma.FineUncheckedCreateNestedManyWithoutBorrowInput
 }
 
 export type BorrowedCreateOrConnectWithoutBookInput = {
@@ -584,68 +701,187 @@ export type BorrowedUpdateManyWithWhereWithoutBookInput = {
   data: Prisma.XOR<Prisma.BorrowedUpdateManyMutationInput, Prisma.BorrowedUncheckedUpdateManyWithoutBookInput>
 }
 
+export type BorrowedCreateWithoutFineInput = {
+  loanDate?: Date | string
+  dueDate?: Date | string | null
+  returnDate?: Date | string | null
+  status?: $Enums.BorrowStatus
+  fineAmount?: number
+  createdAt?: Date | string
+  member: Prisma.MemberCreateNestedOneWithoutBorrowsInput
+  book: Prisma.BookCreateNestedOneWithoutBorrowsInput
+}
+
+export type BorrowedUncheckedCreateWithoutFineInput = {
+  id?: number
+  memberId: number
+  bookId: number
+  loanDate?: Date | string
+  dueDate?: Date | string | null
+  returnDate?: Date | string | null
+  status?: $Enums.BorrowStatus
+  fineAmount?: number
+  createdAt?: Date | string
+}
+
+export type BorrowedCreateOrConnectWithoutFineInput = {
+  where: Prisma.BorrowedWhereUniqueInput
+  create: Prisma.XOR<Prisma.BorrowedCreateWithoutFineInput, Prisma.BorrowedUncheckedCreateWithoutFineInput>
+}
+
+export type BorrowedUpsertWithoutFineInput = {
+  update: Prisma.XOR<Prisma.BorrowedUpdateWithoutFineInput, Prisma.BorrowedUncheckedUpdateWithoutFineInput>
+  create: Prisma.XOR<Prisma.BorrowedCreateWithoutFineInput, Prisma.BorrowedUncheckedCreateWithoutFineInput>
+  where?: Prisma.BorrowedWhereInput
+}
+
+export type BorrowedUpdateToOneWithWhereWithoutFineInput = {
+  where?: Prisma.BorrowedWhereInput
+  data: Prisma.XOR<Prisma.BorrowedUpdateWithoutFineInput, Prisma.BorrowedUncheckedUpdateWithoutFineInput>
+}
+
+export type BorrowedUpdateWithoutFineInput = {
+  loanDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumBorrowStatusFieldUpdateOperationsInput | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  member?: Prisma.MemberUpdateOneRequiredWithoutBorrowsNestedInput
+  book?: Prisma.BookUpdateOneRequiredWithoutBorrowsNestedInput
+}
+
+export type BorrowedUncheckedUpdateWithoutFineInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  memberId?: Prisma.IntFieldUpdateOperationsInput | number
+  bookId?: Prisma.IntFieldUpdateOperationsInput | number
+  loanDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumBorrowStatusFieldUpdateOperationsInput | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type BorrowedCreateManyMemberInput = {
   id?: number
   bookId: number
   loanDate?: Date | string
+  dueDate?: Date | string | null
   returnDate?: Date | string | null
   status?: $Enums.BorrowStatus
+  fineAmount?: number
+  createdAt?: Date | string
 }
 
 export type BorrowedUpdateWithoutMemberInput = {
   loanDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   returnDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumBorrowStatusFieldUpdateOperationsInput | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   book?: Prisma.BookUpdateOneRequiredWithoutBorrowsNestedInput
+  fine?: Prisma.FineUpdateManyWithoutBorrowNestedInput
 }
 
 export type BorrowedUncheckedUpdateWithoutMemberInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   bookId?: Prisma.IntFieldUpdateOperationsInput | number
   loanDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   returnDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumBorrowStatusFieldUpdateOperationsInput | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fine?: Prisma.FineUncheckedUpdateManyWithoutBorrowNestedInput
 }
 
 export type BorrowedUncheckedUpdateManyWithoutMemberInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   bookId?: Prisma.IntFieldUpdateOperationsInput | number
   loanDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   returnDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumBorrowStatusFieldUpdateOperationsInput | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BorrowedCreateManyBookInput = {
   id?: number
   memberId: number
   loanDate?: Date | string
+  dueDate?: Date | string | null
   returnDate?: Date | string | null
   status?: $Enums.BorrowStatus
+  fineAmount?: number
+  createdAt?: Date | string
 }
 
 export type BorrowedUpdateWithoutBookInput = {
   loanDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   returnDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumBorrowStatusFieldUpdateOperationsInput | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   member?: Prisma.MemberUpdateOneRequiredWithoutBorrowsNestedInput
+  fine?: Prisma.FineUpdateManyWithoutBorrowNestedInput
 }
 
 export type BorrowedUncheckedUpdateWithoutBookInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   memberId?: Prisma.IntFieldUpdateOperationsInput | number
   loanDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   returnDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumBorrowStatusFieldUpdateOperationsInput | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fine?: Prisma.FineUncheckedUpdateManyWithoutBorrowNestedInput
 }
 
 export type BorrowedUncheckedUpdateManyWithoutBookInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   memberId?: Prisma.IntFieldUpdateOperationsInput | number
   loanDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   returnDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumBorrowStatusFieldUpdateOperationsInput | $Enums.BorrowStatus
+  fineAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type BorrowedCountOutputType
+ */
+
+export type BorrowedCountOutputType = {
+  fine: number
+}
+
+export type BorrowedCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  fine?: boolean | BorrowedCountOutputTypeCountFineArgs
+}
+
+/**
+ * BorrowedCountOutputType without action
+ */
+export type BorrowedCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BorrowedCountOutputType
+   */
+  select?: Prisma.BorrowedCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * BorrowedCountOutputType without action
+ */
+export type BorrowedCountOutputTypeCountFineArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FineWhereInput
+}
 
 
 export type BorrowedSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -653,10 +889,15 @@ export type BorrowedSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   memberId?: boolean
   bookId?: boolean
   loanDate?: boolean
+  dueDate?: boolean
   returnDate?: boolean
   status?: boolean
+  fineAmount?: boolean
+  createdAt?: boolean
   member?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
   book?: boolean | Prisma.BookDefaultArgs<ExtArgs>
+  fine?: boolean | Prisma.Borrowed$fineArgs<ExtArgs>
+  _count?: boolean | Prisma.BorrowedCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["borrowed"]>
 
 export type BorrowedSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -664,8 +905,11 @@ export type BorrowedSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   memberId?: boolean
   bookId?: boolean
   loanDate?: boolean
+  dueDate?: boolean
   returnDate?: boolean
   status?: boolean
+  fineAmount?: boolean
+  createdAt?: boolean
   member?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
   book?: boolean | Prisma.BookDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["borrowed"]>
@@ -675,8 +919,11 @@ export type BorrowedSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   memberId?: boolean
   bookId?: boolean
   loanDate?: boolean
+  dueDate?: boolean
   returnDate?: boolean
   status?: boolean
+  fineAmount?: boolean
+  createdAt?: boolean
   member?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
   book?: boolean | Prisma.BookDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["borrowed"]>
@@ -686,14 +933,19 @@ export type BorrowedSelectScalar = {
   memberId?: boolean
   bookId?: boolean
   loanDate?: boolean
+  dueDate?: boolean
   returnDate?: boolean
   status?: boolean
+  fineAmount?: boolean
+  createdAt?: boolean
 }
 
-export type BorrowedOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "memberId" | "bookId" | "loanDate" | "returnDate" | "status", ExtArgs["result"]["borrowed"]>
+export type BorrowedOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "memberId" | "bookId" | "loanDate" | "dueDate" | "returnDate" | "status" | "fineAmount" | "createdAt", ExtArgs["result"]["borrowed"]>
 export type BorrowedInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   member?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
   book?: boolean | Prisma.BookDefaultArgs<ExtArgs>
+  fine?: boolean | Prisma.Borrowed$fineArgs<ExtArgs>
+  _count?: boolean | Prisma.BorrowedCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BorrowedIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   member?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
@@ -709,14 +961,18 @@ export type $BorrowedPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     member: Prisma.$MemberPayload<ExtArgs>
     book: Prisma.$BookPayload<ExtArgs>
+    fine: Prisma.$FinePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     memberId: number
     bookId: number
     loanDate: Date
+    dueDate: Date | null
     returnDate: Date | null
     status: $Enums.BorrowStatus
+    fineAmount: number
+    createdAt: Date
   }, ExtArgs["result"]["borrowed"]>
   composites: {}
 }
@@ -1113,6 +1369,7 @@ export interface Prisma__BorrowedClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   member<T extends Prisma.MemberDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberDefaultArgs<ExtArgs>>): Prisma.Prisma__MemberClient<runtime.Types.Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   book<T extends Prisma.BookDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BookDefaultArgs<ExtArgs>>): Prisma.Prisma__BookClient<runtime.Types.Result.GetResult<Prisma.$BookPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  fine<T extends Prisma.Borrowed$fineArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Borrowed$fineArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1146,8 +1403,11 @@ export interface BorrowedFieldRefs {
   readonly memberId: Prisma.FieldRef<"Borrowed", 'Int'>
   readonly bookId: Prisma.FieldRef<"Borrowed", 'Int'>
   readonly loanDate: Prisma.FieldRef<"Borrowed", 'DateTime'>
+  readonly dueDate: Prisma.FieldRef<"Borrowed", 'DateTime'>
   readonly returnDate: Prisma.FieldRef<"Borrowed", 'DateTime'>
   readonly status: Prisma.FieldRef<"Borrowed", 'BorrowStatus'>
+  readonly fineAmount: Prisma.FieldRef<"Borrowed", 'Float'>
+  readonly createdAt: Prisma.FieldRef<"Borrowed", 'DateTime'>
 }
     
 
@@ -1541,6 +1801,30 @@ export type BorrowedDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Borroweds to delete.
    */
   limit?: number
+}
+
+/**
+ * Borrowed.fine
+ */
+export type Borrowed$fineArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Fine
+   */
+  select?: Prisma.FineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Fine
+   */
+  omit?: Prisma.FineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FineInclude<ExtArgs> | null
+  where?: Prisma.FineWhereInput
+  orderBy?: Prisma.FineOrderByWithRelationInput | Prisma.FineOrderByWithRelationInput[]
+  cursor?: Prisma.FineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FineScalarFieldEnum | Prisma.FineScalarFieldEnum[]
 }
 
 /**

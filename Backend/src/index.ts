@@ -15,7 +15,7 @@ app.use(
   '*',
   cors({
     origin: 'http://localhost:3000',
-    credentials: true,
+    credentials: true, 
   }),
 );
 app.use('/uploads/*', serveStatic({ root: './' }));
