@@ -1,8 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ProtectedLayout from '../../Protected';
-
+import { fetchWithAuth } from '../../lib/api/fetchWithAuth';
 import BookStats          from '@/components/Member/book/BookStats';
 import BookToolbar        from '@/components/Member/book/BookToolbar';
 import BookTable          from '@/components/Member/book/BookTable';
@@ -19,12 +20,30 @@ export default function BooksListPage() {
   const [confirming,   setConfirming]   = useState(false);
   const [search,       setSearch]       = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterType>('ALL');
-
+  const router = useRouter();
   /* ── auth check ── */
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, { credentials: 'include' });
-  }, []);
+useEffect(() => {
+  const checkAuth = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/auth/me`,
+        { credentials: 'include' }
+      );
 
+      if (!res.ok) {
+        router.push('/login');
+        return;
+      }
+
+      const data = await res.json();
+      console.log(data);
+    } catch (err) {
+      router.push('/login');
+    }
+  };
+
+  checkAuth();
+}, []);
   /* ── load books ── */
   const loadBooks = async () => {
     try {

@@ -9,6 +9,16 @@
 * 🟢 You can import this file directly.
 */
 
+export const ReservationStatus = {
+  PENDING: 'PENDING',
+  READY: 'READY',
+  CANCELLED: 'CANCELLED',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type ReservationStatus = (typeof ReservationStatus)[keyof typeof ReservationStatus]
+
+
 export const Gender = {
   MALE: 'MALE',
   FEMALE: 'FEMALE',

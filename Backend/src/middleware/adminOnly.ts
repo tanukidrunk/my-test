@@ -1,7 +1,11 @@
-export const adminOnly = async (c: any, next: any) => {
-  const user = c.get("member");
-  if (user.role !== "ADMIN") {
-    return c.json({ message: "Forbidden" }, 403);
+import { Context, Next } from 'hono';
+import { AppContext,apiResponse } from './jwtauth';
+export const adminOnly = async (c: AppContext, next: Next) => {
+  const member = c.get("member");
+
+  if (member.role !== "ADMIN") {
+    return apiResponse(c, 403, "Forbidden");
   }
+
   await next();
 };

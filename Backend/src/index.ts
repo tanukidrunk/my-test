@@ -5,6 +5,9 @@ import { mem } from './route/member';
 import { borr } from './route/borrow';
 import { cate } from './route/category';
 import { auth } from './route/auth';
+import { reservation } from './route/reservation';
+import { fine } from './route/fine';
+import { refreshToken } from './route/refreshtoken';
 import { cors } from 'hono/cors';
 import { authMiddleware } from './middleware/auth';
 import { serveStatic } from 'hono/bun';
@@ -31,5 +34,9 @@ app.route('/borrow', borr);
 app.route('/member', mem);
 app.route('/cate', cate);
 app.route('/auth', auth);
+app.route('/reservation', reservation);
+app.route('/fine', fine);
+app.route('/refreshtoken', refreshToken);
+
 
 export default app;

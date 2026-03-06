@@ -37,3 +37,18 @@ export type Category = Prisma.CategoryModel
  * 
  */
 export type Borrowed = Prisma.BorrowedModel
+/**
+ * Model Reservation
+ * 
+ */
+export type Reservation = Prisma.ReservationModel
+/**
+ * Model Fine
+ * 
+ */
+export type Fine = Prisma.FineModel
+/**
+ * Model RefreshToken
+ * 
+ */
+export type RefreshToken = Prisma.RefreshTokenModel

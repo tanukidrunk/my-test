@@ -6,7 +6,7 @@ import { Gender } from '../../generated/prisma/client';
 import argon2 from 'argon2';
 // import bcrypt from "bcrypt";
 import { adminOnly } from '../middleware/adminOnly';
-import { setCookie, deleteCookie } from 'hono/cookie';
+import { getCookie,setCookie, deleteCookie } from 'hono/cookie';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const apiResponse = (
@@ -112,19 +112,24 @@ mem.post('/login', async (c) => {
       { expiresIn: '15m' },
     );
 
-    // 🔄 Refresh Token
-    const refreshToken = jwt.sign({ memberId: member.id }, JWT_SECRET, {
-      expiresIn: '7d',
-    });
-    
-    // เก็บลง DB
-    await prisma.refreshToken.create({
-      data: {
-        token: await argon2.hash(refreshToken), // hash ก่อนเก็บ
-        memberId: member.id,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      },
-    });
+// 🔄 Refresh Token
+const refreshToken = jwt.sign(
+  { memberId: member.id },
+  JWT_SECRET,
+  { expiresIn: '7d' }
+);
+
+// hash ก่อนเก็บ
+const hashedToken = await argon2.hash(refreshToken);
+
+await prisma.refreshToken.create({
+  data: {
+    token: hashedToken,
+    memberId: member.id,
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  },
+});
+
 
     // ✅ Set HttpOnly Cookies
     setCookie(c, 'accessToken', accessToken, {
@@ -156,9 +161,58 @@ mem.post('/login', async (c) => {
   }
 });
 
+mem.post('/v2/login', async (c) => {
+  const body = await c.req.json();
+  const { email, password } = body;
+
+  if (!email || !password) {
+    return apiResponse(c, 400, 'Missing email or password');
+  }
+
+  try {
+    const member = await prisma.member.findUnique({
+      where: { email },
+    });
+
+    if (!member) {
+      return apiResponse(c, 401, 'Invalid email or password');
+    }
+
+    const isMatch = await argon2.verify(member.password, password);
+    if (!isMatch) {
+      return apiResponse(c, 401, 'Invalid email or password');
+    }
+ 
+    // ✅ Generate Token
+    const token = jwt.sign(
+      {
+        id: member.id,
+        email: member.email,
+        role: member.role,
+      },
+      process.env.JWT_SECRET!,
+      { expiresIn: '1d' }
+    );
+
+    return apiResponse(c, 200, 'Login success', {
+      token,
+      member: {
+        id: member.id,
+        email: member.email,
+      },
+    });
+
+   
+  } catch (err) {
+    console.error(err);
+    return apiResponse(c, 500, 'Login failed');
+  }
+});
+
+
 mem.post('/register', async (c) => {
   const body = await c.req.json();
-  const { email, username, password, gender } = body;
+  const { email, username, password, gender, phone, address,  } = body;
   const passwordRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{10,}$/;
   if (!passwordRule.test(password)) {
     return apiResponse(
@@ -179,8 +233,54 @@ mem.post('/register', async (c) => {
       data: {
         email,
         username,
-        password: hashedPassword, 
-        gender,
+        password: hashedPassword,
+        phone,
+        address, 
+        gender, 
+      },
+    });
+    return apiResponse(c, 201, 'Registion succes', member);
+  } catch (err) {
+    return apiResponse(c, 500, 'Register failed', null, err);
+  }
+});
+
+mem.post('/v2/register', async (c) => {
+  const body = await c.req.json();
+  const { email, username, password, gender, phone, address,  } = body;
+  const passwordRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{10,}$/;
+  const phoneRule = /^0[0-9]{9}$/
+  if (!passwordRule.test(password)) {
+    return apiResponse(
+      c,
+      400,
+      'Password must be at least 10 characters and contain uppercase, lowercase, and number',
+    );
+  } 
+
+  if (phone && !phoneRule.test(phone)) {
+  return apiResponse(
+    c,
+    400,
+    'Phone number must be exactly 10 digits'
+  );
+}
+
+  if (gender && !Object.values(Gender).includes(gender)) {
+    return apiResponse(c, 400, 'Invalid gender');
+  }
+  try {
+    const hashedPassword = await argon2.hash(password, {
+      type: argon2.argon2id,
+    });
+    const member = await prisma.member.create({
+      data: {
+        email,
+        username,
+        password: hashedPassword,
+        phone,
+        address, 
+        gender, 
       },
     });
     return apiResponse(c, 201, 'Registion succes', member);
@@ -189,10 +289,82 @@ mem.post('/register', async (c) => {
   }
 });
  
-mem.post('/logout', (c) => {
-  deleteCookie(c, 'accessToken', {
-    path: '/',
+
+mem.post('/refresh', async (c) => {
+  const refreshTokenFromCookie = getCookie(c, 'refreshToken');
+
+  if (!refreshTokenFromCookie) {
+    return apiResponse(c, 401, 'Refresh token missing');
+  }
+
+  try {
+    const payload: any = jwt.verify(refreshTokenFromCookie, JWT_SECRET);
+
+    const storedTokens = await prisma.refreshToken.findMany({
+      where: { memberId: payload.memberId },
+    });
+
+    let validToken = null;
+
+    for (const t of storedTokens) {
+      const match = await argon2.verify(t.token, refreshTokenFromCookie);
+      if (match) {
+        validToken = t;
+        break;
+      }
+    }
+
+    if (!validToken) {
+      return apiResponse(c, 401, 'Invalid refresh token');
+    }
+
+    // 🔴 เพิ่ม expire check ตรงนี้
+    if (validToken.expiresAt < new Date()) {
+      // ลบ token ที่หมดอายุออกจาก DB
+      await prisma.refreshToken.delete({
+        where: { id: validToken.id },
+      });
+
+      deleteCookie(c, 'accessToken', { path: '/' });
+      deleteCookie(c, 'refreshToken', { path: '/' });
+
+      return apiResponse(c, 401, 'Refresh token expired');
+    }
+
+    // create new access token
+    const newAccessToken = jwt.sign(
+      { memberId: payload.memberId },
+      JWT_SECRET,
+      { expiresIn: '15m' }
+    );
+
+    setCookie(c, 'accessToken', newAccessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+      maxAge: 60 * 15,
+      path: '/',
+    });
+
+    return apiResponse(c, 200, 'Token refreshed');
+
+  } catch (err) {
+    return apiResponse(c, 401, 'Invalid refresh token');
+  }
+});
+
+
+mem.post('/logout', authMiddleware, async (c) => {
+  const member = c.get('member') as { memberId: number };
+
+  await prisma.refreshToken.deleteMany({
+    where: { memberId: member.memberId }
   });
+
+  // ลบ cookies
+  deleteCookie(c, 'accessToken', { path: '/' });
+  deleteCookie(c, 'refreshToken', { path: '/' });
+
   return apiResponse(c, 200, 'Logout success');
 });
 

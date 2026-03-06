@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ProtectedLayout from '../../Protected';
-
+import { fetchWithAuth } from '../../lib/api/fetchWithAuth';
 import BorrowStats   from '@/components/Member/dashboard/BorrowStats';
 import OverdueAlert  from '@/components/Member/dashboard/OverdueAlert';
 import BorrowTabs    from '@/components/Member/dashboard/BorrowTabs';

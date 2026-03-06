@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ProtectedLayout from '../../Protected';
-
+import { fetchWithAuth } from '../../lib/api/fetchWithAuth';
 import ProfileAvatar      from '@/components/Member/profile/ProfileAvatar';
 import ProfileAccountInfo from '@/components/Member/profile/ProfileAccountInfo';
 import ProfileEditForm    from '@/components/Member/profile/ProfileEditForm';

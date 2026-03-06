@@ -54,7 +54,10 @@ export const ModelName = {
   Member: 'Member',
   Book: 'Book',
   Category: 'Category',
-  Borrowed: 'Borrowed'
+  Borrowed: 'Borrowed',
+  Reservation: 'Reservation',
+  Fine: 'Fine',
+  RefreshToken: 'RefreshToken'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -79,7 +82,13 @@ export const MemberScalarFieldEnum = {
   username: 'username',
   password: 'password',
   gender: 'gender',
-  role: 'role'
+  role: 'role',
+  phone: 'phone',
+  address: 'address',
+  isActive: 'isActive',
+  avatar: 'avatar',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type MemberScalarFieldEnum = (typeof MemberScalarFieldEnum)[keyof typeof MemberScalarFieldEnum]
@@ -89,10 +98,14 @@ export const BookScalarFieldEnum = {
   id: 'id',
   title: 'title',
   author: 'author',
+  isbn: 'isbn',
+  description: 'description',
   publication_year: 'publication_year',
   status: 'status',
   imageUrl: 'imageUrl',
-  categoryId: 'categoryId'
+  categoryId: 'categoryId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type BookScalarFieldEnum = (typeof BookScalarFieldEnum)[keyof typeof BookScalarFieldEnum]
@@ -111,11 +124,49 @@ export const BorrowedScalarFieldEnum = {
   memberId: 'memberId',
   bookId: 'bookId',
   loanDate: 'loanDate',
+  dueDate: 'dueDate',
   returnDate: 'returnDate',
-  status: 'status'
+  status: 'status',
+  fineAmount: 'fineAmount',
+  createdAt: 'createdAt'
 } as const
 
 export type BorrowedScalarFieldEnum = (typeof BorrowedScalarFieldEnum)[keyof typeof BorrowedScalarFieldEnum]
+
+
+export const ReservationScalarFieldEnum = {
+  id: 'id',
+  memberId: 'memberId',
+  bookId: 'bookId',
+  status: 'status',
+  reservedAt: 'reservedAt',
+  expiresAt: 'expiresAt'
+} as const
+
+export type ReservationScalarFieldEnum = (typeof ReservationScalarFieldEnum)[keyof typeof ReservationScalarFieldEnum]
+
+
+export const FineScalarFieldEnum = {
+  id: 'id',
+  memberId: 'memberId',
+  borrowId: 'borrowId',
+  amount: 'amount',
+  paid: 'paid',
+  createdAt: 'createdAt'
+} as const
+
+export type FineScalarFieldEnum = (typeof FineScalarFieldEnum)[keyof typeof FineScalarFieldEnum]
+
+
+export const RefreshTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  memberId: 'memberId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
 
 
 export const SortOrder = {
