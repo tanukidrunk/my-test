@@ -2,13 +2,13 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ProtectedLayout from '../../protected';
-
+import {API_URL} from '@/app/lib/api';
 import BorrowStats   from '@/components/Member/dashboard/BorrowStats';
 import OverdueAlert  from '@/components/Member/dashboard/OverdueAlert';
 import BorrowTabs    from '@/components/Member/dashboard/BorrowTabs';
 import BorrowTable   from '@/components/Member/dashboard/BorrowTable';
 import { Borrowed, getDaysLeft } from '@/components/Member/dashboard/BorrowRow';
-
+import { fetchWithAuth } from '@/app/lib/fetchWithAuth';
 type Tab = 'active' | 'history';
 
 export default function MemberBorrowedPage() {
@@ -18,9 +18,9 @@ export default function MemberBorrowedPage() {
   const [tab,         setTab]         = useState<Tab>('active');
  
   /* ── load ── */
-  const loadBorrows = async () => {
+  const loadBorrows = async () => { 
     try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow/member`, { credentials: 'include' });
+      const res  = await fetchWithAuth(`/borrow/member`, { credentials: 'include' });
       if (!res.ok) { setBorrows([]); return; }
       const json = await res.json();
       setBorrows(Array.isArray(json.data) ? json.data : []);
@@ -31,17 +31,16 @@ export default function MemberBorrowedPage() {
     }
   };
   useEffect(() => { loadBorrows(); }, []);
-
+ 
   /* ── return ── */
   const handleReturn = async (borrowId: number, bookId: number) => {
     setReturningId(borrowId);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow/return/${borrowId}`, {
+      const res = await fetchWithAuth(`/borrow/return/${borrowId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ bookId }),
-      });
+      }); 
       if (!res.ok) return;
       const json = await res.json();
       setBorrows(Array.isArray(json.data) ? json.data : []);

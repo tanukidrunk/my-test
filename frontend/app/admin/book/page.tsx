@@ -1,10 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { BookOpen } from 'lucide-react';
-
+import {API_URL} from '@/app/lib/api';
 import BookFormCard from '@/components/Admin/book/BookFormCard';
 import BookTable    from '@/components/Admin/book/BookTable';
 import { Book, Category, EMPTY_BOOK } from '@/components/Admin/book/bookTypes';
+import { fetchWithAuth } from '@/app/lib/fetchWithAuth';
 
 export default function BooksPage() {
   const [books,      setBooks]      = useState<Book[]>([]);
@@ -18,20 +19,20 @@ export default function BooksPage() {
   /* ── Load ── */
   const loadBooks = async () => {
     try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/book`, { credentials: 'include' });
+      const res  = await fetchWithAuth(`/book`, { credentials: 'include' });
       const json = await res.json();
       setBooks(Array.isArray(json.data) ? json.data : []);
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   };
-
+ 
   const loadCategories = async () => {
     try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/cate`, { credentials: 'include' });
+      const res  = await fetchWithAuth(`/cate`, { credentials: 'include' });
       const json = await res.json();
       setCategories(Array.isArray(json.data) ? json.data : []);
     } catch (err) { console.error(err); }
-  };
+  }; 
 
   useEffect(() => { loadBooks(); loadCategories(); }, []);
 
@@ -42,7 +43,7 @@ export default function BooksPage() {
     if (!imageFile) return;
     const fd = new FormData();
     fd.append('image', imageFile);
-    await fetch(`${process.env.NEXT_PUBLIC_API}/book/${bookId}/image`, {
+    await fetchWithAuth(`/book/${bookId}/image`, {
       method: 'POST', credentials: 'include', body: fd,
     });
     setImageFile(null);
@@ -53,10 +54,10 @@ export default function BooksPage() {
     try {
       const method = isEditing ? 'PUT' : 'POST';
       const url    = isEditing
-        ? `${process.env.NEXT_PUBLIC_API}/book/${form.id}`
-        : `${process.env.NEXT_PUBLIC_API}/book`;
+        ? `${API_URL}/book/${form.id}`
+        : `${API_URL}/book`;
 
-      const res  = await fetch(url, {
+      const res  = await fetchWithAuth(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -72,13 +73,13 @@ export default function BooksPage() {
       resetForm();
       loadBooks();
     } catch (err) { console.error(err); }
-  };
+  }; 
 
   /* ── Delete ── */
   const deleteBook = async (id: number) => {
     if (!confirm('Delete this book?')) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/book/${id}`, {
+      const res = await fetchWithAuth(`/book/${id}`, {
         method: 'DELETE', credentials: 'include',
       });
       if (!res.ok) { alert('Delete failed'); return; }
@@ -86,7 +87,7 @@ export default function BooksPage() {
     } catch (err) { console.error(err); }
   };
 
-  const filtered = books.filter(
+  const filtered = books.filter( 
     (b) =>
       b.title.toLowerCase().includes(search.toLowerCase()) ||
       b.author.toLowerCase().includes(search.toLowerCase()),

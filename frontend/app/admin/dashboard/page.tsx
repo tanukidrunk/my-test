@@ -2,10 +2,11 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { RefreshCw } from 'lucide-react';
-
+import {API_URL} from '@/app/lib/api';
 import DashboardStats from '@/components/Admin/dashboard/DashboardStats';
 import BorrowTable    from '@/components/Admin/dashboard/BorrowTable';
 import { Borrowed }   from '@/components/Admin/dashboard/borrowedTypes';
+import { fetchWithAuth } from '@/app/lib/fetchWithAuth';
 
 export default function AdminDashboard() {
   const [borrowed,   setBorrowed]   = useState<Borrowed[]>([]); 
@@ -20,7 +21,7 @@ export default function AdminDashboard() {
     if (!silent) setLoading(true);
     else { setRefreshing(true); setSpinning(true); }
     try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow`, { credentials: 'include' });
+      const res  = await fetchWithAuth(`/borrow`, { credentials: 'include' });
       const json = await res.json();
       setBorrowed(Array.isArray(json.data) ? json.data : []);
     } catch (err) {
@@ -30,12 +31,12 @@ export default function AdminDashboard() {
       setLoading(false);
       setRefreshing(false);
       setTimeout(() => setSpinning(false), 600);
-    }
+    } 
   };
 
   /* ── Auth check ── */
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, { credentials: 'include' })
+    fetchWithAuth(`/auth/me`, { credentials: 'include' })
       .then(async (res) => {
         if (!res.ok) { router.replace('/login'); return; }
         const json = await res.json();
@@ -45,7 +46,7 @@ export default function AdminDashboard() {
       })
       .catch(() => router.replace('/login'));
   }, []);
-
+ 
   /* ── Derived ── */
   const total    = borrowed.length;
   const active   = borrowed.filter((b) => b.status === 'BORROWED').length;

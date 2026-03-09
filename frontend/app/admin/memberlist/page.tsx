@@ -1,10 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { UserRound, RefreshCw } from 'lucide-react';
-
+import {API_URL} from '@/app/lib/api';
 import MemberStats from '@/components/Admin/memberlist/MemberStats';
 import MemberTable from '@/components/Admin/memberlist/MemberTable';
 import { Member }  from '@/components/Admin/memberlist/memberTypes';
+import { fetchWithAuth } from '@/app/lib/fetchWithAuth';
 
 export default function MemberPage() {
   const [members, setMembers] = useState<Member[]>([]);
@@ -16,14 +17,14 @@ export default function MemberPage() {
     setLoading(true);
     setSpinning(true);
     try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/member`, { credentials: 'include' });
+      const res  = await fetchWithAuth(`/member`, { credentials: 'include' });
       const json = await res.json();
       setMembers(Array.isArray(json.data) ? json.data : []);
     } finally {
       setLoading(false);
       setTimeout(() => setSpinning(false), 600);
     }
-  };
+  }; 
 
   useEffect(() => { loadMembers(); }, []);
 

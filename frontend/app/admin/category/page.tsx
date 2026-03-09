@@ -1,11 +1,12 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Layers, Plus, Search } from 'lucide-react';
-
+import {API_URL} from '@/app/lib/api';
 import CategoryStats from '@/components/Admin/category/CategoryStats';
 import CategoryTable from '@/components/Admin/category/CategoryTable';
 import CategoryModal from '@/components/Admin/category/CategoryModal';
 import { Category }  from '@/components/Admin/category/CategoryRow';
+import { fetchWithAuth } from '@/app/lib/fetchWithAuth';
 
 export default function CategoryPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -19,13 +20,13 @@ export default function CategoryPage() {
   const loadCategory = async () => {
     setLoading(true);
     try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/cate`, { credentials: 'include' });
+      const res  = await fetchWithAuth(`/cate`, { credentials: 'include' });
       const json = await res.json();
       setCategories(Array.isArray(json.data) ? json.data : []);
     } finally {
       setLoading(false);
     }
-  };
+  }; 
   useEffect(() => { loadCategory(); }, []);
 
   /* ── modal helpers ── */
@@ -36,8 +37,8 @@ export default function CategoryPage() {
   const submitCategory = async () => {
     const method = isEditing ? 'PUT' : 'POST';
     const url    = isEditing
-      ? `${process.env.NEXT_PUBLIC_API}/cate/${form.id}`
-      : `${process.env.NEXT_PUBLIC_API}/cate/Addcategory`;
+      ? `${API_URL}/cate/${form.id}`
+      : `${API_URL}/cate/add-categoies`;
     await fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
@@ -47,11 +48,11 @@ export default function CategoryPage() {
     setOpen(false);
     loadCategory();
   };
-
+ 
   /* ── delete ── */
   const deleteCategory = async (id: number) => {
     if (!confirm('Delete this category?')) return;
-    await fetch(`${process.env.NEXT_PUBLIC_API}/cate/${id}`, { method: 'DELETE', credentials: 'include' });
+    await fetchWithAuth(`/cate/${id}`, { method: 'DELETE', credentials: 'include' });
     loadCategory();
   };
 
@@ -59,7 +60,7 @@ export default function CategoryPage() {
     c.name.toLowerCase().includes(search.toLowerCase()),
   );
 
-  /* ── loading ── */
+  /* ── loading ── */ 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">

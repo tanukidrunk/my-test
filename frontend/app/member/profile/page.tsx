@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ProtectedLayout from '../../protected';
-
+import {API_URL} from '@/app/lib/api';
 import ProfileAvatar      from '@/components/Member/profile/ProfileAvatar';
 import ProfileAccountInfo from '@/components/Member/profile/ProfileAccountInfo';
 import ProfileEditForm    from '@/components/Member/profile/ProfileEditForm';
@@ -12,8 +12,9 @@ import { useToast }       from '@/components/Member/profile/useToast';
 import {
   MemberProfile, ProfileForm, UpdateProfilePayload,
 } from '@/components/Member/profile/profileTypes';
+import { fetchWithAuth } from '@/app/lib/fetchWithAuth';
 
-export default function ProfilePage() {
+export default function ProfilePage() {  
   const [form,    setForm]    = useState<ProfileForm>({ username: '', password: '', gender: 'OTHER' });
   const [member,  setMember]  = useState<MemberProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,20 +28,20 @@ export default function ProfilePage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/member/profile`, { credentials: 'include' });
+        const res  = await fetchWithAuth(`/member/profile`, { credentials: 'include' });
         if (!res.ok) { addToast('error', 'Unauthorized'); return; }
         const json = await res.json();
         if (json.data) {
           setMember(json.data);
           setForm({ username: json.data.username ?? '', password: '', gender: json.data.gender ?? 'OTHER' });
-          if (json.data.avatarUrl) setAvatarPreview(`${process.env.NEXT_PUBLIC_API}${json.data.avatarUrl}`);
+          if (json.data.avatarUrl) setAvatarPreview(`${API_URL}${json.data.avatarUrl}`);
         }
       } catch { addToast('error', 'Failed to load profile'); }
       finally  { setLoading(false); }
     };
     load();
   }, []);
-
+ 
   /* ── Avatar upload ── */
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -54,7 +55,7 @@ export default function ProfilePage() {
     try {
       const fd = new FormData();
       fd.append('avatar', file);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/member/avatar`, {
+      const res = await fetchWithAuth(`/member/avatar`, {
         method: 'POST', credentials: 'include', body: fd,
       });
       addToast(res.ok ? 'success' : 'error', res.ok ? 'Profile picture updated!' : 'Failed to upload avatar');
@@ -75,7 +76,7 @@ export default function ProfilePage() {
       const payload: UpdateProfilePayload = { username: form.username, gender: form.gender };
       if (form.password.trim()) payload.password = form.password;
 
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/member/profile`, {
+      const res  = await fetchWithAuth(`/member/profile`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

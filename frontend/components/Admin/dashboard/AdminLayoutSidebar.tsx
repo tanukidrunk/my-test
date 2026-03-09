@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { LayoutDashboard, Book, List, User, LogOut } from 'lucide-react';
 import { cn } from '../../../lib/utils';
-
+import {API_URL} from '@/app/lib/api';
 export default function AdminLayoutSidebar({
   children,
 }: {
@@ -23,11 +23,19 @@ export default function AdminLayoutSidebar({
     { name: 'Logout', href: '/login', icon: LogOut, logout: true },
   ];
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    router.replace('/login');
-  };
+const handleLogout = async () => {
+  try {
+    await fetch(`${API_URL}/member/logout`, {
+      method: 'POST',
+      credentials: 'include', // สำคัญสำหรับ cookie
+    });
 
+    router.replace('/login');
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+};
+ 
   return (
     <div className='min-h-screen flex bg-neutral-100 dark:bg-neutral-950'>
       <aside className='w-64 bg-white dark:bg-neutral-900 shadow-sm p-4 border-r border-neutral-200 dark:border-neutral-800 sticky top-0 h-screen'>

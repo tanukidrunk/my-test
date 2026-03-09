@@ -8,6 +8,7 @@ import BookToolbar        from '@/components/Member/book/BookToolbar';
 import BookTable          from '@/components/Member/book/BookTable';
 import BorrowConfirmModal from '@/components/Member/book/BorrowConfirmModal';
 import { Book }           from '@/components/Member/book/BookRow';
+import { fetchWithAuth } from '@/app/lib/fetchWithAuth';
 
 type FilterType = 'ALL' | 'AVAILABLE' | 'BORROWED';
 
@@ -19,16 +20,16 @@ export default function BooksListPage() {
   const [confirming,   setConfirming]   = useState(false);
   const [search,       setSearch]       = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterType>('ALL');
-
+ 
   /* ── auth check ── */
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, { credentials: 'include' });
+    fetchWithAuth(`/auth/me`);
   }, []);
 
   /* ── load books ── */
   const loadBooks = async () => {
     try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/book`);
+      const res  = await fetchWithAuth(`/book`);
       const json = await res.json();
       setBooks(Array.isArray(json.data) ? json.data : []);
     } catch (err) {
@@ -42,12 +43,11 @@ export default function BooksListPage() {
   /* ── borrow ── */
   const confirmBorrow = async () => {
     if (!selectedBook) return;
-    setConfirming(true);
+    setConfirming(true); 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow/borrowed`, {
+      const res = await fetchWithAuth(`/borrow/borrowed`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ bookId: selectedBook.id }),
       });
       if (res.ok) {

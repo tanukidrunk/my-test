@@ -62,13 +62,12 @@ function StatCard({ icon, value, label, color, delay = 0 }: StatCardProps) {
   );
 }
 
-export default function BorrowStats({ active, returned, dueSoon, overdue }: Props) {
+export default function BorrowStats({ active, returned, overdue }: Props) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 max-w-4xl mx-auto">
       <StatCard icon="📖" value={active}   label="Currently Borrowed" color="blue"  delay={0}   />
       <StatCard icon="✅" value={returned} label="Books Returned"      color="green" delay={80}  />
-      <StatCard icon="⏰" value={dueSoon}  label="Due Soon (3 days)"   color="amber" delay={160} />
-      <StatCard icon="⚠️" value={overdue}  label="Overdue"             color="red"   delay={240} />
+      <StatCard icon="⚠️" value={overdue}  label="Overdue"             color="red"   delay={160} />
     </div>
   );
 }

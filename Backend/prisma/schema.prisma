@@ -108,7 +108,7 @@ model RefreshToken {
 
   expiresAt DateTime
   createdAt DateTime @default(now())
-
+ 
   @@index([memberId])
 }
 

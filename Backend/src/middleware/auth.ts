@@ -15,7 +15,7 @@ type JwtPayload = {
 type AppVariables = { 
   member: JwtPayload;
 };
-
+ 
 type AppContext = Context<{ Variables: AppVariables }>;
 
 export const authMiddleware = async (c: AppContext, next: Next) => {

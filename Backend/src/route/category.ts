@@ -10,7 +10,7 @@ const apiResponse = (
   status: number,
   message: string,
   data: any = null,
-  error: any = null,
+  error: any = null, 
 ) => {
   return c.json({ status, message, data, error }, 200);
 };

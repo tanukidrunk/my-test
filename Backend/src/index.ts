@@ -15,9 +15,12 @@ app.use(
   '*',
   cors({
     origin: 'http://localhost:3000',
-    credentials: true, 
+    allowHeaders: ['Content-Type'],
+    allowMethods: ['POST', 'GET', 'PUT','PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true,
+
   }),
-);
+); 
 app.use('/uploads/*', serveStatic({ root: './' }));
 app.get('/', (c) => c.text('API is running'));
 
