@@ -4,7 +4,7 @@ import { authMiddleware } from '../middleware/auth';
 import { BookStatus } from '../../generated/prisma/client';
 import { adminOnly } from '../middleware/adminOnly';
 import { randomUUID } from 'crypto';
-import { jwtauthMiddleware } from '../middleware/jwtauth';
+
 
 export const book = new Hono();
 
@@ -22,6 +22,9 @@ const apiResponse = (
 book.get('/', async (c) => {
   const books = await prisma.book.findMany({
     include: { category: true },
+    orderBy: {
+      id: 'asc', 
+    },
   });
   return apiResponse(c, 200, 'ok', books);
 });
@@ -96,7 +99,7 @@ book.post('/many-books', authMiddleware, adminOnly, async (c) => {
   }
 });
 
-book.post('/v2/many-books', jwtauthMiddleware, adminOnly, async (c) => {
+book.post('/v2/many-books', authMiddleware, adminOnly, async (c) => {
   try {
     const body = await c.req.json(); // คาดหวังว่า body จะเป็น Array ของหนังสือ
 
@@ -110,7 +113,6 @@ book.post('/v2/many-books', jwtauthMiddleware, adminOnly, async (c) => {
     return apiResponse(c, 500, 'Create many books failed', null, err);
   }
 });
-
 
 // POST upload book image (admin only)
 book.post('/:id/image', authMiddleware, adminOnly, async (c) => {

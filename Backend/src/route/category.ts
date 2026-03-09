@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { prisma } from '../prisma';
 import { authMiddleware } from '../middleware/auth';
 import { adminOnly } from '../middleware/adminOnly';
-import { jwtauthMiddleware } from '../middleware/jwtauth';
+
 
 export const cate = new Hono();
 
@@ -29,7 +29,7 @@ cate.get('/', authMiddleware, adminOnly, async (c) => {
 });
 
 // POST create
-cate.post('/', authMiddleware, adminOnly, async (c) => { 
+cate.post('/', authMiddleware, adminOnly, async (c) => {
   try {
     const body = await c.req.json();
     const category = await prisma.category.create({
@@ -42,9 +42,9 @@ cate.post('/', authMiddleware, adminOnly, async (c) => {
 });
 
 cate.post('/add-categoies', authMiddleware, adminOnly, async (c) => {
-  try { 
+  try {
     const body = await c.req.json(); // body ตรงนี้คือ [ {name: '...'}, {name: '...'} ]
-    
+
     const category = await prisma.category.createMany({
       data: body, // ส่ง Array เข้าไปตรงๆ เลย
       skipDuplicates: true, // แนะนำให้ใส่ไว้ เผื่อในลิสต์มีชื่อซ้ำ หรือมีใน DB แล้ว จะได้ไม่พัง
@@ -53,15 +53,15 @@ cate.post('/add-categoies', authMiddleware, adminOnly, async (c) => {
     return apiResponse(c, 201, 'Created', category);
   } catch (err) {
     // พิมพ์ error ออกมาดูใน Console ด้วยจะช่วยให้แก้บัคง่ายขึ้นครับ
-    console.error(err); 
+    console.error(err);
     return apiResponse(c, 500, 'Create category failed', null, err);
   }
 });
 
-cate.post('/v2/add-categoies', jwtauthMiddleware, adminOnly, async (c) => {
-  try { 
+cate.post('/v2/add-categoies', authMiddleware, adminOnly, async (c) => {
+  try {
     const body = await c.req.json(); // body ตรงนี้คือ [ {name: '...'}, {name: '...'} ]
-    
+
     const category = await prisma.category.createMany({
       data: body, // ส่ง Array เข้าไปตรงๆ เลย
       skipDuplicates: true, // แนะนำให้ใส่ไว้ เผื่อในลิสต์มีชื่อซ้ำ หรือมีใน DB แล้ว จะได้ไม่พัง
@@ -70,7 +70,7 @@ cate.post('/v2/add-categoies', jwtauthMiddleware, adminOnly, async (c) => {
     return apiResponse(c, 201, 'Created', category);
   } catch (err) {
     // พิมพ์ error ออกมาดูใน Console ด้วยจะช่วยให้แก้บัคง่ายขึ้นครับ
-    console.error(err); 
+    console.error(err);
     return apiResponse(c, 500, 'Create category failed', null, err);
   }
 });

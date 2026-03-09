@@ -12,7 +12,7 @@ export default function OverdueAlert({ count }: Props) {
         bg-red-50 border border-red-200 text-red-700 text-sm font-medium
         transition-all duration-300
         opacity-100 translate-y-0
-      `}
+      `} 
     >
       <span className="text-lg flex-shrink-0">⚠️</span>
       <span>
@@ -21,4 +21,4 @@ export default function OverdueAlert({ count }: Props) {
       </span>
     </div>
   );
-}
+} 

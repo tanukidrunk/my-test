@@ -1,12 +1,12 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Layers, Plus, Search } from 'lucide-react';
-
+import { apiFetch } from '@/app/lib/api/token';
 import CategoryStats from '@/components/Admin/category/CategoryStats';
 import CategoryTable from '@/components/Admin/category/CategoryTable';
 import CategoryModal from '@/components/Admin/category/CategoryModal';
 import { Category }  from '@/components/Admin/category/CategoryRow';
-
+ 
 export default function CategoryPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading,    setLoading]    = useState(true);
@@ -16,16 +16,15 @@ export default function CategoryPage() {
   const [form,       setForm]       = useState<Category>({ id: 0, name: '' });
 
   /* ── load ── */
-  const loadCategory = async () => {
-    setLoading(true);
-    try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/cate`, { credentials: 'include' });
-      const json = await res.json();
-      setCategories(Array.isArray(json.data) ? json.data : []);
-    } finally {
-      setLoading(false);
-    }
-  };
+const loadCategory = async () => {
+  setLoading(true);
+  try {
+    const json = await apiFetch('/cate');
+    setCategories(Array.isArray(json.data) ? json.data : []);
+  } finally {
+    setLoading(false);
+  }
+};
   useEffect(() => { loadCategory(); }, []);
 
   /* ── modal helpers ── */
@@ -33,27 +32,30 @@ export default function CategoryPage() {
   const openEdit = (cat: Category) => { setForm(cat); setIsEditing(true); setOpen(true); };
 
   /* ── submit ── */
-  const submitCategory = async () => {
-    const method = isEditing ? 'PUT' : 'POST';
-    const url    = isEditing
-      ? `${process.env.NEXT_PUBLIC_API}/cate/${form.id}`
-      : `${process.env.NEXT_PUBLIC_API}/cate/Addcategory`;
-    await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ name: form.name }),
-    });
-    setOpen(false);
-    loadCategory();
-  };
+const submitCategory = async () => {
+  const endpoint = isEditing
+    ? `/cate/${form.id}`
+    : `/cate/Addcategory`;
+
+  await apiFetch(endpoint, {
+    method: isEditing ? 'PUT' : 'POST',
+    body: JSON.stringify({ name: form.name }),
+  });
+
+  setOpen(false);
+  loadCategory();
+};
 
   /* ── delete ── */
-  const deleteCategory = async (id: number) => {
-    if (!confirm('Delete this category?')) return;
-    await fetch(`${process.env.NEXT_PUBLIC_API}/cate/${id}`, { method: 'DELETE', credentials: 'include' });
-    loadCategory();
-  };
+const deleteCategory = async (id: number) => {
+  if (!confirm('Delete this category?')) return;
+
+  await apiFetch(`/cate/${id}`, {
+    method: 'DELETE',
+  });
+
+  loadCategory();
+};
 
   const filtered = categories.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase()),

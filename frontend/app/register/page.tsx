@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { API_URL} from '@/app/lib/api/token';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -22,9 +23,18 @@ export default function RegisterPage() {
     username: '',
     password: '',
     gender: 'OTHER',
+    phone: '',
+    address: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +43,7 @@ export default function RegisterPage() {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/member/register`,
+        `${API_URL}/member/register`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -60,80 +70,141 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gray-50'>
-      <Card className='w-full max-w-md shadow-lg'>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader>
-          <CardTitle className='text-2xl text-center'>Register</CardTitle>
+          <CardTitle className="text-2xl text-center">
+            Register
+          </CardTitle>
         </CardHeader>
+
         <CardContent>
-          <form onSubmit={handleSubmit} className='space-y-4'>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+
+            {/* Email */}
+
             <div>
-              <Label htmlFor='email'>Email</Label>
+              <Label>Email</Label>
               <Input
-                id='email'
-                type='email'
-                placeholder='Enter your email'
+                type="email"
+                placeholder="Enter email"
                 value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                onChange={(e) => handleChange('email', e.target.value)}
                 required
               />
             </div>
 
+            {/* Username */}
+
             <div>
-              <Label htmlFor='username'>Username</Label>
+              <Label>Username</Label>
               <Input
-                id='username'
-                type='text'
-                placeholder='Enter your username'
+                type="text"
+                placeholder="Enter username"
                 value={form.username}
-                onChange={(e) => setForm({ ...form, username: e.target.value })}
+                onChange={(e) => handleChange('username', e.target.value)}
                 required
               />
             </div>
 
+            {/* Password */}
+
             <div>
-              <Label htmlFor='password'>Password</Label>
+              <Label>Password</Label>
               <Input
-                id='password'
-                type='password'
-                placeholder='Enter your password'
+                type="password"
+                placeholder="Password (min 10 chars, A-Z a-z 0-9)"
                 value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                onChange={(e) => handleChange('password', e.target.value)}
                 required
               />
             </div>
 
+            {/* Phone */}
+
+            {/* <div>
+              <Label>Phone</Label>
+              <Input
+                type="tel"
+                placeholder="0812345678"
+                value={form.phone}
+                onChange={(e) => handleChange('phone', e.target.value)}
+              />
+            </div> */}
+
+            {/* Address */}
+
+            {/* <div>
+              <Label>Address</Label>
+              <Input
+                type="text"
+                placeholder="Enter address"
+                value={form.address}
+                onChange={(e) => handleChange('address', e.target.value)}
+              />
+            </div> */}
+
+            {/* Gender */}
+
             <div>
-              <Label htmlFor='gender'>Gender</Label>
+              <Label>Gender</Label>
+
               <Select
                 value={form.gender}
-                onValueChange={(value) => setForm({ ...form, gender: value })}
+                onValueChange={(value) => handleChange('gender', value)}
               >
-                <SelectTrigger id='gender'>
-                  <SelectValue placeholder='Select Gender' />
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Gender" />
                 </SelectTrigger>
+
                 <SelectContent>
-                  <SelectItem value='MALE'>Male</SelectItem>
-                  <SelectItem value='FEMALE'>Female</SelectItem>
-                  <SelectItem value='OTHER'>Other</SelectItem>
+                  <SelectItem value="MALE">Male</SelectItem>
+                  <SelectItem value="FEMALE">Female</SelectItem>
+                  <SelectItem value="OTHER">Other</SelectItem>
                 </SelectContent>
+
               </Select>
+
             </div>
 
-            {error && <p className='text-red-600'>{error}</p>}
+            {/* Error */}
 
-            <Button type='submit' className='w-full' disabled={loading}>
+            {error && (
+              <p className="text-red-600 text-sm">
+                {error}
+              </p>
+            )}
+
+            {/* Button */}
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading}
+            >
               {loading ? 'Registering...' : 'Register'}
             </Button>
+
           </form>
-          <p className='text-sm text-center mt-4 text-gray-500'>
-            Already have an account?{' '}
-            <Link href='/login' className='text-blue-600'>
+
+          <p className="text-sm text-center mt-4 text-gray-500">
+
+            Already have an account?
+
+            <Link
+              href="/login"
+              className="text-blue-600 ml-1"
+            >
               Log in
             </Link>
+
           </p>
+
         </CardContent>
       </Card>
+
     </div>
   );
 }

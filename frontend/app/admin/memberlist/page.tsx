@@ -1,29 +1,31 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { UserRound, RefreshCw } from 'lucide-react';
-
+import { apiFetch } from '@/app/lib/api/token';
 import MemberStats from '@/components/Admin/memberlist/MemberStats';
 import MemberTable from '@/components/Admin/memberlist/MemberTable';
 import { Member }  from '@/components/Admin/memberlist/memberTypes';
-
+ 
 export default function MemberPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [search,  setSearch]  = useState('');
   const [spinning, setSpinning] = useState(false);
 
-  const loadMembers = async () => {
-    setLoading(true);
-    setSpinning(true);
-    try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/member`, { credentials: 'include' });
-      const json = await res.json();
-      setMembers(Array.isArray(json.data) ? json.data : []);
-    } finally {
-      setLoading(false);
-      setTimeout(() => setSpinning(false), 600);
-    }
-  };
+const loadMembers = async () => {
+  setLoading(true);
+  setSpinning(true);
+
+  try {
+    const json = await apiFetch('/member');
+    setMembers(Array.isArray(json.data) ? json.data : []);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+    setTimeout(() => setSpinning(false), 600);
+  }
+};
 
   useEffect(() => { loadMembers(); }, []);
 

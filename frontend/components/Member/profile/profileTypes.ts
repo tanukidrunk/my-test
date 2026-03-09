@@ -5,6 +5,8 @@ export type MemberProfile = {
   username: string;
   email: string;
   gender: Gender;
+  phone?: string
+  address?: string
   avatarUrl?: string | null;
 };
 
@@ -12,12 +14,16 @@ export type ProfileForm = {
   username: string;
   password: string;
   gender: Gender;
+  phone?: string
+  address?: string
 };
 
 export type UpdateProfilePayload = {
   username?: string;
   gender?: Gender;
   password?: string;
+  phone?: string
+  address?: string
 };
 
 export type Toast = {

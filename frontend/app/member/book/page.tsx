@@ -2,16 +2,15 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import ProtectedLayout from '../../Protected';
-import { fetchWithAuth } from '../../lib/api/fetchWithAuth';
+import ProtectedLayout from '../../Protected'; 
 import BookStats          from '@/components/Member/book/BookStats';
 import BookToolbar        from '@/components/Member/book/BookToolbar';
 import BookTable          from '@/components/Member/book/BookTable';
 import BorrowConfirmModal from '@/components/Member/book/BorrowConfirmModal';
 import { Book }           from '@/components/Member/book/BookRow';
-
+import { apiFetch } from '@/app/lib/api/token';
 type FilterType = 'ALL' | 'AVAILABLE' | 'BORROWED';
-
+ 
 export default function BooksListPage() {
   const [books,       setBooks]       = useState<Book[]>([]);
   const [loading,     setLoading]     = useState(true);
@@ -25,19 +24,10 @@ export default function BooksListPage() {
 useEffect(() => {
   const checkAuth = async () => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/auth/me`,
-        { credentials: 'include' }
-      );
-
-      if (!res.ok) {
-        router.push('/login');
-        return;
-      }
-
-      const data = await res.json();
+      const data = await apiFetch('/auth/me');
       console.log(data);
-    } catch (err) {
+
+    } catch {
       router.push('/login');
     }
   };
@@ -47,8 +37,8 @@ useEffect(() => {
   /* ── load books ── */
   const loadBooks = async () => {
     try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/book`);
-      const json = await res.json();
+      const json  = await apiFetch('/book');
+
       setBooks(Array.isArray(json.data) ? json.data : []);
     } catch (err) {
       console.error('Failed to load books:', err);
@@ -60,27 +50,29 @@ useEffect(() => {
 
   /* ── borrow ── */
   const confirmBorrow = async () => {
-    if (!selectedBook) return;
-    setConfirming(true);
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow/borrowed`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ bookId: selectedBook.id }),
-      });
-      if (res.ok) {
-        setBooks((prev) =>
-          prev.map((b) => b.id === selectedBook.id ? { ...b, status: 'BORROWED' } : b),
-        );
-      }
-    } finally {
-      setConfirming(false);
-      setConfirmOpen(false);
-      setSelectedBook(null);
-    }
-  };
+  if (!selectedBook) return;
 
+  setConfirming(true);
+
+  try {
+    await apiFetch('/borrow/borrowed', {
+      method: 'POST',
+      body: JSON.stringify({
+        bookId: selectedBook.id
+      }),
+    });
+
+    await loadBooks();   // ⭐ reload data
+
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setConfirming(false);
+    setConfirmOpen(false);
+    setSelectedBook(null);
+  }
+};
+ 
   /* ── derived ── */
   const totalBooks     = books.length;
   const availableCount = books.filter((b) => b.status === 'AVAILABLE').length;

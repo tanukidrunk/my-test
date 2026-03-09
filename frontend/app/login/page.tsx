@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { setToken , API_URL} from '@/app/lib/api/token';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,16 +15,15 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => { 
     e.preventDefault();
     setLoading(true);
     setError('');
-
+ 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/member/login`, {
+      const res = await fetch(`${API_URL}/member/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(form),
       });
 
@@ -35,14 +35,29 @@ export default function LoginPage() {
         return;
       }
 
-      const meRes = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/member/profile`,
-        {
-          credentials: 'include',
-        },
-      );
+      // ✅ เก็บ token
+      const token = json?.data?.token;
+
+      if (!token) {
+      setError("Token not returned from API");
+      setLoading(false);
+      return;
+      }
+
+      setToken(token);
+      console.log('token saved:', localStorage.getItem('token'));
+
+      // ✅ ใช้ apiFetch (มี Authorization อัตโนมัติ)
+      const meRes = await fetch(`${API_URL}/member/profile`,{
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!meRes.ok) {
+         throw new Error("Failed to fetch profile");
+      }
+
       const meJson = await meRes.json();
-      const member = meJson.data; // ✅ เอาตรง ๆ
+      const member = meJson.data;
 
       if (member?.role === 'ADMIN') {
         router.replace('/admin/dashboard');
@@ -52,62 +67,46 @@ export default function LoginPage() {
     } catch (err) {
       console.error(err);
       setError('Something went wrong');
-      setLoading(false);
     }
+
+    setLoading(false);
   };
-  //   const handleGoogleLogin = () => {
-  //   window.location.href = `${process.env.NEXT_PUBLIC_API}/auth/google`;
-  // };
+
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-50'>
       <Card className='w-full max-w-md shadow-lg'>
         <CardHeader>
           <CardTitle className='text-2xl text-center'>Log In</CardTitle>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSubmit} className='space-y-4'>
             <div>
-              <Label htmlFor='email'>Email</Label>
+              <Label>Email</Label>
               <Input
-                id='email'
                 type='text'
-                placeholder='Enter your email'
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                required
               />
             </div>
 
             <div>
-              <Label htmlFor='password'>Password</Label>
+              <Label>Password</Label>
               <Input
-                id='password'
                 type='password'
-                placeholder='Enter your password'
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                required
               />
             </div>
 
             {error && <p className='text-red-600'>{error}</p>}
 
-            <Button type='submit' className='w-full' disabled={loading}>
+            <Button className='w-full' disabled={loading}>
               {loading ? 'Logging in...' : 'Log In'}
             </Button>
-
-            {/* <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={handleGoogleLogin}
-              disabled={loading}
-            >
-              Login with Google
-            </Button> */}
           </form>
 
-          <p className='text-sm text-center mt-4 text-gray-500'>
+          <p className='text-sm text-center mt-4'>
             Dont have an account?{' '}
             <Link href='/register' className='text-blue-600'>
               Register

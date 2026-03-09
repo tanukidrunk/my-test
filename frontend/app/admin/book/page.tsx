@@ -1,11 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { BookOpen } from 'lucide-react';
-
+import { apiFetch , getToken , API_URL} from '@/app/lib/api/token';
 import BookFormCard from '@/components/Admin/book/BookFormCard';
 import BookTable    from '@/components/Admin/book/BookTable';
 import { Book, Category, EMPTY_BOOK } from '@/components/Admin/book/bookTypes';
-
+ 
 export default function BooksPage() {
   const [books,      setBooks]      = useState<Book[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -16,75 +16,89 @@ export default function BooksPage() {
   const [form,       setForm]       = useState<Book>(EMPTY_BOOK);
 
   /* ── Load ── */
-  const loadBooks = async () => {
-    try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/book`, { credentials: 'include' });
-      const json = await res.json();
-      setBooks(Array.isArray(json.data) ? json.data : []);
-    } catch (err) { console.error(err); }
-    finally { setLoading(false); }
-  };
-
-  const loadCategories = async () => {
-    try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/cate`, { credentials: 'include' });
-      const json = await res.json();
-      setCategories(Array.isArray(json.data) ? json.data : []);
-    } catch (err) { console.error(err); }
-  };
+const loadBooks = async () => {
+  try {
+    const json = await apiFetch('/book');
+    setBooks(Array.isArray(json.data) ? json.data : []);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
+ 
+const loadCategories = async () => {
+  try {
+    const json = await apiFetch('/cate');
+    setCategories(Array.isArray(json.data) ? json.data : []);
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   useEffect(() => { loadBooks(); loadCategories(); }, []);
 
   /* ── Helpers ── */
   const resetForm = () => { setForm(EMPTY_BOOK); setIsEditing(false); setImageFile(null); };
 
-  const uploadImage = async (bookId: number) => {
-    if (!imageFile) return;
-    const fd = new FormData();
-    fd.append('image', imageFile);
-    await fetch(`${process.env.NEXT_PUBLIC_API}/book/${bookId}/image`, {
-      method: 'POST', credentials: 'include', body: fd,
-    });
-    setImageFile(null);
-  };
+const uploadImage = async (bookId: number) => {
+  if (!imageFile) return;
+
+  const token = getToken();
+
+  const fd = new FormData();
+  fd.append('image', imageFile);
+
+  await fetch(`${API_URL}/book/${bookId}/image`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: fd,
+  });
+
+  setImageFile(null);
+};
 
   /* ── Submit ── */
-  const submitBook = async () => {
-    try {
-      const method = isEditing ? 'PUT' : 'POST';
-      const url    = isEditing
-        ? `${process.env.NEXT_PUBLIC_API}/book/${form.id}`
-        : `${process.env.NEXT_PUBLIC_API}/book`;
+const submitBook = async () => {
+  try {
+    const method = isEditing ? 'PUT' : 'POST';
 
-      const res  = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(form),
-      });
-      const text = await res.text();
-      let json: { data?: { id: number }; message?: string };
-      try { json = JSON.parse(text); } catch { alert('Server error'); return; }
-      if (!res.ok) { alert(json.message || 'Failed'); return; }
+    const endpoint = isEditing
+      ? `/book/${form.id}`
+      : `/book`;
 
-      const bookId = isEditing ? form.id : json.data!.id;
-      if (imageFile) await uploadImage(bookId);
-      resetForm();
-      loadBooks();
-    } catch (err) { console.error(err); }
-  };
+    const json = await apiFetch(endpoint, {
+      method,
+      body: JSON.stringify(form),
+    });
 
+    const bookId = isEditing ? form.id : json.data.id;
+
+    if (imageFile) await uploadImage(bookId);
+
+    resetForm();
+    loadBooks();
+
+  } catch (err) {
+    console.error(err);
+  }
+};
   /* ── Delete ── */
-  const deleteBook = async (id: number) => {
-    if (!confirm('Delete this book?')) return;
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/book/${id}`, {
-        method: 'DELETE', credentials: 'include',
-      });
-      if (!res.ok) { alert('Delete failed'); return; }
-      loadBooks();
-    } catch (err) { console.error(err); }
-  };
+const deleteBook = async (id: number) => {
+  if (!confirm('Delete this book?')) return;
+
+  try {
+    await apiFetch(`/book/${id}`, {
+      method: 'DELETE',
+    });
+
+    loadBooks();
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const filtered = books.filter(
     (b) =>

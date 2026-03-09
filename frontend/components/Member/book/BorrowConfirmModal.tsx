@@ -16,29 +16,61 @@ export default function BorrowConfirmModal({
   onConfirm,
   onCancel,
 }: Props) {
-  if (!book) return null;
+
+  if (!open || !book) return null;
 
   return (
     <div
-      className={`
+      className="
         fixed inset-0 z-50 flex items-center justify-center p-4
         bg-black/40 backdrop-blur-sm
-        transition-opacity duration-200
-        ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
-      `}
-      onClick={onCancel}
+      "
     >
       <div
-        className={`
+        className="
           relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8
-          transition-all duration-300
-          ${open
-            ? 'opacity-100 scale-100 translate-y-0'
-            : 'opacity-0 scale-95 translate-y-4'}
-        `}
-        onClick={(e) => e.stopPropagation()}
+          animate-in fade-in zoom-in duration-200
+        "
       >
-        {/* content เดิมทั้งหมด */}
+
+        {/* Title */}
+        <h2 className="text-lg font-semibold text-slate-800 mb-2">
+          Confirm Borrow
+        </h2>
+
+        {/* Book info */}
+        <p className="text-sm text-slate-500 mb-6">
+          Are you sure you want to borrow
+          <span className="font-medium text-slate-700"> {book.title}</span> ?
+        </p>
+
+        {/* Actions */}
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onCancel}
+            className="
+              px-4 py-2 text-sm rounded-lg
+              border border-slate-200 text-slate-600
+              hover:bg-slate-50
+            "
+          >
+            Cancel
+          </button>
+
+          <button
+            onClick={onConfirm}
+            disabled={confirming}
+            className="
+              px-4 py-2 text-sm rounded-lg
+              bg-blue-600 text-white
+              hover:bg-blue-700
+              disabled:opacity-50
+            "
+          >
+            {confirming ? 'Borrowing...' : 'Confirm'}
+          </button>
+        </div>
+
       </div>
     </div>
   );

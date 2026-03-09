@@ -2,11 +2,11 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { RefreshCw } from 'lucide-react';
-
+import { apiFetch } from '@/app/lib/api/token';
 import DashboardStats from '@/components/Admin/dashboard/DashboardStats';
 import BorrowTable    from '@/components/Admin/dashboard/BorrowTable';
 import { Borrowed }   from '@/components/Admin/dashboard/borrowedTypes';
-
+ 
 export default function AdminDashboard() {
   const [borrowed,   setBorrowed]   = useState<Borrowed[]>([]); 
   const [loading,    setLoading]    = useState(true);
@@ -20,9 +20,8 @@ export default function AdminDashboard() {
     if (!silent) setLoading(true);
     else { setRefreshing(true); setSpinning(true); }
     try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow`, { credentials: 'include' });
-      const json = await res.json();
-      setBorrowed(Array.isArray(json.data) ? json.data : []);
+    const json = await apiFetch('/borrow');
+    setBorrowed(Array.isArray(json.data) ? json.data : []);
     } catch (err) {
       console.error(err);
       setBorrowed([]);
@@ -34,17 +33,25 @@ export default function AdminDashboard() {
   };
 
   /* ── Auth check ── */
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, { credentials: 'include' })
-      .then(async (res) => {
-        if (!res.ok) { router.replace('/login'); return; }
-        const json = await res.json();
-        const member = json.data?.member;
-        if (!member || member.role !== 'ADMIN') { router.replace('/login'); return; }
-        loadBorrowed();
-      })
-      .catch(() => router.replace('/login'));
-  }, []);
+useEffect(() => {
+  const checkAuth = async () => {
+    try {
+      const json = await apiFetch('/auth/me');
+      const member = json.data?.member;
+
+      if (!member || member.role !== 'ADMIN') {
+        router.replace('/login');
+        return;
+      }
+
+      loadBorrowed();
+    } catch (err) {
+      router.replace('/login');
+    }
+  };
+
+  checkAuth();
+}, []);
 
   /* ── Derived ── */
   const total    = borrowed.length;

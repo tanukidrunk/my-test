@@ -2,15 +2,16 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ProtectedLayout from '../../Protected';
-import { fetchWithAuth } from '../../lib/api/fetchWithAuth';
 import BorrowStats   from '@/components/Member/dashboard/BorrowStats';
 import OverdueAlert  from '@/components/Member/dashboard/OverdueAlert';
 import BorrowTabs    from '@/components/Member/dashboard/BorrowTabs';
 import BorrowTable   from '@/components/Member/dashboard/BorrowTable';
 import { Borrowed, getDaysLeft } from '@/components/Member/dashboard/BorrowRow';
+import { apiFetch } from '@/app/lib/api/token';
 
+ 
 type Tab = 'active' | 'history';
-
+ 
 export default function MemberBorrowedPage() {
   const [borrows,     setBorrows]     = useState<Borrowed[]>([]);
   const [loading,     setLoading]     = useState(true);
@@ -20,31 +21,27 @@ export default function MemberBorrowedPage() {
   /* ── load ── */
   const loadBorrows = async () => {
     try {
-      const res  = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow/member`, { credentials: 'include' });
-      if (!res.ok) { setBorrows([]); return; }
-      const json = await res.json();
+      const json = await apiFetch('/borrow/member', {method: 'GET'});
       setBorrows(Array.isArray(json.data) ? json.data : []);
     } catch (err) {
       console.error(err);
+      setBorrows([]);
     } finally {
       setLoading(false);
     }
   };
   useEffect(() => { loadBorrows(); }, []);
-
+ 
   /* ── return ── */
   const handleReturn = async (borrowId: number, bookId: number) => {
     setReturningId(borrowId);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/borrow/return/${borrowId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ bookId }),
-      });
-      if (!res.ok) return;
-      const json = await res.json();
-      setBorrows(Array.isArray(json.data) ? json.data : []);
+    const json = await apiFetch(`/borrow/return/${borrowId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ bookId }),
+    });
+    
+    setBorrows(Array.isArray(json.data) ? json.data : []);
     } finally {
       setReturningId(null);
     }

@@ -1,10 +1,10 @@
 import { Context, Next } from 'hono';
-import { AppContext,apiResponse } from './jwtauth';
+import { AppContext, apiResponse } from './auth';
 export const adminOnly = async (c: AppContext, next: Next) => {
-  const member = c.get("member");
+  const member = c.get('member');
 
-  if (member.role !== "ADMIN") {
-    return apiResponse(c, 403, "Forbidden");
+  if (member.role !== 'ADMIN') {
+    return apiResponse(c, 403, 'Forbidden');
   }
 
   await next();

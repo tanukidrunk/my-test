@@ -65,7 +65,7 @@ export default function BorrowTable({ borrows, loading, tab, returningId, onRetu
                   </div>
                 </td>
               </tr>
-            )}
+            )} 
 
             {!loading && borrows.map((b, i) => (
               <BorrowRow
@@ -82,4 +82,4 @@ export default function BorrowTable({ borrows, loading, tab, returningId, onRetu
       </div>
     </div>
   );
-}
+} 

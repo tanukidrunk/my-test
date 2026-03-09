@@ -1,6 +1,6 @@
 import { Context, Next } from 'hono';
 import jwt from 'jsonwebtoken';
-import { getCookie } from 'hono/cookie'
+
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -16,23 +16,49 @@ type AppVariables = {
   member: JwtPayload;
 };
 
-type AppContext = Context<{ Variables: AppVariables }>;
+export type AppContext = Context<{ Variables: AppVariables }>;
+
+export const apiResponse = (
+  c: any,
+  status: number,
+  message: string,
+  data: any = null,
+  error: any = null,
+) => {
+  return c.json(
+    {
+      status,
+      message,
+      data,
+      error,
+    },
+    status,
+  );
+}; 
 
 export const authMiddleware = async (c: AppContext, next: Next) => {
-  const token = getCookie(c, 'accessToken');
+  const authHeader = c.req.header('authorization');
 
-  if (!token) {
-    return c.json({ message: 'Unauthorized' }, 401);
+  if (!authHeader) {
+    return apiResponse(c, 401, 'Unauthorized');
   }
 
-  try {
+  if (!authHeader.startsWith('Bearer ')) {
+    return apiResponse(c, 401, 'Invalid Authorization format');
+  }
+
+  const token = authHeader.slice(7);
+
+try {
     const payload = jwt.verify(token, JWT_SECRET, {
       algorithms: ['HS256'],
     }) as JwtPayload;
+
     c.set('member', payload);
+
     await next();
   } catch {
-    return c.json({ message: 'Invalid or expired token' }, 401);
+    return apiResponse(c, 401, 'Invalid or expired token');
   }
 };
   

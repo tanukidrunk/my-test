@@ -9,14 +9,14 @@ export type Borrowed = {
   returnDate?: string | null;
   status: 'BORROWED' | 'RETURNED';
   book: { title: string; author: string; publication_year: string };
-};
+}; 
 
 export function getDaysLeft(loanDate: string): number {
   const due = new Date(loanDate);
-  due.setDate(due.getDate() + 14);
+  due.setDate(due.getDate() + 7);
   return Math.ceil((due.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 }
-
+ 
 type Props = {
   borrow: Borrowed;
   index: number;
@@ -35,25 +35,29 @@ export default function BorrowRow({ borrow: b, index, tab, returningId, onReturn
 
   const daysLeft   = getDaysLeft(b.loanDate);
   const isOverdue  = daysLeft < 0;
-  const isDueSoon  = daysLeft >= 0 && daysLeft <= 3;
+
 
   const loanDateStr = new Date(b.loanDate).toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
 
-  const dueDate = new Date(b.loanDate);
-  dueDate.setDate(dueDate.getDate() + 14);
 
   const returnDateStr = b.returnDate
     ? new Date(b.returnDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
     : '—';
 
   /* Due date chip */
-  const dueChip = isOverdue
-    ? <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">⚠️ {Math.abs(daysLeft)}d overdue</span>
-    : isDueSoon
-    ? <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">⏰ {daysLeft}d left</span>
-    : <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">✓ {daysLeft}d left</span>;
+const dueChip = isOverdue
+  ? (
+    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+      ⚠️ {Math.abs(daysLeft)}d overdue
+    </span>
+  )
+  : (
+    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
+      ✓ {daysLeft}d left
+    </span>
+  );
 
   /* Status badge */
   const statusBadge = b.status === 'RETURNED'
