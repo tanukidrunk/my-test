@@ -124,7 +124,7 @@ export default function RegisterPage() {
 
             {/* Phone */}
 
-            {/* <div>
+            <div>
               <Label>Phone</Label>
               <Input
                 type="tel"
@@ -132,11 +132,11 @@ export default function RegisterPage() {
                 value={form.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
               />
-            </div> */}
+            </div>
 
             {/* Address */}
 
-            {/* <div>
+            <div>
               <Label>Address</Label>
               <Input
                 type="text"
@@ -144,7 +144,7 @@ export default function RegisterPage() {
                 value={form.address}
                 onChange={(e) => handleChange('address', e.target.value)}
               />
-            </div> */}
+            </div>
 
             {/* Gender */}
 

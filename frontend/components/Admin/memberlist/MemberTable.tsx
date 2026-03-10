@@ -1,5 +1,5 @@
 'use client';
-import { Search } from 'lucide-react';
+import { Search, UserX, Users } from 'lucide-react';
 import MemberRow from './MemberRow';
 import { Member } from './memberTypes';
 
@@ -10,42 +10,37 @@ type Props = {
   onSearchChange: (v: string) => void;
 };
 
-function SkeletonRow() {
-  return (
-    <tr className="border-b border-slate-100 animate-pulse">
-      <td className="px-4 py-3.5"><div className="h-3 w-8 bg-slate-200 rounded" /></td>
-      <td className="px-4 py-3.5">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-slate-200" />
-          <div className="h-3 w-28 bg-slate-200 rounded" />
-        </div>
-      </td>
-      <td className="px-4 py-3.5"><div className="h-3 w-40 bg-slate-200 rounded" /></td>
-      <td className="px-4 py-3.5"><div className="h-5 w-16 bg-slate-200 rounded-full" /></td>
-    </tr>
-  );
-}
-
 export default function MemberTable({ members, total, search, onSearchChange }: Props) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all">
       {/* Card header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
-        <div>
-          <div className="font-semibold text-slate-800 text-sm">Members List</div>
-          <div className="text-xs text-slate-400 mt-0.5">{members.length} of {total} members</div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-5 border-b border-slate-100 bg-white">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-slate-50 rounded-lg border border-slate-100 text-slate-400">
+            <Users size={18} />
+          </div>
+          <div>
+            <div className="font-bold text-slate-900 text-sm tracking-tight">Members Directory</div>
+            <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">
+              {members.length} of {total} total members
+            </div>
+          </div>
         </div>
-        <div className="relative">
-          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+
+        <div className="relative group">
+          <Search 
+            size={14} 
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-slate-900 transition-colors" 
+          />
           <input
             type="text"
-            placeholder="Search name or email…"
+            placeholder="Search name or email..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             className="
-              pl-8 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50
-              text-sm text-slate-700 placeholder:text-slate-400 w-56
-              focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400
+              pl-10 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50/50
+              text-sm text-slate-700 placeholder:text-slate-400 w-full sm:w-64
+              focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-400
               transition-all duration-200
             "
           />
@@ -54,24 +49,36 @@ export default function MemberTable({ members, total, search, onSearchChange }: 
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-slate-100 bg-slate-50">
+            <tr className="border-b border-slate-100 bg-slate-50/50">
               {['ID', 'Member', 'Email', 'Gender'].map((h) => (
-                <th key={h} className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th 
+                  key={h} 
+                  className="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap"
+                >
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-slate-50">
             {members.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-4 py-16 text-center">
-                  <div className="flex flex-col items-center gap-2">
-                    <span className="text-4xl">👤</span>
-                    <div className="font-semibold text-slate-600">No members found</div>
-                    <div className="text-sm text-slate-400">Try adjusting your search</div>
+                <td colSpan={4} className="px-6 py-24 text-center">
+                  <div className="flex flex-col items-center justify-center gap-4 max-w-[300px] mx-auto">
+                    {/* เปลี่ยน Emoji เป็น UserX Icon ในสไตล์ Shadcn */}
+                    <div className="w-16 h-16 rounded-[2rem] bg-slate-50 flex items-center justify-center text-slate-300 ring-8 ring-slate-50/50">
+                      <UserX size={32} strokeWidth={1.5} />
+                    </div>
+                    <div className="space-y-1.5">
+                      <div className="font-bold text-slate-900 tracking-tight">No members found</div>
+                      <div className="text-sm text-slate-500 leading-relaxed font-medium">
+                        {search 
+                          ? "We couldn't find any members matching your search." 
+                          : "There are currently no members in the system."}
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -83,9 +90,16 @@ export default function MemberTable({ members, total, search, onSearchChange }: 
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100 bg-slate-50/50">
-        <span className="text-xs text-slate-400">Showing {members.length} members</span>
-        <span className="text-xs text-slate-400">Last updated just now</span>
+      <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 bg-slate-50/30">
+        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+          Showing {members.length} members
+        </span>
+        <div className="flex items-center gap-2">
+           <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+             Live Database
+           </span>
+        </div>
       </div>
     </div>
   );

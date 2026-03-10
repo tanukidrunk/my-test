@@ -1,5 +1,5 @@
 'use client';
-import { Search } from 'lucide-react';
+import { Search, BookX, Library } from 'lucide-react';
 import BookRow from './BookRow';
 import { Book, Category } from './bookTypes';
 
@@ -13,45 +13,37 @@ type Props = {
   onDelete: (id: number) => void;
 };
 
-function SkeletonRow() {
-  return (
-    <tr className="border-b border-slate-100 animate-pulse">
-      <td className="px-4 py-3"><div className="w-9 h-12 rounded-lg bg-slate-200" /></td>
-      <td className="px-4 py-3"><div className="h-3 w-8 bg-slate-200 rounded" /></td>
-      <td className="px-4 py-3"><div className="h-3 w-36 bg-slate-200 rounded" /></td>
-      <td className="px-4 py-3"><div className="h-3 w-24 bg-slate-200 rounded" /></td>
-      <td className="px-4 py-3"><div className="h-5 w-16 bg-slate-200 rounded-full" /></td>
-      <td className="px-4 py-3"><div className="h-5 w-20 bg-slate-200 rounded-full" /></td>
-      <td className="px-4 py-3">
-        <div className="flex gap-2">
-          <div className="h-7 w-14 bg-slate-200 rounded-lg" />
-          <div className="h-7 w-16 bg-slate-200 rounded-lg" />
-        </div>
-      </td>
-    </tr>
-  );
-}
-
 export default function BookTable({ books, total, search, categories, onSearchChange, onEdit, onDelete }: Props) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all">
       {/* Card header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
-        <div>
-          <div className="font-semibold text-slate-800 text-sm">Book List</div>
-          <div className="text-xs text-slate-400 mt-0.5">{books.length} of {total} books</div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-5 border-b border-slate-100 bg-white">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-slate-50 rounded-lg border border-slate-100 text-slate-400">
+            <Library size={18} />
+          </div>
+          <div>
+            <div className="font-bold text-slate-900 text-sm tracking-tight">Book Management</div>
+            <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">
+              {books.length} of {total} items displayed
+            </div>
+          </div>
         </div>
-        <div className="relative">
-          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        
+        <div className="relative group">
+          <Search 
+            size={14} 
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-slate-900 transition-colors" 
+          />
           <input
             type="text"
-            placeholder="Search title or author…"
+            placeholder="Search database..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             className="
-              pl-8 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50
-              text-sm text-slate-700 placeholder:text-slate-400 w-56
-              focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400
+              pl-10 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50/50
+              text-sm text-slate-700 placeholder:text-slate-400 w-full sm:w-64
+              focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-400
               transition-all duration-200
             "
           />
@@ -60,24 +52,36 @@ export default function BookTable({ books, total, search, categories, onSearchCh
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-slate-100 bg-slate-50">
+            <tr className="border-b border-slate-100 bg-slate-50/50">
               {['Cover', 'ID', 'Title', 'Author', 'Year', 'Category', 'Actions'].map((h) => (
-                <th key={h} className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <th 
+                  key={h} 
+                  className={`px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap ${
+                    h === 'Actions' ? 'text-right' : ''
+                  }`}
+                >
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-slate-50">
             {books.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-16 text-center">
-                  <div className="flex flex-col items-center gap-2">
-                    <span className="text-4xl">📖</span>
-                    <div className="font-semibold text-slate-600">No books found</div>
-                    <div className="text-sm text-slate-400">Add your first book using the form above</div>
+                <td colSpan={7} className="px-4 py-24 text-center">
+                  <div className="flex flex-col items-center justify-center gap-4 max-w-[300px] mx-auto">
+                    {/* เปลี่ยน 📖 เป็น BookX Icon ในกล่องดีไซน์สะอาดตา */}
+                    <div className="w-16 h-16 rounded-[2rem] bg-slate-50 flex items-center justify-center text-slate-300 ring-8 ring-slate-50/50">
+                      <BookX size={32} strokeWidth={1.5} />
+                    </div>
+                    <div className="space-y-1.5">
+                      <div className="font-bold text-slate-900 tracking-tight">No results found</div>
+                      <div className="text-sm text-slate-500 leading-relaxed font-medium">
+                        Your search didnt match any books in the database. Try adding a new record.
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -98,9 +102,16 @@ export default function BookTable({ books, total, search, categories, onSearchCh
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100 bg-slate-50/50">
-        <span className="text-xs text-slate-400">Showing {books.length} books</span>
-        <span className="text-xs text-slate-400">Last updated just now</span>
+      <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 bg-slate-50/30">
+        <div className="flex items-center gap-2">
+           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+             Database Online
+           </span>
+        </div>
+        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+          {books.length} Entries
+        </span>
       </div>
     </div>
   );

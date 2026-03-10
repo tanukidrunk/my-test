@@ -26,6 +26,9 @@ export const mem = new Hono();
 mem.get('/', authMiddleware, adminOnly, async (c) => {
   try {
     const members = await prisma.member.findMany({
+      where: {
+        role: 'USER', // หรือ 'user' ตามที่คุณตั้งค่าไว้ใน Database
+      },
       select: {
         id: true,
         email: true,

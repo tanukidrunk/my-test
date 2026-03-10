@@ -1,8 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { Book as BookIcon, Plus } from 'lucide-react'; // นำเข้าไอคอน
 
 type Category = { id: number; name: string };
-type Borrow    = { id: number; memberId: number; bookId: number; loanDate: string; status: 'BORROWED' | 'RETURNED' };
+type Borrow = { id: number; memberId: number; bookId: number; loanDate: string; status: 'BORROWED' | 'RETURNED' };
 
 export type Book = {
   id: number;
@@ -14,7 +15,7 @@ export type Book = {
   category: Category;
   borrows: Borrow[];
 };
-
+ 
 type Props = {
   book: Book;
   index: number;
@@ -47,7 +48,7 @@ export default function BookRow({ book, index, onBorrow }: Props) {
       {/* Book info */}
       <td className="px-4 py-3.5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-14 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 shadow-sm">
+          <div className="w-10 h-14 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 shadow-sm border border-slate-200">
             {book.imageUrl ? (
               <img
                 src={`${process.env.NEXT_PUBLIC_API}${book.imageUrl}`}
@@ -55,7 +56,10 @@ export default function BookRow({ book, index, onBorrow }: Props) {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-lg">📖</div>
+              <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-300">
+                {/* ใช้ BookIcon แทน Emoji 📖 */}
+                <BookIcon size={20} strokeWidth={1.5} />
+              </div>
             )}
           </div>
           <div className="min-w-0">
@@ -70,7 +74,7 @@ export default function BookRow({ book, index, onBorrow }: Props) {
 
       {/* Category */}
       <td className="px-4 py-3.5">
-        <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+        <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
           {book.category?.name || '—'}
         </span>
       </td>
@@ -78,12 +82,12 @@ export default function BookRow({ book, index, onBorrow }: Props) {
       {/* Status */}
       <td className="px-4 py-3.5">
         {isBorrowed ? (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
             Borrowed
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             Available
           </span>
@@ -91,18 +95,21 @@ export default function BookRow({ book, index, onBorrow }: Props) {
       </td>
 
       {/* Action */}
-      <td className="px-4 py-3.5 text-center">
+      <td className="px-4 py-3.5 text-right">
         {!isBorrowed && (
           <button
             onClick={() => onBorrow(book)}
             className="
-              px-4 py-1.5 rounded-lg text-xs font-semibold
-              bg-blue-600 hover:bg-blue-700 text-white
+              inline-flex items-center gap-1.5
+              px-3 py-1.5 rounded-lg text-xs font-semibold
+              bg-slate-900 hover:bg-slate-800 text-white
               transition-all duration-150 active:scale-95
-              shadow-sm hover:shadow-blue-200 hover:shadow-md
+              shadow-sm hover:shadow-md
             "
           >
-            + Borrow
+            {/* ใช้ Plus icon แทนเครื่องหมาย + */}
+            <Plus size={14} strokeWidth={3} />
+            Borrow
           </button>
         )}
       </td>

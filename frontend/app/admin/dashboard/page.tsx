@@ -6,7 +6,9 @@ import { apiFetch } from '@/app/lib/api/token';
 import DashboardStats from '@/components/Admin/dashboard/DashboardStats';
 import BorrowTable    from '@/components/Admin/dashboard/BorrowTable';
 import { Borrowed }   from '@/components/Admin/dashboard/borrowedTypes';
- 
+import BorrowCalendar from '@/components/Admin/dashboard/BorrowCalendar';
+
+
 export default function AdminDashboard() {
   const [borrowed,   setBorrowed]   = useState<Borrowed[]>([]); 
   const [loading,    setLoading]    = useState(true);
@@ -117,6 +119,10 @@ useEffect(() => {
           search={search}
           onSearchChange={setSearch}
         />
+        {/* ── CALENDAR ── */}
+        <div className="mt-8">
+          <BorrowCalendar borrowed={borrowed} />
+        </div>
       </div>
     </div>
   );

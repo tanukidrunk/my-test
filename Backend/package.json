@@ -5,6 +5,7 @@
     "devs": "bun run --watch src/server.ts"
   },
   "dependencies": {
+    "@ant-design/icons": "6.x",
     "@auth/prisma-adapter": "^2.11.1",
     "@prisma/adapter-libsql": "^7.1.0",
     "@prisma/adapter-pg": "^7.1.0",
