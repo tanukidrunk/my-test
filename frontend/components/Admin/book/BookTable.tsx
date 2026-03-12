@@ -5,15 +5,16 @@ import { Book, Category } from './bookTypes';
 
 type Props = {
   books: Book[];
-  total: number;
+  total: number; 
   search: string;
-  categories: Category[];
+  categories: Category[]; 
   onSearchChange: (v: string) => void;
   onEdit: (b: Book) => void;
   onDelete: (id: number) => void;
+  getImageUrl: (bookId: number) => Promise<string | null>;
 };
 
-export default function BookTable({ books, total, search, categories, onSearchChange, onEdit, onDelete }: Props) {
+export default function BookTable({ books, total, search, categories, onSearchChange, onEdit, onDelete, getImageUrl }: Props) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all">
       {/* Card header */}
@@ -94,6 +95,7 @@ export default function BookTable({ books, total, search, categories, onSearchCh
                   categories={categories}
                   onEdit={onEdit}
                   onDelete={onDelete}
+                  getImageUrl={getImageUrl}
                 />
               ))
             )}
@@ -115,4 +117,4 @@ export default function BookTable({ books, total, search, categories, onSearchCh
       </div>
     </div>
   );
-}
+} 

@@ -3,7 +3,7 @@ import { Mail, IdCard, BadgeCheck } from 'lucide-react';
 import { MemberProfile } from './profileTypes';
 
 type Props = { member: MemberProfile };
-
+ 
 export default function ProfileAccountInfo({ member }: Props) {
   return (
     <div className="px-6 mb-6">

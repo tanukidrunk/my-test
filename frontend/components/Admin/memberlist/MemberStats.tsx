@@ -13,7 +13,7 @@ type StatCardProps = {
   color: 'blue' | 'pink' | 'slate';
   delay?: number;
 };
-
+ 
 const colorMap = {
   blue:  { 
     card: 'bg-blue-50/50 border-blue-100', 

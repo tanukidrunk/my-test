@@ -6,7 +6,7 @@ type Props = {
   books: Book[];
   loading: boolean;
   onBorrow: (book: Book) => void;
-};
+}; 
  
 function SkeletonRow() {
   return (
@@ -78,4 +78,4 @@ export default function BookTable({ books, loading, onBorrow }: Props) {
       </div>
     </div>
   );
-}
+} 

@@ -21,7 +21,7 @@ type Props = {
   index: number;
   onBorrow: (book: Book) => void;
 };
-
+ 
 export default function BookRow({ book, index, onBorrow }: Props) {
   const [visible, setVisible] = useState(false);
   const isBorrowed = book.status === 'BORROWED';
@@ -39,7 +39,7 @@ export default function BookRow({ book, index, onBorrow }: Props) {
         hover:bg-slate-50/80
         ${visible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'}
       `}
-    >
+    > 
       {/* # */}
       <td className="px-4 py-3.5 text-xs font-semibold text-slate-400 w-10">
         {String(index + 1).padStart(2, '0')}

@@ -2,20 +2,20 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react'; // นำเข้าไอคอน ArrowLeft
-import ProtectedLayout from '../../Protected'; 
-import BookStats          from '@/components/Member/book/BookStats';
-import BookToolbar        from '@/components/Member/book/BookToolbar';
-import BookTable          from '@/components/Member/book/BookTable';
+import { ArrowLeft } from 'lucide-react';
+import ProtectedLayout   from '../../Protected';
+import BookStats         from '@/components/Member/book/BookStats';
+import BookToolbar       from '@/components/Member/book/BookToolbar';
+import BookGrid          from '@/components/Member/book/BookGrid';        // ← replaced BookTable
 import BorrowConfirmModal from '@/components/Member/book/BorrowConfirmModal';
-import { Book }           from '@/components/Member/book/BookRow';
-import { apiFetch } from '@/app/lib/api/token';
+import { Book }          from '@/components/Member/book/BookRow';
+import { apiFetch }      from '@/app/lib/api/token';
 
 type FilterType = 'ALL' | 'AVAILABLE' | 'BORROWED';
-
+ 
 export default function BooksListPage() {
-  const [books,       setBooks]       = useState<Book[]>([]);
-  const [loading,     setLoading]     = useState(true);
+  const [books,        setBooks]       = useState<Book[]>([]);
+  const [loading,      setLoading]     = useState(true);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [confirmOpen,  setConfirmOpen]  = useState(false);
   const [confirming,   setConfirming]   = useState(false);
@@ -24,7 +24,7 @@ export default function BooksListPage() {
   const router = useRouter();
 
   /* ── auth check ── */
-  useEffect(() => {
+  useEffect(() => { 
     const checkAuth = async () => {
       try {
         await apiFetch('/auth/me');
@@ -57,7 +57,7 @@ export default function BooksListPage() {
         method: 'POST',
         body: JSON.stringify({ bookId: selectedBook.id }),
       });
-      await loadBooks(); // ⭐ reload data
+      await loadBooks();
     } catch (err) {
       console.error(err);
     } finally {
@@ -84,7 +84,7 @@ export default function BooksListPage() {
   return (
     <ProtectedLayout>
       <div className="min-h-screen bg-slate-50 font-sans">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
 
           {/* ── PAGE HEADER ── */}
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
@@ -99,13 +99,13 @@ export default function BooksListPage() {
                 Explore our collection and borrow your next favorite read
               </p>
             </div>
-            
+
             <Link
               href="/member/dashboard"
               className="
                 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl
                 border border-slate-200 bg-white text-sm font-bold text-slate-600
-                hover:bg-slate-50 hover:border-slate-300 transition-all duration-200 
+                hover:bg-slate-50 hover:border-slate-300 transition-all duration-200
                 shadow-sm active:scale-[0.98]
               "
             >
@@ -129,12 +129,13 @@ export default function BooksListPage() {
             />
           </div>
 
-          {/* ── TABLE ── */}
-          <BookTable
+          {/* ── BOOK GRID ── */}
+          <BookGrid
             books={filtered}
             loading={loading}
             onBorrow={(book) => { setSelectedBook(book); setConfirmOpen(true); }}
           />
+
         </div>
       </div>
 

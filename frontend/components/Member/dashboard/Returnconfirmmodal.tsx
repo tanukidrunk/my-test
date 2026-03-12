@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { BookMarked, Undo2, Loader2, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 type Props = {
   open: boolean;
@@ -21,7 +23,6 @@ export default function ReturnConfirmModal({
 }: Props) {
   const cancelRef = useRef<HTMLButtonElement>(null);
 
-  /* trap focus & Esc key */
   useEffect(() => {
     if (!open) return;
     cancelRef.current?.focus();
@@ -35,33 +36,42 @@ export default function ReturnConfirmModal({
   if (!open) return null;
 
   return createPortal(
-    (
-    /* backdrop */
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       aria-modal="true"
       role="dialog"
       aria-labelledby="modal-title"
     >
-      {/* overlay */}
+      {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-200"
+        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
         onClick={() => !loading && onCancel()}
       />
 
-      {/* panel */}
+      {/* Panel */}
       <div className="
         relative z-10 w-full max-w-sm
         bg-white rounded-2xl shadow-2xl border border-slate-100
         animate-[modalIn_0.18s_ease-out]
       ">
-        {/* top accent bar */}
+        {/* Top accent bar */}
         <div className="h-1.5 w-full bg-gradient-to-r from-slate-700 via-slate-500 to-slate-300 rounded-t-2xl" />
 
         <div className="p-6">
-          {/* icon */}
-          <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-2xl mb-4">
-            ↩
+          {/* Close button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => !loading && onCancel()}
+            disabled={loading}
+            className="absolute top-4 right-4 h-7 w-7 text-slate-400 hover:text-slate-600 rounded-lg"
+          >
+            <X size={15} />
+          </Button>
+
+          {/* Icon */}
+          <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mb-4">
+            <Undo2 size={22} className="text-slate-600" strokeWidth={2} />
           </div>
 
           <h2 id="modal-title" className="text-lg font-bold text-slate-800 mb-1">
@@ -71,50 +81,48 @@ export default function ReturnConfirmModal({
             Please confirm that you are returning the following book to the library.
           </p>
 
-          {/* book card */}
+          {/* Book card */}
           <div className="flex items-start gap-3 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 mb-6">
-            <span className="text-2xl mt-0.5">📚</span>
+            <div className="mt-0.5 text-slate-400 shrink-0">
+              <BookMarked size={22} strokeWidth={1.75} />
+            </div>
             <div className="min-w-0">
-              <div className="font-semibold text-slate-800 text-sm leading-snug truncate">{bookTitle}</div>
+              <div className="font-semibold text-slate-800 text-sm leading-snug truncate">
+                {bookTitle}
+              </div>
               <div className="text-xs text-slate-400 mt-0.5">by {bookAuthor}</div>
             </div>
           </div>
 
-          {/* actions */}
+          {/* Actions */}
           <div className="flex gap-3">
-            <button
+            <Button
               ref={cancelRef}
-              onClick={onCancel}
+              variant="outline"
               disabled={loading}
-              className="
-                flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold
-                border border-slate-200 bg-white text-slate-600
-                hover:bg-slate-50 hover:border-slate-300
-                transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed
-              "
+              onClick={onCancel}
+              className="flex-1 rounded-xl font-semibold text-slate-600 border-slate-200 hover:bg-slate-50"
             >
               Cancel
-            </button>
-            <button
-              onClick={onConfirm}
+            </Button>
+
+            <Button
               disabled={loading}
-              className="
-                flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold
-                bg-slate-800 hover:bg-slate-700 text-white
-                transition-all duration-150 active:scale-95
-                disabled:opacity-60 disabled:cursor-not-allowed
-                shadow-sm flex items-center justify-center gap-2
-              "
+              onClick={onConfirm}
+              className="flex-1 rounded-xl font-semibold bg-slate-800 hover:bg-slate-700 text-white shadow-sm active:scale-95"
             >
               {loading ? (
                 <>
-                  <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  <Loader2 size={14} className="animate-spin mr-2" />
                   Returning…
                 </>
               ) : (
-                'Confirm Return'
+                <>
+                  <Undo2 size={14} className="mr-2" />
+                  Confirm Return
+                </>
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -125,6 +133,7 @@ export default function ReturnConfirmModal({
           to   { opacity: 1; transform: scale(1)    translateY(0);   }
         }
       `}</style>
-    </div>
-  ), document.body);
+    </div>,
+    document.body
+  );
 }

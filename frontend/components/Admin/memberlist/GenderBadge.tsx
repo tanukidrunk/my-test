@@ -5,7 +5,7 @@ const map: Record<Gender, { label: string; cls: string; dot: string }> = {
   FEMALE: { label: 'Female', cls: 'bg-pink-100 text-pink-700',  dot: 'bg-pink-400'  },
   OTHER:  { label: 'Other',  cls: 'bg-slate-100 text-slate-600', dot: 'bg-slate-400' },
 };
-
+ 
 export default function GenderBadge({ gender }: { gender: Gender }) {
   const { label, cls, dot } = map[gender];
   return (

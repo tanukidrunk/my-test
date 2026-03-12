@@ -11,7 +11,7 @@ type Props = {
   returningId: number | null;
   onReturn: (id: number, bookId: number) => void;
 };
-
+ 
 function SkeletonRow({ tab }: { tab: Tab }) {
   return (
     <tr className="border-b border-slate-50 animate-pulse">

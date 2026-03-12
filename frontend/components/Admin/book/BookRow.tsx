@@ -9,17 +9,27 @@ type Props = {
   categories: Category[];
   onEdit: (b: BookType) => void;
   onDelete: (id: number) => void;
+  getImageUrl: (bookId: number) => Promise<string | null>;
 };
 
-export default function BookRow({ book: b, index, categories, onEdit, onDelete }: Props) {
+export default function BookRow({ book: b, index, categories, onEdit, onDelete, getImageUrl  }: Props) {
   const [visible, setVisible] = useState(false);
+  const [imgUrl, setImgUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), index * 40);
     return () => clearTimeout(t);
   }, [index]);
 
+  useEffect(() => { 
+  if (b.imageUrl) {
+    getImageUrl(b.id).then(setImgUrl);
+  }
+}, [b.id, b.imageUrl]);
+
   const catName = categories.find((c) => c.id === b.categoryId)?.name ?? 'Unknown';
+
+
 
   return (
     <tr className={`
@@ -27,12 +37,12 @@ export default function BookRow({ book: b, index, categories, onEdit, onDelete }
       transition-all duration-300 ease-out hover:bg-slate-50/80
       ${visible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'}
     `}>
-      {/* Cover */}
+      {/* Cover */} 
       <td className="px-4 py-3 w-14">
         <div className="w-10 h-14 rounded-lg overflow-hidden bg-slate-50 border border-slate-100 shadow-sm flex-shrink-0 flex items-center justify-center">
           {b.imageUrl ? (
             <img
-              src={`${process.env.NEXT_PUBLIC_API}${b.imageUrl}`}
+              src={imgUrl ?? undefined}
               alt={b.title}
               className="w-full h-full object-cover"
             />
@@ -51,16 +61,17 @@ export default function BookRow({ book: b, index, categories, onEdit, onDelete }
       </td>
 
       {/* Title & Author */}
-      <td className="px-4 py-3">
-        <div className="flex flex-col min-w-[150px]">
-          <span className="text-sm font-bold text-slate-900 line-clamp-1 truncate uppercase tracking-tight">
-            {b.title}
-          </span>
-          <span className="text-[11px] font-medium text-slate-400 uppercase">
-            {b.author}
-          </span>
-        </div>
-      </td>
+<td className="px-4 py-3">
+  <span className="text-sm font-bold text-slate-900 line-clamp-1 truncate uppercase tracking-tight min-w-[150px] block">
+    {b.title}
+  </span>
+</td>
+
+<td className="px-4 py-3">
+  <span className="text-[11px] font-medium text-slate-400 uppercase whitespace-nowrap">
+    {b.author}
+  </span>
+</td>
 
       {/* Year */}
       <td className="px-4 py-3">
@@ -79,7 +90,7 @@ export default function BookRow({ book: b, index, categories, onEdit, onDelete }
       </td>
 
       {/* Actions */}
-      <td className="px-4 py-3 text-right">
+      <td className="px-4 py-3 text-right"> 
         <div className="flex items-center justify-end gap-2">
           <button
             onClick={() => onEdit(b)}

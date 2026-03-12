@@ -14,7 +14,7 @@ export default function CategoryPage() {
   const [open,       setOpen]       = useState(false);
   const [isEditing,  setIsEditing]  = useState(false);
   const [form,       setForm]       = useState<Category>({ id: 0, name: '' });
-
+ 
   /* ── load ── */
 const loadCategory = async () => {
   setLoading(true);

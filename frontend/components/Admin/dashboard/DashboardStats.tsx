@@ -19,7 +19,7 @@ const colorMap = {
     card: 'bg-blue-50/50 border-blue-100', 
     icon: 'bg-blue-100 text-blue-600', 
     value: 'text-blue-700', 
-    bar: 'bg-blue-500' 
+    bar: 'bg-blue-500'  
   },
   amber: { 
     card: 'bg-amber-50/50 border-amber-100', 

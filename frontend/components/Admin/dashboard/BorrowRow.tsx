@@ -11,7 +11,7 @@ export default function BorrowRow({ borrow: b, index }: Props) {
     const t = setTimeout(() => setVisible(true), index * 35);
     return () => clearTimeout(t);
   }, [index]);
-
+ 
   return (
     <tr
       className={`

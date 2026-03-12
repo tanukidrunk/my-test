@@ -1,7 +1,7 @@
 'use client';
 import { User, Phone, MapPin, Lock, Save, Loader2 } from 'lucide-react';
 import { ProfileForm, GENDER_OPTIONS } from './profileTypes';
-
+ 
 type Props = {
   form: ProfileForm;
   saving: boolean;

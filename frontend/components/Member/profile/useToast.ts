@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Toast } from './profileTypes';
-
+ 
 export function useToast() {
   const [toasts, setToasts] = useState<Toast[]>([]);
 

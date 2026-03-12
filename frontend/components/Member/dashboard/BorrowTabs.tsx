@@ -8,7 +8,7 @@ type Props = {
   activeCount: number;
   historyCount: number; 
 };
- 
+  
 export default function BorrowTabs({ active, onChange, activeCount, historyCount }: Props) {
   return (
     <div className="flex gap-1 bg-slate-100 p-1 rounded-xl w-fit mb-6">

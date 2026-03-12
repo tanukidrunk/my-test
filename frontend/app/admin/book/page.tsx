@@ -14,7 +14,7 @@ export default function BooksPage() {
   const [imageFile,  setImageFile]  = useState<File | null>(null);
   const [isEditing,  setIsEditing]  = useState(false);
   const [form,       setForm]       = useState<Book>(EMPTY_BOOK);
-
+ 
   /* ── Load ── */
 const loadBooks = async () => {
   try {
@@ -45,11 +45,10 @@ const uploadImage = async (bookId: number) => {
   if (!imageFile) return;
 
   const token = getToken();
-
   const fd = new FormData();
   fd.append('image', imageFile);
 
-  await fetch(`${API_URL}/book/${bookId}/image`, {
+  const res = await fetch(`${API_URL}/book/${bookId}/images`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -57,17 +56,29 @@ const uploadImage = async (bookId: number) => {
     body: fd,
   });
 
+  if (!res.ok) {
+    throw new Error("Upload image failed");
+  }
+
   setImageFile(null);
 };
-
+const getImageUrl = async (bookId: number): Promise<string | null> => {
+  try {
+    const json = await apiFetch(`/book/${bookId}/image-url`);
+    return json.data?.url ?? null;
+  } catch {
+    return null;
+  }
+};
   /* ── Submit ── */
 const submitBook = async () => {
   try {
-    const method = isEditing ? 'PUT' : 'POST';
 
     const endpoint = isEditing
       ? `/book/${form.id}`
       : `/book`;
+
+    const method = isEditing ? "PUT" : "POST";
 
     const json = await apiFetch(endpoint, {
       method,
@@ -76,7 +87,10 @@ const submitBook = async () => {
 
     const bookId = isEditing ? form.id : json.data.id;
 
-    if (imageFile) await uploadImage(bookId);
+    // upload image
+    if (imageFile) {
+      await uploadImage(bookId);
+    }
 
     resetForm();
     loadBooks();
@@ -151,6 +165,7 @@ const deleteBook = async (id: number) => {
           onSearchChange={setSearch}
           onEdit={(b) => { setForm(b); setIsEditing(true); setImageFile(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
           onDelete={deleteBook}
+          getImageUrl={getImageUrl}
         />
       </div>
     </div>

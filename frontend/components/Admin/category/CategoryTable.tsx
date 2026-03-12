@@ -8,7 +8,7 @@ type Props = {
   onEdit: (cat: Category) => void;
   onDelete: (id: number) => void;
 };
-
+ 
 export default function CategoryTable({ categories, total, onEdit, onDelete }: Props) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all">

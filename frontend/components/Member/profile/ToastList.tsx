@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle2, AlertCircle } from 'lucide-react'; // นำเข้าไอคอนจาก Lucide
 import { Toast } from './profileTypes';
-
+ 
 type Props = { toasts: Toast[] };
 
 function ToastItem({ toast }: { toast: Toast }) {

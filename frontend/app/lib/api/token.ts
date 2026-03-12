@@ -42,6 +42,15 @@ export const apiFetch = async (
     headers,
   });
 
+   // ✅ เช็ค content-type ก่อน parse
+  const contentType = res.headers.get("content-type") ?? "";
+
+  if (!contentType.includes("application/json")) {
+    const text = await res.text();
+    console.error(`[apiFetch] Non-JSON response from ${endpoint}:`, text);
+    throw new Error(`Server returned non-JSON: ${text.slice(0, 150)}`);
+  }
+
   const data = await res.json();
 
   if (!res.ok) {

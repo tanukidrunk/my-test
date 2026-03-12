@@ -11,7 +11,7 @@ type Props = {
   onSubmit: () => void;
   onClose: () => void;
 };
-
+ 
 export default function CategoryModal({
   open,
   isEditing,

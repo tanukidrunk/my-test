@@ -14,7 +14,7 @@ import {
 import { Borrowed, formatDate } from './borrowedTypes';
 
 type Props = { borrowed: Borrowed[] };
-
+ 
 // กำหนด Type สำหรับ Props ของ CalendarDay
 interface CalendarDayProps {
   day: Date;

@@ -8,7 +8,7 @@ type Props = {
   onSearchChange: (v: string) => void;
   activeFilter: FilterType;
   onFilterChange: (f: FilterType) => void;
-};
+}; 
  
 // ปรับโครงสร้าง filters ให้รองรับ Icon Component
 const filters = [
@@ -65,4 +65,4 @@ export default function BookToolbar({ search, onSearchChange, activeFilter, onFi
       </div>
     </div>
   );
-}
+} 

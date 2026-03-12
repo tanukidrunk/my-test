@@ -2,7 +2,7 @@
 import { useRef } from 'react';
 import { Camera, Loader2, User } from 'lucide-react'; // นำเข้าไอคอนจาก Lucide
 import { MemberProfile, getInitials } from './profileTypes';
-
+ 
 type Props = {
   member: MemberProfile | null;
   avatarPreview: string | null;

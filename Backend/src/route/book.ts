@@ -4,7 +4,7 @@ import { authMiddleware } from '../middleware/auth';
 import { BookStatus } from '../../generated/prisma/client';
 import { adminOnly } from '../middleware/adminOnly';
 import { randomUUID } from 'crypto';
-
+import { minioClient, BUCKET_NAME } from "../lib/minio";
 
 export const book = new Hono();
 
@@ -15,7 +15,7 @@ const apiResponse = (
   data: any = null,
   error: any = null,
 ) => {
-  return c.json({ status, message, data, error }, 200);
+  return c.json({ status, message, data, error }, status);
 };
 
 // GET all
@@ -31,17 +31,35 @@ book.get('/', async (c) => {
 
 // GET by id
 book.get('/:id', authMiddleware, async (c) => {
-  const id = Number(c.req.param('id'));
-  const book = await prisma.book.findUnique({
-    where: { id },
-    include: { category: true },
-  });
+  try {
+    const id = Number(c.req.param('id'));
 
-  if (!book) {
-    return apiResponse(c, 404, 'Book not found');
+    if (isNaN(id)) {
+      return apiResponse(c, 400, 'Invalid book id');
+    }
+
+    const book = await prisma.book.findUnique({
+      where: { id },
+      include: { category: true },
+    });
+
+    if (!book) {
+      return apiResponse(c, 404, 'Book not found');
+    }
+
+    return apiResponse(c, 200, 'ok', book);
+
+  } catch (err) {
+    console.error(err);
+
+    return apiResponse(
+      c,
+      500,
+      'Internal Server Error',
+      null,
+      err instanceof Error ? err.message : err
+    );
   }
-
-  return apiResponse(c, 200, 'ok', book);
 });
 
 // GET book image via API
@@ -68,6 +86,24 @@ book.get('/:id/image', authMiddleware, async (c) => {
   });
 });
 
+book.get('/:id/image-url', authMiddleware, async (c) => { // เพิ่ม authMiddleware
+  const id = Number(c.req.param('id'));
+
+  const book = await prisma.book.findUnique({ where: { id } });
+
+  if (!book || !book.imageUrl) {
+    return apiResponse(c, 404, 'Image not found');
+  }
+
+  // imageUrl ตอนนี้เก็บ fileName โดยตรง
+  const url = await minioClient.presignedGetObject(
+    BUCKET_NAME,
+    book.imageUrl, // <-- ใช้ได้เลย
+    60 * 60        // 1 ชั่วโมง
+  );
+
+  return apiResponse(c, 200, 'ok', { url });
+});
 // POST create
 book.post('/', authMiddleware, adminOnly, async (c) => {
   const body = await c.req.json();
@@ -125,7 +161,7 @@ book.post('/:id/image', authMiddleware, adminOnly, async (c) => {
   const body = await c.req.parseBody();
   const file = body.image as File;
 
-  if (!file) {
+  if (!file) { 
     return apiResponse(c, 400, 'Image file is required');
   }
 
@@ -155,19 +191,75 @@ book.post('/:id/image', authMiddleware, adminOnly, async (c) => {
   return apiResponse(c, 200, 'Upload image success', book);
 });
 
-// PUT update
-book.put('/:id', authMiddleware, adminOnly, async (c) => {
+ 
+// POST upload book image (admin only) - MinIO
+book.post('/:id/images', authMiddleware, adminOnly, async (c) => {
   const id = Number(c.req.param('id'));
-  const body = await c.req.json();
+
+  if (isNaN(id)) {
+    return apiResponse(c, 400, 'Invalid book id');
+  }
+
+  const body = await c.req.parseBody();
+  const file = body["image"] as File;
+
+  if (!file) {
+    return apiResponse(c, 400, 'Image file is required');
+  }
+
+  if (!file.type.startsWith('image/')) {
+    return apiResponse(c, 400, 'Only image files allowed');
+  }
+
+  if (file.size > 2 * 1024 * 1024) {
+    return apiResponse(c, 400, 'Image must be less than 2MB');
+  }
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const fileName = `${randomUUID()}-${file.name}`;
+
+  await minioClient.putObject(
+    BUCKET_NAME,
+    fileName,
+    buffer,
+    buffer.length,
+    {"Content-Type": file.type,}
+  );
 
   const book = await prisma.book.update({
     where: { id },
-    data: body,
+    data: { imageUrl: fileName },
   });
 
-  return apiResponse(c, 200, 'Updated', book);
+  return apiResponse(c, 200, 'Upload image success', book);
 });
 
+// PUT update
+book.put('/:id', authMiddleware, adminOnly, async (c) => {
+  try {
+    const id = Number(c.req.param('id'));
+    const body = await c.req.json();
+
+    const book = await prisma.book.update({
+      where: { id },
+      data: {
+        title: body.title,
+        author: body.author,
+        isbn: body.isbn,
+        description: body.description,
+        publication_year: body.publication_year,
+        status: body.status,
+        categoryId: body.categoryId,
+      },
+    });
+
+    return apiResponse(c, 200, 'Updated', book);
+
+  } catch (err) {
+    console.error(err);
+    return apiResponse(c, 500, 'Update failed', null, err);
+  }
+});
 // PUT update book image (admin only)
 book.put('/:id/image', authMiddleware, adminOnly, async (c) => {
   const id = Number(c.req.param('id'));

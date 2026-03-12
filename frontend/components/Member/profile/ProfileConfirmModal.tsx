@@ -1,7 +1,7 @@
 'use client';
 import { AlertTriangle, Loader2, Check } from 'lucide-react'; // นำเข้าไอคอนจาก Lucide
 import { ProfileForm, GENDER_OPTIONS } from './profileTypes';
-
+ 
 type Props = {
   open: boolean;
   form: ProfileForm;

@@ -21,7 +21,7 @@ const colorMap = {
     card: 'bg-blue-50/50 border-blue-100',
     icon: 'bg-blue-100 text-blue-600',
     value: 'text-blue-700',
-  },
+  }, 
   green: {
     card: 'bg-emerald-50/50 border-emerald-100',
     icon: 'bg-emerald-100 text-emerald-600',
@@ -33,7 +33,7 @@ const colorMap = {
     value: 'text-amber-700',
   },
 };
-
+ 
 function StatCard({ icon: Icon, value, label, color, delay = 0 }: StatCardProps) {
   const [visible, setVisible] = useState(false);
   const [count, setCount] = useState(0);

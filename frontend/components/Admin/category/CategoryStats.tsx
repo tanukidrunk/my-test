@@ -12,7 +12,7 @@ export default function CategoryStats({ total }: Props) {
     const t = setTimeout(() => setVisible(true), 50);
     return () => clearTimeout(t);
   }, []);
-
+ 
   useEffect(() => {
     if (!visible) return;
     let cur = 0;

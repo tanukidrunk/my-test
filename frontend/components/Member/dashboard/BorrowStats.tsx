@@ -15,7 +15,7 @@ type StatCardProps = {
   color: 'blue' | 'green' | 'red'; // ตัด amber ออกถ้าไม่ได้ใช้ในตัวอย่างนี้
   delay?: number;
 };
-
+ 
 const colorMap = {
   blue: { card: 'bg-blue-50 border-blue-100', icon: 'bg-blue-100 text-blue-600', value: 'text-blue-700' },
   green: { card: 'bg-emerald-50 border-emerald-100', icon: 'bg-emerald-100 text-emerald-600', value: 'text-emerald-700' },

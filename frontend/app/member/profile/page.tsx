@@ -15,7 +15,7 @@ import {
   UpdateProfilePayload,
 } from '@/components/Member/profile/profileTypes';
 import { API_URL } from '@/app/lib/api/token';
-
+ 
 export default function ProfilePage() {
   const [form, setForm] = useState<ProfileForm>({
     username: '',

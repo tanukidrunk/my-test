@@ -5,7 +5,7 @@ import { apiFetch } from '@/app/lib/api/token';
 import MemberStats from '@/components/Admin/memberlist/MemberStats';
 import MemberTable from '@/components/Admin/memberlist/MemberTable';
 import { Member }  from '@/components/Admin/memberlist/memberTypes';
- 
+  
 export default function MemberPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);

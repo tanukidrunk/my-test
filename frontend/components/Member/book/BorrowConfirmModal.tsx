@@ -8,7 +8,7 @@ type Props = {
   onConfirm: () => void;
   onCancel: () => void;
 };
- 
+  
 export default function BorrowConfirmModal({
   book,
   open,
@@ -74,4 +74,4 @@ export default function BorrowConfirmModal({
       </div>
     </div>
   );
-}
+} 

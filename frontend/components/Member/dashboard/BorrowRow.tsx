@@ -12,7 +12,7 @@ export type Borrowed = {
   status: 'BORROWED' | 'RETURNED';
   book: { title: string; author: string; publication_year: string };
 };
-
+ 
 export function getDaysLeft(loanDate: string): number {
   const due = new Date(loanDate);
   due.setDate(due.getDate() + 7);

@@ -1,7 +1,7 @@
 import { Mars, Venus, CircleDot, LucideIcon } from 'lucide-react';
 
 export type Gender = 'MALE' | 'FEMALE' | 'OTHER';
-
+ 
 export type MemberProfile = {
   id: number;
   username: string;

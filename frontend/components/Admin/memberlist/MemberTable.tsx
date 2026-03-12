@@ -9,7 +9,7 @@ type Props = {
   search: string;
   onSearchChange: (v: string) => void;
 };
-
+ 
 export default function MemberTable({ members, total, search, onSearchChange }: Props) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all">
