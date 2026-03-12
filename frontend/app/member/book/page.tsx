@@ -2,16 +2,17 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ProtectedLayout from '../../protected';
-
+import { ArrowLeft } from 'lucide-react';
 import BookStats          from '@/components/Member/book/BookStats';
 import BookToolbar        from '@/components/Member/book/BookToolbar';
 import BookTable          from '@/components/Member/book/BookTable';
+import BookGrid          from '@/components/Member/book/BookGrid';        // ← replaced BookTable
 import BorrowConfirmModal from '@/components/Member/book/BorrowConfirmModal';
 import { Book }           from '@/components/Member/book/BookRow';
 import { fetchWithAuth } from '@/app/lib/fetchWithAuth';
 
 type FilterType = 'ALL' | 'AVAILABLE' | 'BORROWED';
-
+ 
 export default function BooksListPage() {
   const [books,       setBooks]       = useState<Book[]>([]);
   const [loading,     setLoading]     = useState(true);

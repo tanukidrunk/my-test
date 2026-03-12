@@ -12,7 +12,7 @@ export default function MemberPage() {
   const [loading, setLoading] = useState(true);
   const [search,  setSearch]  = useState('');
   const [spinning, setSpinning] = useState(false);
-
+ 
   const loadMembers = async () => {
     setLoading(true);
     setSpinning(true);

@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { RefreshCw } from 'lucide-react';
-import {API_URL} from '@/app/lib/api';
+import BorrowCalendar from '@/components/Admin/dashboard/Borrowcalendar';
 import DashboardStats from '@/components/Admin/dashboard/DashboardStats';
 import BorrowTable    from '@/components/Admin/dashboard/BorrowTable';
 import { Borrowed }   from '@/components/Admin/dashboard/borrowedTypes';
@@ -33,7 +33,7 @@ export default function AdminDashboard() {
       setTimeout(() => setSpinning(false), 600);
     } 
   };
-
+ 
   /* ── Auth check ── */
   useEffect(() => {
     fetchWithAuth(`/auth/me`, { credentials: 'include' })
@@ -111,6 +111,10 @@ export default function AdminDashboard() {
           search={search}
           onSearchChange={setSearch}
         />
+        {/* ── CALENDAR ── */}
+        <div className="mt-8">
+          <BorrowCalendar borrowed={borrowed} />
+        </div>
       </div>
     </div>
   );

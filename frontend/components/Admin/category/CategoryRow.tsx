@@ -10,7 +10,7 @@ type Props = {
   onEdit: (cat: Category) => void;
   onDelete: (id: number) => void;
 };
-
+ 
 export default function CategoryRow({ category: c, index, onEdit, onDelete }: Props) {
   const [visible, setVisible] = useState(false);
 

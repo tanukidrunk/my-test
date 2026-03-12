@@ -1,38 +1,58 @@
 import { API_URL } from "./api";
 
+function isTokenExpiringSoon(token: string) {
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  const exp = payload.exp * 1000;
+  const now = Date.now();
+
+  return exp - now < 60 * 1000; // เหลือ < 1 นาที
+}
+ 
+async function refreshToken() {
+  const res = await fetch(`${API_URL}/member/refresh`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    window.location.href = "/login";
+  }
+}
+
 export async function fetchWithAuth(
   url: string,
   options: RequestInit = {}
 ) {
+  const accessToken = document.cookie
+    .split("; ")
+    .find((c) => c.startsWith("accessToken="))
+    ?.split("=")[1];
+
+  if (accessToken && isTokenExpiringSoon(accessToken)) {
+    await refreshToken();
+  }
 
   let res = await fetch(`${API_URL}${url}`, {
     ...options,
     credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
   });
 
-  // ถ้า accessToken หมด
   if (res.status === 401) {
+    await refreshToken();
 
-    const refresh = await fetch(`${API_URL}/member/refresh`, {
-      method: "POST",
+    res = await fetch(`${API_URL}${url}`, {
+      ...options,
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+      },
     });
-
-    if (refresh.ok) {
-
-      // retry request เดิม
-      res = await fetch(`${API_URL}${url}`, {
-        ...options,
-        credentials: "include",
-      });
-
-    } else {
-
-      // refresh ไม่สำเร็จ → logout
-      window.location.href = "/login";
-
-    }
   }
 
-  return res;
+  return res.json();
 }

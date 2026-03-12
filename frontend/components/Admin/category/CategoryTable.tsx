@@ -1,4 +1,5 @@
 'use client';
+import { LayoutList, FolderOpen } from 'lucide-react'; // นำเข้าไอคอนจาก Lucide
 import CategoryRow, { Category } from './CategoryRow';
 
 type Props = {
@@ -7,66 +8,69 @@ type Props = {
   onEdit: (cat: Category) => void;
   onDelete: (id: number) => void;
 };
-
-function SkeletonRow() {
-  return (
-    <tr className="border-b border-slate-100 animate-pulse">
-      <td className="px-4 py-3.5"><div className="h-3 w-8 bg-slate-200 rounded" /></td>
-      <td className="px-4 py-3.5">
-        <div className="flex items-center gap-2.5">
-          <div className="w-2 h-2 rounded-full bg-slate-200" />
-          <div className="h-3 w-32 bg-slate-200 rounded" />
-        </div>
-      </td>
-      <td className="px-4 py-3.5">
-        <div className="flex gap-2">
-          <div className="w-8 h-8 rounded-lg bg-slate-200" />
-          <div className="w-8 h-8 rounded-lg bg-slate-200" />
-        </div>
-      </td>
-    </tr>
-  );
-}
-
+ 
 export default function CategoryTable({ categories, total, onEdit, onDelete }: Props) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all">
       {/* Card header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-        <div>
-          <div className="font-semibold text-slate-800 text-sm">Category List</div>
-          <div className="text-xs text-slate-400 mt-0.5">
-            {categories.length} of {total} categories
+      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-white">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-purple-50 rounded-lg border border-purple-100 text-purple-600">
+            <LayoutList size={18} />
+          </div>
+          <div>
+            <div className="font-bold text-slate-900 text-sm tracking-tight">Category Management</div>
+            <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">
+              {categories.length} of {total} categories defined
+            </div>
           </div>
         </div>
       </div>
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-slate-100 bg-slate-50">
+            <tr className="border-b border-slate-100 bg-slate-50/50">
               {['ID', 'Category Name', 'Actions'].map((h) => (
-                <th key={h} className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th 
+                  key={h} 
+                  className={`px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-widest ${
+                    h === 'Actions' ? 'text-right' : ''
+                  }`}
+                >
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-slate-50">
             {categories.length === 0 ? (
               <tr>
-                <td colSpan={3} className="px-4 py-16 text-center">
-                  <div className="flex flex-col items-center gap-2">
-                    <span className="text-4xl">🗂️</span>
-                    <div className="font-semibold text-slate-600">No categories found</div>
-                    <div className="text-sm text-slate-400">Create your first category to get started</div>
+                <td colSpan={3} className="px-6 py-24 text-center">
+                  <div className="flex flex-col items-center justify-center gap-4 max-w-[280px] mx-auto">
+                    {/* เปลี่ยน Emoji เป็น FolderOpen Icon ในกล่อง Soft Purple */}
+                    <div className="w-16 h-16 rounded-[2rem] bg-purple-50 flex items-center justify-center text-purple-300 ring-8 ring-purple-50/50">
+                      <FolderOpen size={32} strokeWidth={1.5} />
+                    </div>
+                    <div className="space-y-1.5">
+                      <div className="font-bold text-slate-900 tracking-tight">No categories found</div>
+                      <div className="text-sm text-slate-500 leading-relaxed font-medium">
+                        Your library doesnt have any categories yet. Create one to start organizing books.
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>
             ) : (
               categories.map((c, i) => (
-                <CategoryRow key={c.id} category={c} index={i} onEdit={onEdit} onDelete={onDelete} />
+                <CategoryRow 
+                  key={c.id} 
+                  category={c} 
+                  index={i} 
+                  onEdit={onEdit} 
+                  onDelete={onDelete} 
+                />
               ))
             )}
           </tbody>
@@ -74,9 +78,16 @@ export default function CategoryTable({ categories, total, onEdit, onDelete }: P
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100 bg-slate-50/50">
-        <span className="text-xs text-slate-400">Showing {categories.length} categories</span>
-        <span className="text-xs text-slate-400">Last updated just now</span>
+      <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 bg-slate-50/30">
+        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+          Displaying {categories.length} entries
+        </span>
+        <div className="flex items-center gap-2">
+           <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+             System Updated
+           </span>
+        </div>
       </div>
     </div>
   );

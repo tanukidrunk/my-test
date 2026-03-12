@@ -18,7 +18,7 @@ export default function BorrowRow({ borrow: b, index }: Props) {
       border-b border-slate-100 last:border-0
       transition-all duration-300 ease-out hover:bg-slate-50/80
       ${visible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'}
-    `}
+    `} 
     >
       {/* Borrow ID */}
       <td className='px-4 py-3.5'>

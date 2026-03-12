@@ -15,7 +15,7 @@ import {
 import { fetchWithAuth } from '@/app/lib/fetchWithAuth';
 
 export default function ProfilePage() {  
-  const [form,    setForm]    = useState<ProfileForm>({ username: '', password: '', gender: 'OTHER' });
+  const [form,    setForm]    = useState<ProfileForm>({ username: '', password: '', gender: 'OTHER', phone: '', address: '' });
   const [member,  setMember]  = useState<MemberProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving,  setSaving]  = useState(false);
@@ -94,7 +94,7 @@ export default function ProfilePage() {
     } catch { addToast('error', 'Something went wrong. Please try again.'); }
     finally { setSaving(false); setConfirmOpen(false); }
   };
-
+ 
   /* ── Loading state ── */
   if (loading) {
     return (

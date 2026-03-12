@@ -8,7 +8,7 @@ export type Borrowed = {
   loanDate: string;
   returnDate?: string | null;
   status: 'BORROWED' | 'RETURNED';
-};
+}; 
 
 export function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('th-TH', {

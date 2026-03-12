@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ProtectedLayout from '../../protected';
-import {API_URL} from '@/app/lib/api';
+import { Library } from 'lucide-react';
 import BorrowStats   from '@/components/Member/dashboard/BorrowStats';
 import OverdueAlert  from '@/components/Member/dashboard/OverdueAlert';
 import BorrowTabs    from '@/components/Member/dashboard/BorrowTabs';
@@ -53,30 +53,38 @@ export default function MemberBorrowedPage() {
   const active   = borrows.filter((b) => b.status === 'BORROWED');
   const history  = borrows.filter((b) => b.status === 'RETURNED');
   const overdue  = active.filter((b) => getDaysLeft(b.loanDate) < 0).length;
-  const dueSoon  = active.filter((b) => { const d = getDaysLeft(b.loanDate); return d >= 0 && d <= 3; }).length;
   const displayed = tab === 'active' ? active : history;
-
+ 
   return (
-    <ProtectedLayout>
+   <ProtectedLayout>
       <div className="min-h-screen bg-slate-50 font-sans">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
 
           {/* ── HEADER ── */}
-          <div className="flex items-start justify-between mb-8 gap-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
             <div>
-              <div className="text-xs font-semibold text-blue-500 uppercase tracking-widest mb-1">My Library</div>
-              <h1 className="text-3xl font-bold text-slate-800 mb-1">Borrowed Books</h1>
-              <p className="text-slate-400 text-sm">Manage your current loans and borrowing history</p>
+              <div className="text-[11px] font-bold text-blue-600 uppercase tracking-[0.2em] mb-2">
+                My personal library
+              </div>
+              <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
+                Borrowed Books
+              </h1>
+              <p className="text-slate-500 font-medium">
+                Manage your current loans and track your borrowing history
+              </p>
             </div>
+            
             <Link
               href="/member/book"
               className="
-                flex-shrink-0 mt-1 flex items-center gap-2 px-4 py-2 rounded-xl
-                border border-slate-200 bg-white text-sm font-medium text-slate-600
-                hover:bg-slate-50 hover:border-slate-300 transition-all duration-150 shadow-sm
+                inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-2xl
+                bg-slate-900 text-white text-sm font-bold
+                hover:bg-slate-800 transition-all duration-200 
+                shadow-lg shadow-slate-200 active:scale-[0.98]
               "
             >
-              <span>📚</span> Browse Books
+              <Library size={18} strokeWidth={2.5} />
+              Browse Catalog
             </Link>
           </div>
 
@@ -84,29 +92,32 @@ export default function MemberBorrowedPage() {
           <BorrowStats
             active={active.length}
             returned={history.length}
-            dueSoon={dueSoon}
             overdue={overdue}
           />
 
-          {/* ── OVERDUE ALERT ── */}
-          <OverdueAlert count={overdue} />
+          <div className="mt-8 space-y-6">
+            {/* ── OVERDUE ALERT ── */}
+            <OverdueAlert count={overdue} />
 
-          {/* ── TABS ── */}
-          <BorrowTabs
-            active={tab}
-            onChange={setTab}
-            activeCount={active.length}
-            historyCount={history.length}
-          />
+            <div className="space-y-4">
+              {/* ── TABS ── */}
+              <BorrowTabs
+                active={tab}
+                onChange={setTab}
+                activeCount={active.length}
+                historyCount={history.length}
+              />
 
-          {/* ── TABLE ── */}
-          <BorrowTable
-            borrows={displayed}
-            loading={loading}
-            tab={tab}
-            returningId={returningId}
-            onReturn={handleReturn}
-          />
+              {/* ── TABLE ── */}
+              <BorrowTable
+                borrows={displayed}
+                loading={loading}
+                tab={tab}
+                returningId={returningId}
+                onReturn={handleReturn}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </ProtectedLayout>

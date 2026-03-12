@@ -133,7 +133,7 @@ mem.post('/login', async (c) => {
       httpOnly: true,
       secure: false, // ⭐ สำคัญ
       sameSite: 'lax', // ⭐ localhost ใช้ lax
-      maxAge: 60 * 60,
+      maxAge: 60 * 15,
       path: '/',
     });
 

@@ -4,7 +4,7 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Book, List, User, LogOut } from 'lucide-react';
+import { LayoutDashboard, Book, List, User, LogOut,BookOpen  } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import {API_URL} from '@/app/lib/api';
 export default function AdminLayoutSidebar({
@@ -22,7 +22,7 @@ export default function AdminLayoutSidebar({
     { name: 'Member', href: '/admin/memberlist', icon: User },
     { name: 'Logout', href: '/login', icon: LogOut, logout: true },
   ];
-
+ 
 const handleLogout = async () => {
   try {
     await fetch(`${API_URL}/member/logout`, {
@@ -37,55 +37,66 @@ const handleLogout = async () => {
 };
  
   return (
-    <div className='min-h-screen flex bg-neutral-100 dark:bg-neutral-950'>
-      <aside className='w-64 bg-white dark:bg-neutral-900 shadow-sm p-4 border-r border-neutral-200 dark:border-neutral-800 sticky top-0 h-screen'>
-        <div className='mb-8 px-2'>
-          <h2 className='text-xs font-bold uppercase tracking-widest text-neutral-400'>
-            Library System
-          </h2>
-          <p className='text-lg font-bold text-neutral-800 dark:text-white'>
+      <div className='min-h-screen flex bg-neutral-50 dark:bg-neutral-950'>
+      <aside className='w-64 bg-white dark:bg-neutral-900 shadow-sm p-4 border-r border-neutral-200 dark:border-neutral-800 sticky top-0 h-screen flex flex-col'>
+        
+        {/* Logo Section */}
+        <div className='mb-8 px-3 pt-2'>
+          <div className='flex items-center gap-2 mb-2'>
+            <div className='w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white'>
+              <BookOpen size={18} strokeWidth={2.5} />
+            </div>
+            <h2 className='text-[11px] font-bold uppercase tracking-[0.2em] text-neutral-400'>
+              Library System
+            </h2>
+          </div>
+          <p className='text-xl font-extrabold text-slate-900 dark:text-white tracking-tight'>
             Admin Portal
           </p>
         </div>
 
-        <nav className='space-y-1'>
+        {/* Navigation */}
+        <nav className='space-y-1.5 flex-1'>
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
-
-            if (item.logout) {
-              return (
-                <button
-                  key={item.name}
-                  onClick={handleLogout}
-                  className='w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors mt-auto'
-                >
-                  <Icon size={18} />
-                  {item.name}
-                </button>
-              );
-            }
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all',
+                  'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all duration-200',
                   active
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800',
+                    ? 'bg-slate-900 text-white shadow-lg shadow-slate-200 dark:shadow-none'
+                    : 'text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-slate-900'
                 )}
               >
-                <Icon size={18} />
+                <Icon size={18} strokeWidth={active ? 2.5 : 2} />
                 {item.name}
               </Link>
             );
           })}
         </nav>
+
+        {/* Logout Button (Bottom) */}
+        <div className='mt-auto pt-4 border-t border-neutral-100 dark:border-neutral-800'>
+          <button
+            onClick={handleLogout}
+            className='w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all duration-200'
+          >
+            <LogOut size={18} strokeWidth={2.5} />
+            Logout
+          </button>
+        </div>
       </aside>
 
-      <main className='flex-1 p-8 overflow-y-auto'>{children}</main>
+      {/* Main Content Area */}
+      <main className='flex-1 p-8 overflow-y-auto'>
+        <div className='max-w-6xl mx-auto'>
+          {children}
+        </div>
+      </main>
     </div>
   );
 }

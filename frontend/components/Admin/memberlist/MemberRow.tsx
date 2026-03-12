@@ -19,7 +19,7 @@ export default function MemberRow({ member: m, index }: Props) {
   }, [index]);
 
   const avatarColor = avatarColors[m.id % avatarColors.length];
-
+ 
   return (
     <tr className={`
       border-b border-slate-100 last:border-0

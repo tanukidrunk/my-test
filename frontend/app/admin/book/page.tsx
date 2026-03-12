@@ -43,12 +43,20 @@ export default function BooksPage() {
     if (!imageFile) return;
     const fd = new FormData();
     fd.append('image', imageFile);
-    await fetchWithAuth(`/book/${bookId}/image`, {
+    await fetchWithAuth(`/book/${bookId}/images`, {
       method: 'POST', credentials: 'include', body: fd,
     });
     setImageFile(null);
   };
-
+const getImageUrl = async (bookId: number): Promise<string | null> => {
+  try {
+      const res  = await fetchWithAuth(`/book/${bookId}/images`, { credentials: 'include' });
+      const json = await res.json();
+    return json.data?.url ?? null;
+  } catch {
+    return null;
+  }
+};
   /* ── Submit ── */
   const submitBook = async () => {
     try {
@@ -138,8 +146,9 @@ export default function BooksPage() {
           onSearchChange={setSearch}
           onEdit={(b) => { setForm(b); setIsEditing(true); setImageFile(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
           onDelete={deleteBook}
+          getImageUrl={getImageUrl}
         />
       </div>
     </div>
   );
-}
+} 

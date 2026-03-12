@@ -1,6 +1,7 @@
 'use client';
+import { AlertTriangle, Loader2, Check } from 'lucide-react'; // นำเข้าไอคอนจาก Lucide
 import { ProfileForm, GENDER_OPTIONS } from './profileTypes';
-
+ 
 type Props = {
   open: boolean;
   form: ProfileForm;
@@ -27,7 +28,7 @@ export default function ProfileConfirmModal({
     { label: 'Username', value: form.username },
     { label: 'Gender', value: genderLabel },
     ...(hasPassword
-      ? [{ label: 'Password', value: '•••••••• (will be changed)' }]
+      ? [{ label: 'Password', value: '•••••••• (Update)' }]
       : []),
   ];
 
@@ -35,83 +36,92 @@ export default function ProfileConfirmModal({
     <div
       className={`
         fixed inset-0 z-50 flex items-center justify-center p-4
-        bg-black/40 backdrop-blur-sm
-        transition-opacity duration-200
+        bg-slate-950/40 backdrop-blur-[2px]
+        transition-opacity duration-300
         ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
       `}
       onClick={onCancel}
     >
       <div
         className={`
-          bg-white rounded-3xl shadow-2xl w-full max-w-sm p-7
-          transition-all duration-300
+          bg-white rounded-[2rem] shadow-2xl w-full max-w-[340px] p-8
+          transition-all duration-300 ease-out border border-slate-100
           ${open
             ? 'opacity-100 scale-100 translate-y-0'
             : 'opacity-0 scale-95 translate-y-4'}
         `}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Icon */}
-        <div className="flex justify-center mb-4">
-          <div className="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center text-2xl">
-            ⚠️
+        {/* Main Icon - ปรับเป็น Warning Icon แบบนุ่มนวล */}
+        <div className="flex justify-center mb-5">
+          <div className="w-16 h-16 rounded-3xl bg-amber-50 text-amber-500 flex items-center justify-center ring-8 ring-amber-50/50">
+            <AlertTriangle size={32} strokeWidth={2} />
           </div>
         </div>
 
-        <h2 className="text-lg font-bold text-slate-800 text-center mb-1">
-          Confirm Changes
-        </h2>
-        <p className="text-sm text-slate-400 text-center mb-5">
-          Please review before saving
-        </p>
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-bold text-slate-900 tracking-tight mb-1">
+            Confirm Changes
+          </h2>
+          <p className="text-sm text-slate-500 font-medium">
+            Review your new settings
+          </p>
+        </div>
 
-        <div className="bg-slate-50 rounded-2xl border border-slate-100 divide-y divide-slate-100 mb-6 overflow-hidden">
+        {/* Data Preview Card */}
+        <div className="bg-slate-50/80 rounded-2xl border border-slate-200/60 divide-y divide-slate-200/60 mb-8 overflow-hidden">
           {rows.map((r) => (
             <div
               key={r.label}
-              className="flex items-center justify-between px-4 py-3"
+              className="flex items-center justify-between px-5 py-3.5 transition-colors hover:bg-slate-100/50"
             >
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 {r.label}
               </span>
-              <span className="text-sm font-medium text-slate-700">
-                {r.value}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-slate-800">
+                  {r.value}
+                </span>
+                <Check size={14} className="text-emerald-500" />
+              </div>
             </div>
           ))}
         </div>
 
-        <div className="flex gap-3">
-          <button
-            onClick={onCancel}
-            disabled={saving}
-            className="
-              flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600
-              hover:bg-slate-50 transition-all duration-150 active:scale-95
-              disabled:opacity-50
-            "
-          >
-            Cancel
-          </button>
-
+        {/* Action Buttons */}
+        <div className="flex flex-col gap-2">
           <button
             onClick={onConfirm}
             disabled={saving}
             className="
-              flex-1 py-2.5 rounded-xl text-sm font-semibold text-white
-              bg-blue-600 hover:bg-blue-700
-              transition-all duration-150 active:scale-95
-              disabled:opacity-60 shadow-sm hover:shadow-blue-200 hover:shadow-md
+              w-full py-3 rounded-2xl text-sm font-bold text-white
+              bg-slate-900 hover:bg-slate-800
+              transition-all duration-200 active:scale-[0.98]
+              disabled:opacity-70 shadow-lg shadow-slate-200
+              flex items-center justify-center gap-2
             "
           >
             {saving ? (
-              <span className="flex items-center justify-center gap-2">
-                <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                Saving…
-              </span>
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                <span>Saving Changes...</span>
+              </>
             ) : (
-              'Confirm Save'
+              'Save Changes'
             )}
+          </button>
+          
+          <button
+            onClick={onCancel}
+            disabled={saving}
+            className="
+              w-full py-3 rounded-2xl text-sm font-bold text-slate-500
+              hover:text-slate-800 hover:bg-slate-100
+              transition-all duration-200 active:scale-[0.98]
+              disabled:opacity-50
+            "
+          >
+            Cancel
           </button>
         </div>
       </div>

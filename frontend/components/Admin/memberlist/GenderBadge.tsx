@@ -14,4 +14,4 @@ export default function GenderBadge({ gender }: { gender: Gender }) {
       {label}
     </span>
   );
-}
+} 

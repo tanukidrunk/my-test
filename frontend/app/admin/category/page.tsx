@@ -25,7 +25,7 @@ export default function CategoryPage() {
       setCategories(Array.isArray(json.data) ? json.data : []);
     } finally {
       setLoading(false);
-    }
+    } 
   }; 
   useEffect(() => { loadCategory(); }, []);
 
